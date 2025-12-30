@@ -29,7 +29,11 @@ title = 'Alexander Marquardt'
 
   mainSections = []
 
-  customCSS = ["css/extended/table.css"]
+  customCSS = [
+    "css/extended/header-center.css",
+    "css/extended/extra.css",
+    "css/extended/table.css"
+]
 
 [markup]
   [markup.goldmark]

@@ -1,130 +1,81 @@
-/* =========================================================
-   PaperMod header – authoritative override
-   - Center logo
-   - Hide text
-   - FORCE large logo
-   - Respect light/dark theme
-   ========================================================= */
-
-/* ---------------------------------------------------------
-   Header + nav: remove size constraints
-   --------------------------------------------------------- */
-.header,
+/* Center logo */
 .header .nav {
-  height: auto !important;
-  min-height: unset !important;
-  max-height: unset !important;
-  overflow: visible !important;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.header .logo {
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* ---------------------------------------------------------
-   Logo container
-   --------------------------------------------------------- */
-.header .logo {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin: 0 auto !important;
-}
-
-/* Hide text label completely */
+/* Hide text label by not rendering it; safeguard anyway */
 .header .logo a {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 0 !important;
-  line-height: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  font-size: 0;
+  line-height: 0;
 }
 
-/* ---------------------------------------------------------
-   FORCE LOGO SIZE (this is the key section)
-   --------------------------------------------------------- */
-
-/* Nuke ALL PaperMod limits */
-.header img,
-.header .logo img,
-.header .logo-switches img,
-.header .logo a img {
-  height: 160px !important;        /* ← DESKTOP SIZE */
-  width: auto !important;
-  max-height: none !important;
-  min-height: 0 !important;
-  display: block !important;
+/* Size both logo images */
+.header .logo a img.am-logo {
+  height: 160px;
+  width: auto;
+  max-height: none;
+  display: block;
 }
+
+/* Only show one logo at a time */
+.header img.am-logo-light { display: block; }
+.header img.am-logo-dark  { display: none; }
+
+html[data-theme="dark"] .header img.am-logo-light { display: none; }
+html[data-theme="dark"] .header img.am-logo-dark  { display: block; }
 
 /* Mobile */
 @media (max-width: 600px) {
-  .header img,
-  .header .logo img,
-  .header .logo-switches img,
-  .header .logo a img {
-    height: 108px !important;
-  }
+  .header .logo a img.am-logo { height: 108px; }
 }
 
-/* ---------------------------------------------------------
-   Light / Dark logo swap
-   --------------------------------------------------------- */
-html:not([data-theme="dark"]) .header .logo img {
-  content: url("/alexmarquardt-light.png") !important;
-}
-
-html[data-theme="dark"] .header .logo img {
-  content: url("/alexmarquardt-dark.png") !important;
-}
-
-/* ---------------------------------------------------------
-   Header vertical spacing (prevents clipping)
-   --------------------------------------------------------- */
+/* Prevent clipping */
 .header {
-  padding-top: 20px !important;
-  padding-bottom: 14px !important;
+  padding-top: 20px;
+  padding-bottom: 14px;
+  overflow: visible;
 }
 
-/* ---------------------------------------------------------
-   Menu + theme toggle (right side, absolute)
-   --------------------------------------------------------- */
-.header #menu,
-.header .menu {
-  position: absolute;
-  right: 1rem;
-}
+/* Keep menu + toggle on the right */
+.header #menu { position: absolute; right: 1rem; }
+.header #theme-toggle { position: absolute; right: 1rem; }
 
-.header .theme-toggle {
-  position: absolute;
-  right: 1rem;
-}
+.header #menu ~ #theme-toggle { right: 3.25rem; }
 
-.header #menu ~ .theme-toggle,
-.header .menu ~ .theme-toggle {
-  right: 3.25rem;
-}
-
-/* Mobile tightening */
 @media (max-width: 600px) {
-  .header #menu,
-  .header .menu {
-    right: 0.75rem;
-  }
-
-  .header .theme-toggle {
-    right: 0.75rem;
-  }
-
-  .header #menu ~ .theme-toggle,
-  .header .menu ~ .theme-toggle {
-    right: 2.75rem;
-  }
+  .header #menu { right: 0.75rem; }
+  .header #theme-toggle { right: 0.75rem; }
+  .header #menu ~ #theme-toggle { right: 2.75rem; }
 }
 
-/* ---------------------------------------------------------
-   Restore toggle icon sizing (PaperMod regression fix)
-   --------------------------------------------------------- */
-.header .logo-switches,
-.header .logo-switches * {
-  font-size: 16px !important;
-  line-height: 1 !important;
-}
+/* =========================================================
+   Force exactly ONE logo visible based on PaperMod theme
+   html[data-theme="light"] or html[data-theme="dark"]
+   ========================================================= */
+
+/* Default: LIGHT mode shows light logo only */
+html[data-theme="light"] .header .logo a img.am-logo-light { display: block !important; }
+html[data-theme="light"] .header .logo a img.am-logo-dark  { display: none  !important; }
+
+/* DARK mode shows dark logo only */
+html[data-theme="dark"] .header .logo a img.am-logo-light { display: none  !important; }
+html[data-theme="dark"] .header .logo a img.am-logo-dark  { display: block !important; }
+
+/* Safety fallback: if data-theme is missing, treat as light */
+html:not([data-theme]) .header .logo a img.am-logo-light { display: block !important; }
+html:not([data-theme]) .header .logo a img.am-logo-dark  { display: none  !important; }

@@ -1,0 +1,37 @@
+/* =========================================================
+   Tables: full grid (vertical + horizontal) for PaperMod
+   ========================================================= */
+
+.post-content table,
+.entry-content table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid var(--border, #d0d0d0);
+}
+
+.post-content th,
+.post-content td,
+.entry-content th,
+.entry-content td {
+  border: 1px solid var(--border, #d0d0d0);
+  padding: 0.6em 0.8em;
+  vertical-align: top;
+}
+
+.post-content thead th,
+.entry-content thead th {
+  font-weight: 600;
+}
+
+.post-content td br,
+.entry-content td br {
+  line-height: 1.25;
+}
+
+@media (max-width: 600px) {
+  .post-content table,
+  .entry-content table {
+    font-size: 0.9em;
+  }
+}

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="light">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>How to manually perform a point in time restore in MongoDB | Alexander Marquardt</title>
+<meta name="keywords" content="point-in-time, restore">
+<meta name="description" content="
+Introduction
+While MongoDB provides high-availability and data durability through automatic replication of data to multiple servers, this replication does not protect the database against human or application errors. For example, if an administrator drops a database, the drop operation will be replicated across the MongoDB deployment, and data will be deleted. If such an event occurs through human or application error, then data will have to be retrieved from backups.">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/mongodb/mongodb-point-in-time-restore/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2fe4dc5b52567b7454ee976e121c74370e14415db7564bb5ae6de9bd591821ff.css" integrity="sha256-L&#43;TcW1JWe3RU7pduEhx0Nw4UQV23Vku1rm3pvVkYIf8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/mongodb/mongodb-point-in-time-restore/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">Alexander Marquardt</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      How to manually perform a point in time restore in MongoDB
+    </h1>
+    <div class="post-meta"><span title='2017-01-25 00:00:00 +0000 UTC'>January 25, 2017</span>&nbsp;·&nbsp;<span>6 min</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul><ul>
+                <li>
+                    <a href="#human-error-in-finance" aria-label=""></a></li></ul>
+                    
+                <li>
+                    <a href="#introduction" aria-label="Introduction">Introduction</a></li>
+                <li>
+                    <a href="#recommended-background" aria-label="Recommended background">Recommended background</a></li>
+                <li>
+                    <a href="#purpose" aria-label="Purpose">Purpose</a></li>
+                <li>
+                    <a href="#alternatives-to-manual-point-in-timerestores" aria-label="Alternatives to manual point-in-time restores">Alternatives to manual point-in-time restores</a></li>
+                <li>
+                    <a href="#requirements" aria-label="Requirements">Requirements</a></li>
+                <li>
+                    <a href="#how-does-it-work" aria-label="How does it work">How does it work</a></li>
+                <li>
+                    <a href="#example-scenario" aria-label="Example scenario">Example scenario</a></li>
+                <li>
+                    <a href="#restoration-instructions" aria-label="Restoration instructions:">Restoration instructions:</a></li>
+                <li>
+                    <a href="#relatedissues" aria-label="Related issues">Related issues</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="human-error-in-finance"><img alt="human-error-in-finance" loading="lazy" src="/mongodb/mongodb-point-in-time-restore/images/human-error-in-finance.jpg"><a hidden class="anchor" aria-hidden="true" href="#human-error-in-finance">#</a></h2>
+<h1 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h1>
+<p>While MongoDB provides high-availability and data durability through <a href="https://docs.mongodb.com/manual/replication/">automatic replication</a> of data to multiple servers, this replication does not protect the database against human or application errors. For example, if an administrator drops a database, the drop operation will be replicated across the MongoDB deployment, and data will be deleted. If such an event occurs through human or application error, then data will have to be retrieved from backups.</p>
+<h1 id="recommended-background">Recommended background<a hidden class="anchor" aria-hidden="true" href="#recommended-background">#</a></h1>
+<p>It is recommended that you review and understand the standard <a href="https://docs.mongodb.com/manual/core/backups/">MongoDB Backup Methods</a> before attempting a manual point-in-time backup and restore.</p>
+<h1 id="purpose">Purpose<a hidden class="anchor" aria-hidden="true" href="#purpose">#</a></h1>
+<p>In this blog, we describe a procedure that allows you to manually perform a point-in-time restore of MongoDB data. Point-in-time restore refers to the ability to restore the database to a precise moment in time. The instructions presented here require that you have regular backups of your data, and that your data is stored in a replica set.</p>
+<p><strong>*** WARNING *** :</strong> This manual point-in-time backup and restore procedure should not be used on sharded clusters.   </p>
+<h1 id="alternatives-to-manual-point-in-timerestores">Alternatives to manual point-in-time restores<a hidden class="anchor" aria-hidden="true" href="#alternatives-to-manual-point-in-timerestores">#</a></h1>
+<p>While the purpose of this blog is to demonstrate a manual point-in-time restore procedure, the reader should be aware that MongoDB has software available that automates backups and provides point-in-time restores, and that is designed to work with  any kind of database configuration, including sharded clusters.</p>
+<p>For more information about MongoDB&rsquo;s recommended solutions, read about <a href="https://www.mongodb.com/products/ops-manager">Ops Manager</a>, <a href="https://www.mongodb.com/cloud/cloud-manager">Cloud Manager</a>, and  <a href="https://www.mongodb.com/cloud/atlas">Atlas</a>.</p>
+<p>Note that these recommended solutions will likely not be not help you automate the point-in-time restore procedure unless the same tool was used for creating the original backups.</p>
+<h1 id="requirements">Requirements<a hidden class="anchor" aria-hidden="true" href="#requirements">#</a></h1>
+<p>In order to perform a manual point-in-time restore, you need two things:</p>
+<ol>
+<li>You need a backup of the database - this can be either from a mongodump or from a file system copy.</li>
+<li>You need access to an <a href="https://docs.mongodb.com/manual/core/replica-set-oplog/">oplog</a> that contains data that goes back to when the backup was made. For example if you made a backup 24 hours ago, then you need an oplog that goes back at least 24 hours. This oplog will be extracted from one of the replica set members in the live database.</li>
+</ol>
+<h1 id="how-does-it-work">How does it work<a hidden class="anchor" aria-hidden="true" href="#how-does-it-work">#</a></h1>
+<p>A manual point-in-time restore is achieved by copying a database backup to a spare server and starting the database on that spare server with the backup data. We then &ldquo;roll forward&rdquo; the data on the spare server to the desired point-in-time, which is achieved by dumping the oplog from the live/production database, copying the oplog over to the spare server, and then applying the oplog onto the database that we are now running on the spare server.</p>
+<p>After we have verified that the restored data is correct, we then copy it from our spare server over to our production servers.</p>
+<h1 id="example-scenario"><strong>Example scenario</strong><a hidden class="anchor" aria-hidden="true" href="#example-scenario">#</a></h1>
+<p>A concrete example of how a point-in-time restore can be performed is as follows. For this example we assume the following.</p>
+<ol>
+<li>You have a backup mongodump or snapshot of the database from 24 hours ago</li>
+<li>You have the oplog on your live/production database that goes back at least 24 hours (ie. an oplog window of at least 24 hours). The oplog is available on each node in the replica set, and can be dumped out from any one of the replica set members. The oplog contains a record of all database events that have recently occurred. </li>
+<li>You realize that one hour ago, someone did something really bad (eg. dropped a collection or dropped a database)</li>
+</ol>
+<p>For this scenario, the following steps will result in a point-in-time restore:</p>
+<ol>
+<li>Restore or copy the backup from 24 hours ago onto a spare server.  This server will be used for recreating the database state as it was just before the data loss occurred.</li>
+<li>Dump out the oplog from the live/production replica set where the error occurred. The oplog contains a log of every operation that has recently occurred on the live/production database.</li>
+<li>Copy the oplog over to the spare server.</li>
+<li>Replay 23 hours of the oplog onto the backup to &ldquo;roll it forward&rdquo; to just before the undesirable incident that happened (in this example, one hour ago). </li>
+<li>Verify the database on the spare server, and if it looks good, copy it over to the production servers.</li>
+</ol>
+<h1 id="restoration-instructions"><strong>Restoration instructions:</strong><a hidden class="anchor" aria-hidden="true" href="#restoration-instructions">#</a></h1>
+<ol>
+<li>
+<p>On one of the members of your live replica set, dump the oplog collection using mongodump:</p>
+<pre tabindex="0"><code>mongodump ­-d local -c oplog.rs ­-o oplogDumpDir/
+</code></pre></li>
+<li>
+<p>Rename and move the dump of the oplog from the live deployment:</p>
+<pre tabindex="0"><code>mkdir oplogRecoveryDir
+mv oplogDumpDir/local/oplog.rs.bson oplogRecoveryDir/oplog.bson
+</code></pre></li>
+<li>
+<p>Connect to the server using the mongo shell, find the bad operation in the oplog and make a note of the <strong>time_t:ordinal</strong> (timestamp) values. Alternatively, use bsondump to manually inspect the BSON dump of the oplog.</p>
+<pre tabindex="0"><code>mongo
+use local
+db.oplog.rs.find(...)
+</code></pre></li>
+<li>
+<p>Start a new standalone mongod instance to rebuild the server and verify the data before applying it to production. If you use mongorestore to restore a backup, then use step <strong>a</strong>, and if you are restoring from a data file backup see step <strong>b</strong>:</p>
+<ul>
+<li>
+<p>(a) Start a new mongod process, and restore the last known good backup using mongorestore. For this example the data is located in a directory called &ldquo;backupDumpDir&rdquo;. Note that if the original mongodump was done on a database that was being actively written during the dump, then it should have been made with the &ndash;oplog option. In this case, the mongorestore should be done with the &ndash;oplogReplay option to ensure that the backup data is restored in a consistent state.</p>
+<pre tabindex="0"><code>mongod --­­dbpath /some/new/directory --­­port PORT
+mongorestore --port PORT [--oplogReplay] backup­DumpDir/
+</code></pre></li>
+<li>
+<p>(b) Or if you have a file system backup, then you can copy the data from your backup to the dbpath directory, and start mongod directly as follows:</p>
+<pre tabindex="0"><code>mongod --­­dbpath /path/to/backupDataDir --­­port PORT
+</code></pre></li>
+</ul>
+</li>
+<li>
+<p>Replay the oplog into the new node using mongorestore, specifying the values for <strong>time_t</strong> and <strong>ordinal</strong> as found above. This command will replay the oplog up to the point just before the bad operation occurred. </p>
+<pre tabindex="0"><code>mongorestore --­­port --­­oplogReplay --­­oplogLimit time_t:ordinal oplogRecoveryDir/
+</code></pre></li>
+<li>
+<p>Check that all documents are now back in the collection and data has been correctly restored. If this is successful take a server dump by either of the following steps.</p>
+<ul>
+<li>
+<p>(a) Using mongodump:</p>
+<pre tabindex="0"><code>mongodump ­­--port PORT rebuildDumpDir/
+</code></pre></li>
+<li>
+<p>(b) Or by taking a file system snapshot (eg. LVM Snapshot), or by stopping writes to the mongod process and copying the database data files.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Depending on the procedure used in the previous steps, restore the dump or the data files into the live/production replica set by either:</p>
+<ul>
+<li>(a) Using the standard mongorestore procedure as documented in <a href="https://docs.mongodb.com/manual/tutorial/backup-and-restore-tools/">Backup and Restore with MongoDB Tools</a>.</li>
+<li>(b) Or by copying the appropriate data files as documented in <a href="https://docs.mongodb.com/manual/tutorial/restore-replica-set-from-backup/">Restore a Replica Set from MongoDB Backups</a>.</li>
+</ul>
+</li>
+</ol>
+<h1 id="relatedissues">Related issues<a hidden class="anchor" aria-hidden="true" href="#relatedissues">#</a></h1>
+<p>If you encounter issues restoring data with the above procedure, you should view the following MongoDB Jira tickets to see if they are related:</p>
+<ul>
+<li><a href="https://jira.mongodb.org/browse/TOOLS-176">https://jira.mongodb.org/browse/TOOLS-176</a></li>
+<li><a href="https://jira.mongodb.org/browse/SERVER-10773">https://jira.mongodb.org/browse/SERVER-10773</a></li>
+<li><a href="https://jira.mongodb.org/browse/SERVER-12508">https://jira.mongodb.org/browse/SERVER-12508</a></li>
+<li><a href="https://jira.mongodb.org/browse/SERVER-19618">https://jira.mongodb.org/browse/SERVER-19618</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/point-in-time/">Point-in-Time</a></li>
+      <li><a href="http://localhost:1313/tags/restore/">Restore</a></li>
+    </ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Alexander Marquardt</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="light">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Personalizing e-commerce search results based on purchase history in Elasticsearch (Without a need for Machine Learning Post Processing) | Alexander Marquardt</title>
+<meta name="keywords" content="">
+<meta name="description" content="Whether you’re looking for a product in an online store, an article in a news archive, or a file in a company knowledge base, the quality of the search experience determines how quickly you find what you need. Behind the scenes, many of these systems are powered by Elasticsearch, a popular open-source search engine designed to handle large volumes of data and return relevant results in milliseconds.
+At its core, Elasticsearch matches user queries against text fields and ranks results using relevance scoring. But search doesn’t have to stop there. That’s where personalization comes in. By incorporating signals such as past purchases, browsing behavior, or recent activity, search results can be adjusted so the items most relevant to you appear higher. For example, if two people both search for “chips”, one might see classic potato chips at the top, while the other sees crispy thin-cut chips, depending on their history.">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/elastic/personalizing-e-commerce-search-results-based-on-purchase-history-in-elasticsearch-without-a-need-for-machine-learning-post-processing/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2fe4dc5b52567b7454ee976e121c74370e14415db7564bb5ae6de9bd591821ff.css" integrity="sha256-L&#43;TcW1JWe3RU7pduEhx0Nw4UQV23Vku1rm3pvVkYIf8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/elastic/personalizing-e-commerce-search-results-based-on-purchase-history-in-elasticsearch-without-a-need-for-machine-learning-post-processing/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">Alexander Marquardt</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Personalizing e-commerce search results based on purchase history in Elasticsearch (Without a need for Machine Learning Post Processing)
+    </h1>
+    <div class="post-meta"><span title='2025-09-12 00:00:00 +0000 UTC'>September 12, 2025</span>&nbsp;·&nbsp;<span>6 min</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#why-this-approach-is-useful" aria-label="Why this approach is useful">Why this approach is useful</a></li>
+                <li>
+                    <a href="#how-it-works-high-level-overview" aria-label="How it works (high-level overview)">How it works (high-level overview)</a></li>
+                <li>
+                    <a href="#the-forumula" aria-label="The forumula">The forumula</a><ul>
+                        
+                <li>
+                    <a href="#constants" aria-label="Constants">Constants</a></li>
+                <li>
+                    <a href="#explanation-of-the-formula" aria-label="Explanation of the Formula">Explanation of the Formula</a><ul>
+                        
+                <li>
+                    <a href="#1-log-frequency-term" aria-label="1. Log frequency term">1. Log frequency term</a></li>
+                <li>
+                    <a href="#2-recency-term" aria-label="2. Recency term">2. Recency term</a></li>
+                <li>
+                    <a href="#3-normalization-max_raw" aria-label="3. Normalization (max_raw)">3. Normalization (max_raw)</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#example-implementation" aria-label="Example implementation">Example implementation</a></li>
+                <li>
+                    <a href="#sample-output" aria-label="Sample output">Sample output</a></li>
+                <li>
+                    <a href="#how-to-try-it-yourself" aria-label="How to try it yourself">How to try it yourself</a></li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a></li>
+                <li>
+                    <a href="#acknowledgement" aria-label="Acknowledgement">Acknowledgement</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>Whether you’re looking for a product in an online store, an article in a news archive, or a file in a company knowledge base, the quality of the search experience determines how quickly you find what you need. Behind the scenes, many of these systems are powered by <strong>Elasticsearch</strong>, a popular open-source search engine designed to handle large volumes of data and return relevant results in milliseconds.</p>
+<p>At its core, Elasticsearch matches user queries against text fields and ranks results using relevance scoring. But search doesn’t have to stop there. That’s where <strong>personalization</strong> comes in. By incorporating signals such as past purchases, browsing behavior, or recent activity, search results can be adjusted so the items most relevant to <em>you</em> appear higher. For example, if two people both search for <em>“chips”</em>, one might see <em>classic potato chips</em> at the top, while the other sees <em>crispy thin-cut chips</em>, depending on their history.</p>
+<p>Search personalization is often treated as a “phase two” re-ranking project that happens <em>after</em> search results have been retrieved, typically by adding a separate ML re-ranker. That can work, but in many stacks it introduces extra infrastructure and can slow iteration compared with a pure-query approach.</p>
+<p>On the other hand, if you’re already using Elasticsearch, you already have the building blocks for implementing personalization. With Elasticsearch you can:</p>
+<ul>
+<li>
+<p>Store your product catalog (all the items you want users to search).</p>
+</li>
+<li>
+<p>Store user activity (like purchases or clicks). *</p>
+</li>
+<li>
+<p>Run queries that combine those two data sources.</p>
+</li>
+</ul>
+<p>In this post, I’ll show you how to build <strong>personalization directly leveraging Elasticsearch</strong> capabilities, without post processing ML jobs. I&rsquo;ll show how to leverage a user’s past purchases, turn it into boosts, and apply those boosts to a search query against product inventory — so the products that a user is most likely to want to purchase (based on their history) naturally rise to the top. The full working code is available here: <a href="https://github.com/alexander-marquardt/elasticsearch-personalization">alexander-marquardt/elasticsearch-personalization</a>.</p>
+<p>* Note: In this article we assume you pre-process or pre-aggregate the purchase history to get it into an efficient format for for fast lookup, similar to the user&rsquo;s purchase history index presented in this article.</p>
+<h2 id="why-this-approach-is-useful">Why this approach is useful<a hidden class="anchor" aria-hidden="true" href="#why-this-approach-is-useful">#</a></h2>
+<ul>
+<li>
+<p><strong>No extra infrastructure</strong>: All the logic lives in Elasticsearch queries. No ML jobs.</p>
+</li>
+<li>
+<p><strong>Transparent</strong>: Boosts are calculated with a simple formula (log1p(purchases) × recency decay), easy to explain and tweak.</p>
+</li>
+<li>
+<p><strong>Composable</strong>: The boosts combine naturally with standard BM25 ranking.</p>
+</li>
+</ul>
+<p>This design pushes personalization into the query itself.</p>
+<h2 id="how-it-works-high-level-overview">How it works (high-level overview)<a hidden class="anchor" aria-hidden="true" href="#how-it-works-high-level-overview">#</a></h2>
+<p>At query time we execute <strong>two phases</strong>:</p>
+<ol>
+<li>
+<p><strong>History phase</strong> — Look up this user’s purchase history to return items relevant to their query. <strong>Compute a boost</strong> for each relevant product that they have purchased in the past.</p>
+</li>
+<li>
+<p><strong>Search phase</strong> — Build a query that includes a function_score query that incorporates the personalised product boosts that we just calculated, so that <strong>items previously purchased by this user are pushed to the top</strong> of the results. Run the user’s query against the product catalog.</p>
+</li>
+</ol>
+<h2 id="the-forumula">The forumula<a hidden class="anchor" aria-hidden="true" href="#the-forumula">#</a></h2>
+<p>We have an index that contains the purchase history for each user. Each product that a client has purchased has the following fields defined:</p>
+<ul>
+<li>
+<p><strong>purchase_count(p)</strong> = number of times the user purchased product <em>p</em></p>
+</li>
+<li>
+<p><strong>age_days(p)</strong> = days since the last purchase of <em>p</em></p>
+</li>
+</ul>
+<p>A formula that can be used to convert these values into a personalised boost is:</p>
+<p><img loading="lazy" src="/elastic/personalizing-e-commerce-search-results-based-on-purchase-history-in-elasticsearch-without-a-need-for-machine-learning-post-processing/images/image-1.png"></p>
+<h3 id="constants">Constants<a hidden class="anchor" aria-hidden="true" href="#constants">#</a></h3>
+<p>We choose the following constant values, which work for our example but should be re-evaluated depending on your desired outcome:</p>
+<ul>
+<li>
+<p><strong>BASE_BOOST</strong> = 1.0</p>
+</li>
+<li>
+<p><strong>SCALE</strong> = 3.5</p>
+</li>
+<li>
+<p><strong>HALF_LIFE_DAYS</strong> = 60</p>
+</li>
+</ul>
+<p>In the above formula, BASE_BOOST = 1 guarantees we never reduce the raw BM25 score—worst case we leave it unchanged.</p>
+<p>A SCALE of 3.5 (which is added to the BASE_BOOST of 1) ensures that the boost (multiplier) remains between 1 and 4.5. If this is too much or too little, you can modify the SCALE to decrease or increase the resulting boost values.</p>
+<p>Likewise, the impact of recent vs. old purchases can be controlled by the HALF_LIFE_DAYS value.</p>
+<h3 id="explanation-of-the-formula">Explanation of the Formula<a hidden class="anchor" aria-hidden="true" href="#explanation-of-the-formula">#</a></h3>
+<h4 id="1-log-frequency-term">1. Log frequency term<a hidden class="anchor" aria-hidden="true" href="#1-log-frequency-term">#</a></h4>
+<p>ln(1 + purchase_count) dampens the effect of repeat purchases. For example:</p>
+<ul>
+<li>
+<p>1 → ln(2) ≈ 0.69</p>
+</li>
+<li>
+<p>10 → ln(11) ≈ 2.40</p>
+</li>
+<li>
+<p>100 → ln(101) ≈ 4.62</p>
+</li>
+</ul>
+<p>This ensures <em>diminishing returns</em>: frequent purchases matter more, but not linearly.</p>
+<h4 id="2-recency-term">2. Recency term<a hidden class="anchor" aria-hidden="true" href="#2-recency-term">#</a></h4>
+<p>exp( -ln(2) × age_days / HALF_LIFE_DAYS )</p>
+<p>applies exponential decay, halving the weight every 60 days.</p>
+<ul>
+<li>
+<p>0 days → factor = 1.0</p>
+</li>
+<li>
+<p>60 days → factor = 0.5</p>
+</li>
+<li>
+<p>120 days → factor = 0.25</p>
+</li>
+</ul>
+<h4 id="3-normalization-max_raw">3. Normalization (max_raw)<a hidden class="anchor" aria-hidden="true" href="#3-normalization-max_raw">#</a></h4>
+<p>Dividing by max_raw ensures that the strongest historical signal normalizes to <strong>1.0</strong>, and other items scale proportionally.</p>
+<p>Without this normalization, users with very different purchase patterns would get <strong>very different boost ranges</strong>:</p>
+<ul>
+<li>
+<p>A heavy buyer (hundreds of purchases) could generate raw weights much larger than a light buyer (a few purchases).</p>
+</li>
+<li>
+<p>That would make boosts inconsistent across users, and in extreme cases a single heavy purchase could dominate all results.</p>
+</li>
+</ul>
+<p>By dividing by <strong>max_raw</strong> (the maximum raw weight observed in this user’s history for the current query), we ensure:</p>
+<ul>
+<li>
+<p>The strongest historical signal always normalizes to <strong>1.0</strong>.</p>
+</li>
+<li>
+<p>All other signals scale proportionally between 0.0 and 1.0.</p>
+</li>
+<li>
+<p>Every user’s boosts are mapped into the same range, regardless of shopping habits.</p>
+</li>
+</ul>
+<h2 id="example-implementation">Example implementation<a hidden class="anchor" aria-hidden="true" href="#example-implementation">#</a></h2>
+<p>The code available at <a href="https://github.com/alexander-marquardt/elasticsearch-personalization">alexander-marquardt/elasticsearch-personalization</a>, makes use of the following two indices:</p>
+<ul>
+<li>
+<p><strong>demo_products</strong> — the product catalog (product_id, description) - example at: <a href="https://github.com/alexander-marquardt/elasticsearch-personalization/blob/main/data/example_products.ndjs">example_products.ndjs</a></p>
+</li>
+<li>
+<p><strong>user_purchases</strong> — purchase history (user_id, product_id, purchase_count, last_purchase_ts) - example at: <a href="https://github.com/alexander-marquardt/elasticsearch-personalization/blob/main/data/user_purchases_bulk.ndjs">user_purchases_bulk.ndjs</a></p>
+</li>
+</ul>
+<h2 id="sample-output">Sample output<a hidden class="anchor" aria-hidden="true" href="#sample-output">#</a></h2>
+<p>Here’s what the script produces when different users search for <strong>“chips”</strong>.</p>
+<p>Each run has two parts:</p>
+<ul>
+<li><strong>PHASE 1</strong> - the image below shows an example purchase history (which prior purchases match this intent) for user_101, along with the computed boosts.</li>
+</ul>
+<p><img loading="lazy" src="/elastic/personalizing-e-commerce-search-results-based-on-purchase-history-in-elasticsearch-without-a-need-for-machine-learning-post-processing/images/image-6.png"></p>
+<ul>
+<li><strong>PHASE 2</strong> execute a query to get the final personalized ranking of products in which the ranking for each product has had the user-specific boost from Phase 1 applied.</li>
+</ul>
+<p>The actual query that is executed looks as follows:</p>
+<p><img loading="lazy" src="/elastic/personalizing-e-commerce-search-results-based-on-purchase-history-in-elasticsearch-without-a-need-for-machine-learning-post-processing/images/image-10.png"></p>
+<p>And the output that results from this query would be:</p>
+<p><img loading="lazy" src="/elastic/personalizing-e-commerce-search-results-based-on-purchase-history-in-elasticsearch-without-a-need-for-machine-learning-post-processing/images/image-7.png"></p>
+<ul>
+<li><strong>Compare to user_202</strong>:</li>
+</ul>
+<p>Notice how the above ordering of products has been impacted by the purchase history of user_101, while the following results are ordered differently, based on the purchase history of user_202:</p>
+<p><img loading="lazy" src="/elastic/personalizing-e-commerce-search-results-based-on-purchase-history-in-elasticsearch-without-a-need-for-machine-learning-post-processing/images/image-8.png"></p>
+<p><img loading="lazy" src="/elastic/personalizing-e-commerce-search-results-based-on-purchase-history-in-elasticsearch-without-a-need-for-machine-learning-post-processing/images/image-9.png"></p>
+<h2 id="how-to-try-it-yourself">How to try it yourself<a hidden class="anchor" aria-hidden="true" href="#how-to-try-it-yourself">#</a></h2>
+<p>Clone the repo, make sure you have Elasticsearch running locally and without authentication. Load some sample user purchase histories, and some sample products, by using the BULK POSTs that are given in:</p>
+<ul>
+<li>
+<p><a href="https://github.com/alexander-marquardt/elasticsearch-personalization/blob/main/data/example_products.ndjs">example_products.ndjs</a></p>
+</li>
+<li>
+<p><a href="https://github.com/alexander-marquardt/elasticsearch-personalization/blob/main/data/user_purchases_bulk.ndjs">user_purchases_bulk.ndjs</a></p>
+</li>
+</ul>
+<p>Then you can run the script:</p>
+<pre tabindex="0"><code>git clone https://github.com/alexander-marquardt/elasticsearch-personalization.git
+cd elasticsearch-personalization
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# Load the sample data into your Elasticsearch cluster
+# (see data/ folder or use _bulk requests)
+
+python personalized-search.py
+</code></pre><p>This will print personalized results like those shown above.</p>
+<h2 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h2>
+<p>Personalization doesn’t need complex ML jobs. With just two indices and a bit of query logic, you can personalize search results.</p>
+<ul>
+<li>
+<p>Phase 1 builds a per-user boost profile from history.</p>
+</li>
+<li>
+<p>Phase 2 applies those boosts in the search query.</p>
+</li>
+</ul>
+<p>Full code and data: <a href="https://github.com/alexander-marquardt/elasticsearch-personalization?utm_source=chatgpt.com">alexander-marquardt/elasticsearch-personalization</a></p>
+<h2 id="acknowledgement">Acknowledgement<a hidden class="anchor" aria-hidden="true" href="#acknowledgement">#</a></h2>
+<p>Thanks to Honza Kral for the idea and inspiration for this approach.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Alexander Marquardt</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

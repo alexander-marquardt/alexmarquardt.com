@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="light">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Counting unique beats agents sending data into Elasticsearch | Alexander Marquardt</title>
+<meta name="keywords" content="">
+<meta name="description" content="Introduction
+When using Beats with Elasticsearch, it may be useful to keep track of how many unique agents are sending data into an Elasticsearch cluster, and how many documents each agent is submitting. Such information for example could be useful for detecting if beats agents are behaving as expected.
+In this blog post, I first discuss how to efficiently specify a filter for documents corresponding to a particular time range, followed by several methods for detecting how many beats agents are sending documents to Elasticsearch within the specified time range.">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/elastic/counting-unique-beats-agents-elasticsearch/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2fe4dc5b52567b7454ee976e121c74370e14415db7564bb5ae6de9bd591821ff.css" integrity="sha256-L&#43;TcW1JWe3RU7pduEhx0Nw4UQV23Vku1rm3pvVkYIf8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/elastic/counting-unique-beats-agents-elasticsearch/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">Alexander Marquardt</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Counting unique beats agents sending data into Elasticsearch
+    </h1>
+    <div class="post-meta"><span title='2019-07-18 00:00:00 +0000 UTC'>July 18, 2019</span>&nbsp;·&nbsp;<span>6 min</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#introduction" aria-label="Introduction">Introduction</a></li>
+                <li>
+                    <a href="#how-to-filter-for-documents-in-a-specific-time-range" aria-label="How to filter for documents in a specific time range">How to filter for documents in a specific time range</a></li>
+                <li>
+                    <a href="#a-basic-query-to-get-a-count-of-unique-agents" aria-label="A basic query to get a count of unique agents">A basic query to get a count of unique agents</a></li>
+                <li>
+                    <a href="#get-an-example-document-from-each-agent-using-field-collapsing" aria-label="Get an example document from each agent using field collapsing">Get an example document from each agent using field collapsing</a></li>
+                <li>
+                    <a href="#get-an-example-document-from-each-agent-using-a-terms-aggregation-and-top-hits" aria-label="Get an example document from each agent using a terms aggregation and top hits">Get an example document from each agent using a terms aggregation and top hits</a></li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h1>
+<p>When using Beats with Elasticsearch, it may be useful to keep track of how many unique agents are sending data into an Elasticsearch cluster, and how many documents each agent is submitting. Such information for example could be useful for detecting if beats agents are behaving as expected.</p>
+<p>In this blog post, I first discuss how to efficiently specify a filter for documents corresponding to a particular time range, followed by several methods for detecting how many beats agents are sending documents to Elasticsearch within the specified time range.</p>
+<p>Note that the techniques discussed in this blog have limitations (discussed below) when the number of agents becomes very large. As an alternative to the techniques discussed in this blog post, the data coming from beats could transformed into an additional (new) index to make counting the number of beats agents more efficient and accurate, at the expense of additional up-front work being done at ingest time. This approach will be discussed in a future blog post (link will be placed here once written).</p>
+<h1 id="how-to-filter-for-documents-in-a-specific-time-range">How to filter for documents in a specific time range<a hidden class="anchor" aria-hidden="true" href="#how-to-filter-for-documents-in-a-specific-time-range">#</a></h1>
+<p>This section describes how to efficiently filter for documents from a particular time range. In the following example, we filter for documents that were received yesterday:</p>
+<pre tabindex="0"><code>GET filebeat-*/_search
+{
+  &#34;query&#34;: {
+    &#34;bool&#34;: {
+      &#34;filter&#34;: {
+        &#34;range&#34;: {
+          &#34;@timestamp&#34;: {
+            &#34;gte&#34;: &#34;now-1d/d&#34;,
+            &#34;lt&#34; : &#34;now/d&#34;
+          }
+        }
+      }
+    }
+  },
+  &#34;sort&#34;: [{&#34;@timestamp&#34;: &#34;desc&#34;}]
+}
+</code></pre><p>Notice that we use the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html#query-filter-context">filter context</a> for the range query. Using the filter context is efficient for two reasons:</p>
+<ol>
+<li>Operations inside a filter context must answer a yes/no question - either documents fall into the time range or they do not. Because this is a yes/no question, a <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-sort.html">_score</a> is not computed when filtering documents like this.</li>
+<li>The data inside a filter can be efficiently cached by the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.2/query-cache.html">Node Query Cache</a>, which &ldquo;caches queries which are being used in a filter context&rdquo;.</li>
+</ol>
+<p>It is worth highlighting that if the parameters inside the filter are different on each query, then the results of the filter cannot be efficiently cached. This would be the case if the range that is being queried is continually changing. This may unintentionally occur if &ldquo;now&rdquo; is used inside a range query without any rounding.</p>
+<p>In the above example we ensure that the filter can cache documents by using <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#date-math">date math</a> to round the range that we are searching in to the nearest day (as indicated by the &ldquo;/d&rdquo;). Compare this to the following which would give us all documents in the 24 hours prior to the current moment.</p>
+<pre tabindex="0"><code>GET filebeat-*/_search
+{
+  &#34;query&#34;: {
+    &#34;bool&#34;: {
+      &#34;filter&#34;: {
+        &#34;range&#34;: {
+          &#34;@timestamp&#34;: {
+            &#34;gte&#34;: &#34;now-1d&#34;,
+            &#34;lt&#34; : &#34;now&#34;
+          }
+        }
+      }
+    }
+  },
+  &#34;sort&#34;: [{&#34;@timestamp&#34;: &#34;desc&#34;}]
+}
+</code></pre><p>Note that the above filter cannot be cached because &ldquo;now&rdquo; is changing at every millisecond.</p>
+<p>A middle-ground may be to round to the nearest hour to allow the filter to be cached most of the time, except once per hour when the range is modified. Rounding to the nearest hour could be done as follows:</p>
+<pre tabindex="0"><code>GET filebeat-*/_search
+{
+  &#34;query&#34;: {
+    &#34;bool&#34;: {
+      &#34;filter&#34;: {
+        &#34;range&#34;: {
+          &#34;@timestamp&#34;: {
+            &#34;gte&#34;: &#34;now-1d/h&#34;,
+            &#34;lt&#34; : &#34;now/h&#34;
+          }
+        }
+      }
+    }
+  },
+  &#34;sort&#34;: [{&#34;@timestamp&#34;: &#34;desc&#34;}]
+}
+</code></pre><p>Now that we have covered how to efficiently query for a documents in a particular time range, we are ready to demonstrate how to count the number of unique beats agents that are submitting documents to Elasticsearch.</p>
+<h1 id="a-basic-query-to-get-a-count-of-unique-agents">A basic query to get a count of unique agents<a hidden class="anchor" aria-hidden="true" href="#a-basic-query-to-get-a-count-of-unique-agents">#</a></h1>
+<p>To get an approximate count of unique beats agents we can use a <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-cardinality-aggregation.html">cardinality aggregation</a> as shown below.</p>
+<pre tabindex="0"><code>POST filebeat-*/_search
+{
+  &#34;size&#34;: 0,
+  &#34;query&#34;: {
+    &#34;bool&#34;: {
+      &#34;filter&#34;: {
+        &#34;range&#34;: {
+          &#34;@timestamp&#34;: {
+            &#34;gte&#34;: &#34;now-1d/d&#34;,
+            &#34;lt&#34; : &#34;now/d&#34;          
+          }
+        }
+      }
+    }
+  },
+  &#34;aggs&#34; : {
+      &#34;unique_agent_id_count&#34; : {
+          &#34;cardinality&#34; : {
+              &#34;field&#34; : &#34;agent.id.keyword&#34;,
+              &#34;precision_threshold&#34;: 500 
+          }
+      }
+  }
+}
+</code></pre><p>Note that we first filter documents by time (in this case documents from yesterday), and then execute the  cardinality aggregation on the filtered set of documents . Also notice that the size is set to 0 – this tells ES that we are not interested in seeing the actual documents that match the range query, we just want to see the results of the cardinality aggregation done <em>across</em> those documents.</p>
+<h1 id="get-an-example-document-from-each-agent-using-field-collapsing">Get an example document from each agent using field collapsing<a hidden class="anchor" aria-hidden="true" href="#get-an-example-document-from-each-agent-using-field-collapsing">#</a></h1>
+<p>The example below demonstrates how to use <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-collapse.html">field collapsing</a> to return the _source of a single document corresponding to each beats agent that submitted a document yesterday. Be aware that by default a search will only return 10 hits. In order to see all documents that match a given query the size should be increased, or if a large number of results are expected then pagination techniques should be used. In the example below we have set the size to 100, which will return up to 100 unique agents.</p>
+<pre tabindex="0"><code>GET filebeat-*/_search
+{
+  &#34;size&#34; : 100,
+  &#34;query&#34;: {
+    &#34;bool&#34;: {
+      &#34;filter&#34;: {
+        &#34;range&#34;: {
+          &#34;@timestamp&#34;: {
+            &#34;gte&#34;: &#34;now-1d/d&#34;,
+            &#34;lt&#34;: &#34;now/d&#34;
+          }
+        }
+      }
+    }
+  },
+  &#34;collapse&#34;: {
+    &#34;field&#34;: &#34;agent.id.keyword&#34;
+  },
+  &#34;sort&#34;: [
+    {
+      &#34;@timestamp&#34;: &#34;desc&#34;
+    }
+  ]
+}
+</code></pre><h1 id="get-an-example-document-from-each-agent-using-a-terms-aggregation-and-top-hits">Get an example document from each agent using a terms aggregation and top hits<a hidden class="anchor" aria-hidden="true" href="#get-an-example-document-from-each-agent-using-a-terms-aggregation-and-top-hits">#</a></h1>
+<p>We can use a <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html">terms aggregation</a> and <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-top-hits-aggregation.html">top hits aggregation</a> to get each unique agent as well as a count of the number of documents submitted from each unique agent. Be aware that this code is likely less efficient than the above and may not be practical if a very large number of agents are reporting into Elasticsearch.</p>
+<pre tabindex="0"><code>GET filebeat-*/_search
+{
+  &#34;size&#34;: 0,
+  &#34;query&#34;: {
+    &#34;bool&#34;: {
+      &#34;filter&#34;: {
+        &#34;range&#34;: {
+          &#34;@timestamp&#34;: {
+            &#34;gte&#34;: &#34;now-1d/d&#34;,
+            &#34;lt&#34; : &#34;now/d&#34;
+          }
+        }
+      }
+    }
+  },
+  &#34;aggs&#34;: {
+    &#34;unique_agents&#34;: {
+      &#34;terms&#34;: {
+        &#34;field&#34;: &#34;agent.id.keyword&#34;,
+        &#34;size&#34;: 500,
+      },
+      &#34;aggs&#34;: {
+        &#34;get_a_single_doc_for_each_unique_id&#34;: {
+          &#34;top_hits&#34;: {
+            &#34;sort&#34;: [
+              {
+                &#34;@timestamp&#34;: {
+                  &#34;order&#34;: &#34;desc&#34;
+                }
+              }
+            ],
+            &#34;size&#34;: 1
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre><p>There are three &ldquo;size&rdquo; settings in the code above:</p>
+<ol>
+<li>We have set the size to 0 for the query results - this just means that we don&rsquo;t return the documents that match the range query, as we are only interested in the results of the aggregation.</li>
+<li>A terms aggregation by default will only return the top 10 hits. In the example above we have increased the size of the terms aggregation to 500. Be careful, as setting this to a very large value to handle a very large number of agents may be slow. For a very large number of agents, terms aggregations may become infeasible.</li>
+<li>Inside the top hits aggregations, we have specified a size of 1, meaning that a single document will be returned for each term.</li>
+</ol>
+<h1 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h1>
+<p>In this blog, we have demonstrated how to ensure the best performance when filtering for documents, followed by several methods for detecting how many unique beats agents are submitting documents into an Elasticsearch cluster.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Alexander Marquardt</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -1,6 +1,9 @@
 ---
-title: "Cut and paste a table from Google Sheets into an HTML document – no code&nbsp;required"
+title: "Cut and paste a table from Google Sheets into an HTML document – no code required"
 date: 2022-10-10
+slug: cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required
+aliases: 
+  - /cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/
 ---
 
 ## Introduction
@@ -21,10 +24,10 @@ Let's assume that you have a table similar to the following in Google Sheets tha
 
 |  | Standard (Non-CDC) | CDC |
 | --- | --- | --- |
-| Full refresh - overwrite | ✅ Deletes are handled   ✅ Good for small data volume   ✅ Final data does not have duplicates      ⚠️ No history is stored   ⚠️ Inefficient for large data   ⚠️ Inefficient for high frequency syncs | ✅ Same as Standard         ⚠️ Same as Standard |
-| Full refresh - append | ✅ Stores history   ✅ Good for small data volume      ⚠️ Storage may explode   ⚠️ Inefficient for large data   ⚠️ Inefficient for high frequency syncs   ⚠️ Final data will contain duplicates | ✅ Same as Standard         ⚠️ Same as Standard |
-| Incremental - append | ✅ Efficient for high frequency syncs   ✅ Stores history   ✅ Primary key not required            ⚠️ A suitable cursor must be available   ⚠️ Final data may contain duplicates   ⚠️ Deletes are not detected   ⚠️ Intermediate states not captured | ✅ Efficient for high frequency syncs   ✅ Stores history   ✅ Deletes are transmitted and logged   ✅ Intermediate states captured   ✅ No cursor field is required      ⚠️ Primary key required   ⚠️ Final data may contain duplicates   ⚠️ Not available for all sources   ⚠️ Requires access to the transaction log |
-| Incremental - deduped history | ✅ Efficient for high frequency syncs   ✅ Stores history   ✅ De-duplicates final data               ⚠️ Primary key required   ⚠️ A suitable cursor must be available   ⚠️ Deletes are not detected   ⚠️ Intermediate states not captured | ✅ Efficient for high frequency syncs   ✅ Stores history   ✅ Deletes are handled   ✅ Intermediate states captured   ✅ De-duplicates final data   ✅ No cursor field is required      ⚠️ Primary key required   ⚠️ Not available for all sources   ⚠️ Requires access to the transaction log |
+| Full refresh - overwrite | ✅ Deletes are handled<br>   ✅ Good for small data volume<br>   ✅ Final data does not have duplicates<br>      ⚠️ No history is stored<br>   ⚠️ Inefficient for large data<br>   ⚠️ Inefficient for high frequency syncs<br> | ✅ Same as Standard<br>         ⚠️ Same as Standard<br> |
+| Full refresh - append | ✅ Stores history<br>   ✅ Good for small data volume<br>      ⚠️ Storage may explode<br>   ⚠️ Inefficient for large data<br>   ⚠️ Inefficient for high frequency syncs<br>   ⚠️ Final data will contain duplicates<br> | ✅ Same as Standard<br>         ⚠️ Same as Standard<br> |
+| Incremental - append | ✅ Efficient for high frequency syncs<br>   ✅ Stores history<br>   ✅ Primary key not required<br>            ⚠️ A suitable cursor must be available<br>   ⚠️ Final data may contain duplicates<br>   ⚠️ Deletes are not detected<br>   ⚠️ Intermediate states not captured<br> | ✅ Efficient for high frequency syncs<br>   ✅ Stores history<br>   ✅ Deletes are transmitted and logged<br>   ✅ Intermediate states captured<br>   ✅ No cursor field is required<br>      ⚠️ Primary key required<br>   ⚠️ Final data may contain duplicates<br>   ⚠️ Not available for all sources<br>   ⚠️ Requires access to the transaction log<br> |
+| Incremental - deduped history<br> | ✅ Efficient for high frequency syncs<br>   ✅ Stores history<br>   ✅ De-duplicates final data<br>               ⚠️ Primary key required<br>   ⚠️ A suitable cursor must be available   ⚠️ Deletes are not detected<br>   ⚠️ Intermediate states not captured<br> | ✅ Efficient for high frequency syncs<br>   ✅ Stores history<br>   ✅ Deletes are handled<br>   ✅ Intermediate states captured<br>   ✅ De-duplicates final data<br>   ✅ No cursor field is required<br>      ⚠️ Primary key required<br>   ⚠️ Not available for all sources<br>   ⚠️ Requires access to the transaction log<br> |
 
 Paste the table into [Tables Generator](https://www.tablesgenerator.com/html_tables) - be sure that you have selected the "HTML" tab as shown below:
 

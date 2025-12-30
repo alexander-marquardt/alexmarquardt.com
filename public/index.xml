@@ -10,31 +10,26 @@
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title></title>
-      <link>http://localhost:1313/personal/</link>
+      <link>http://localhost:1313/professional/</link>
       <pubDate>Fri, 26 Dec 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/personal/</guid>
-      <description>&lt;h1 id=&#34;other-areas-of-interest&#34;&gt;Other Areas of Interest&lt;/h1&gt;
-&lt;h2 id=&#34;finance&#34;&gt;Finance&lt;/h2&gt;
+      <guid>http://localhost:1313/professional/</guid>
+      <description>&lt;h1 id=&#34;professional-record-and-publications&#34;&gt;Professional Record and Publications&lt;/h1&gt;
+&lt;p&gt;This page provides supporting material for my professional background, including selected publications, patents, open-source contributions, and formal education.&lt;/p&gt;
+&lt;h2 id=&#34;profiles&#34;&gt;Profiles&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://alexmarquardt.com/2019/07/27/financial-implications-of-exercising-share-options/&#34;&gt;Financial implications of exercising share options&lt;/a&gt; (Jul 27, 2019)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;general-productivitytech-related&#34;&gt;General productivity/tech-related&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/&#34;&gt;Cut and paste a table from Google Sheets into an HTML document – no code required&lt;/a&gt; (Oct 10, 2022)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;nutrition&#34;&gt;Nutrition&lt;/h2&gt;
-&lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;http://alexmarquardt.com/2019/07/30/how-to-mitigate-hangovers/&#34;&gt;How to mitigate hangovers&lt;/a&gt; (Jul 31, 2019)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.linkedin.com/in/alexandermarquardt/&#34;&gt;LinkedIn Profile&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;https://alexmarquardt.com/2021/06/01/a-summary-of-recent-research-on-increasing-lifespan/&#34;&gt;A summary of recent research on increasing lifespan&lt;/a&gt; (June 1, 2021)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/alexander-marquardt/&#34;&gt;Github page&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;tourism-and-travel&#34;&gt;Tourism and Travel&lt;/h2&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;recognition&#34;&gt;Recognition&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/&#34;&gt;Barcelona: A Personal Guide&lt;/a&gt; (April 21, 2024)&lt;/li&gt;
-&lt;/ul&gt;</description>
+&lt;li&gt;Author of three papers that were selected to be amongst the &lt;a href=&#34;https://tcfpga.org/books/recommended-reading/page/fpga-20-reading-list&#34;&gt;25 most significant FPGA papers of the past 20 years&lt;/a&gt; at the 20th anniversary of the International Symposium on Field-Programmable Gate Arrays in 2012.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;scientific-publications&#34;&gt;Scientific Publications&lt;/h2&gt;
+&lt;p&gt;The publications listed below have been &lt;strong&gt;cited over 3600 times&lt;/strong&gt; according to &lt;a href=&#34;https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&amp;amp;hl=en&#34;&gt;Google Scholar.&lt;/a&gt; These publications reflect early work in FPGA architecture, placement, and routing algorithms.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ranking by Profit and Popularity in Elasticsearch</title>
@@ -105,10 +100,10 @@
 &lt;p&gt;In this blog I will demonstrate logic that can be added to an Elasticsearch ingest pipeline which can be used to intercept documents that would be rejected by the TSDS index due to timestamp range issues, and to instead redirect them to a &amp;ldquo;failed&amp;rdquo; index. The documents that are redirected to the &amp;ldquo;failed&amp;rdquo; index may (for example) be used to raise alerts and examined.&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Cut and paste a table from Google Sheets into an HTML document – no code&amp;nbsp;required</title>
-      <link>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-codenbsprequired/</link>
+      <title>Cut and paste a table from Google Sheets into an HTML document – no code required</title>
+      <link>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/</link>
       <pubDate>Mon, 10 Oct 2022 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-codenbsprequired/</guid>
+      <guid>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/</guid>
       <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;In a &lt;a href=&#34;https://airbyte.com/blog/understanding-data-replication-modes&#34;&gt;recent article&lt;/a&gt; that I wrote for &lt;a href=&#34;http://www.airbyte.com/&#34;&gt;Airbyte&lt;/a&gt; it was necessary for me to copy and paste a table from Google Sheets into &lt;a href=&#34;http://www.webflow.com/&#34;&gt;Webflow&lt;/a&gt;. Unfortunately, Webflow doesn’t currently support copy/paste of tables directly in its editor.&lt;/p&gt;
 &lt;p&gt;In this blog, I present a workaround that can be used to convert a table from Google Sheets into HTML, which can then be written into a Webflow &lt;a href=&#34;https://university.webflow.com/lesson/custom-code-embed&#34;&gt;custom code block&lt;/a&gt;.&lt;/p&gt;
@@ -459,24 +454,20 @@
     </item>
     <item>
       <title></title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/about/</guid>
+      <description>&lt;h1 id=&#34;about-the-author&#34;&gt;About the Author&lt;/h1&gt;
+&lt;h2 id=&#34;senior-principal-architect--genai--search&#34;&gt;Senior Principal Architect | GenAI &amp;amp; Search&lt;/h2&gt;
+&lt;p&gt;I work on complex technical systems where performance, scale, and real-world constraints intersect. My focus is on architectural decision-making in distributed search and AI platforms, identifying structural risks, design trade-offs, and system behaviors that shape reliability and performance at scale.&lt;/p&gt;
+&lt;p&gt;In my current role at Elastic, I operate at enterprise scale across GenAI and Search. I apply systems-level reasoning to high-impact problems, with an emphasis on creating reusable architectural assets, including patterns, middleware, tools, and delivery models. This reduces recurring escalations and improves how teams design, operate, and reason about similar systems over time.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title></title>
       <link>http://localhost:1313/legacy/_drafts/id-1088/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/legacy/_drafts/id-1088/</guid>
       <description>&lt;p&gt;Enriching Elasticsearch documents with CSV data&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>About</title>
-      <link>http://localhost:1313/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/about/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Professional Record</title>
-      <link>http://localhost:1313/professional/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/professional/</guid>
-      <description></description>
     </item>
   </channel>
 </rss>

@@ -19,6 +19,13 @@ title = 'Alexander Marquardt'
 
   mainSections = []
 
+  customCSS = ["css/extended/table.css"]
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
 [permalinks]
   elastic = "/elastic/:slug/"
   airbyte = "/airbyte/:slug/"

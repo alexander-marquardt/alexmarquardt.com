@@ -75,10 +75,226 @@
       
     </header>
     <div class="post-content">
-      <h2 id="about-this-site">About this site</h2>
+      <h1 id="about-this-site">About this site</h1>
 <p>This site brings together technical writing focused on search, data pipelines, and distributed systems at enterprise scale. It is informed by real production systems and reflects recurring patterns, trade-offs, and architectural decisions observed across system design, deployment, and long-term operation.</p>
-<p>The material focuses on architectural reasoning for large-scale systems. It examines the behavior of relevance models, reliability mechanisms, and ingest pipelines under real-world constraints. Attention is given to system-level decisions that influence scalability, maintainability, and long-term operational effort.</p>
-<hr>
+<p>The material emphasizes architectural reasoning for large-scale systems. It examines how relevance models, reliability mechanisms, and ingest pipelines behave under real-world constraints, with attention to system-level decisions that shape scalability, maintainability, and long-term operational effort.</p>
+<h1 id="elastic-stack">Elastic Stack</h1>
+<h2 id="search--relevance"><strong>Search &amp; Relevance</strong></h2>
+<ol>
+<li>
+<p><a href="https://www.elastic.co/search-labs/blog/bm25-ranking-multiplicative-boosting-elasticsearch">Influencing BM25 ranking with multiplicative boosting in Elasticsearch | Elasticsearch Labs</a> (Dec 22, 2025)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/search-labs/blog/function-score-query-boosting-profit-popularity-elasticsearch">Boosting e-commerce search by profit and popularity with the function score query in Elasticsearch | Elasticsearch Labs</a> (Dec 17, 2025)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/search-labs/blog/ecommerce-search-relevance-cohort-aware-ranking-elasticsearch">How to improve e-commerce search relevance with personalized cohort-aware ranking | Elasticsearch Labs</a> (Dec 10, 2025)</p>
+</li>
+<li>
+<p><a href="https://alexmarquardt.com/personalizing-search-in-elasticsearch-without-ml-post-processing/">Personalizing e-commerce search results based on purchase history in Elasticsearch (Without a need for Machine Learning Post Processing)</a> (Sep 12, 2025)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/search-labs/blog/efficient-bitwise-matching-in-elasticsearch">Efficient bitwise matching of documents in Elasticsearch | Elasticsearch Labs</a> (Oct 21, 2024)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/improve-search-relevance-by-combining-elasticsearch-stemmers-and-synonyms">Improve search relevance by combining Elasticsearch stemmers and synonyms | Elastic Blog</a> (June 23, 2021)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/how-to-improve-elasticsearch-search-relevance-with-boolean-queries">Improving search relevance with boolean queries | Elastic Blog</a> (May 26, 2020)</p>
+</li>
+</ol>
+<h2 id="performance-reliability--failure-analysis"><strong>Performance, Reliability &amp; Failure Analysis</strong></h2>
+<ol>
+<li>
+<p><a href="https://www.elastic.co/search-labs/blog/elasticsearch-replica-counts-right-sizing">How excessive replica counts can degrade performance, and what to do about it | Elasticsearch Labs</a> (Dec 8, 2025)</p>
+</li>
+<li>
+<p><a href="/2020/10/21/elasticsearch-too-many-script-compilations/">Understanding and fixing &ldquo;too many script compilations&rdquo; errors in Elasticsearch</a> (Oct 21, 2020)</p>
+</li>
+<li>
+<p><a href="/using-slow-logs-in-elastic-cloud-enterprise/">Using slow logs in Elastic Cloud Enterprise</a> (Apr 26, 2020)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/using-parallel-logstash-pipelines-to-improve-persistent-queue-performance">Using parallel Logstash pipelines to improve persistent queue throughput | Elastic Blog</a> (Nov 14, 2019)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/improving-the-performance-of-high-cardinality-terms-aggregations-in-elasticsearch">Improving the performance of high-cardinality terms aggregations | Elastic Blog</a> (May 9, 2019)</p>
+</li>
+<li>
+<p><a href="/how-to-tune-elasticsearch-for-aggregation-performance/">How to tune Elasticsearch for aggregation performance</a> (Oct 2, 2018)</p>
+</li>
+</ol>
+<h2 id="ingest-architecture">Ingest Architecture</h2>
+<ol>
+<li>
+<p><a href="https://alexmarquardt.com/2024/04/16/catching-elasticsearch-documents-with-incorrect-timestamps-that-fail-to-get-written-into-time-series-data-streams/">Re-directing Elasticsearch documents with out-of-range timestamps that (would) fail to get written into Time Series Data Streams</a> (Apr 16, 2024)</p>
+</li>
+<li>
+<p><a href="https://alexmarquardt.com/2021/03/15/driving-filebeat-data-into-separate-indices-uses-legacy-index-templates/">Driving Filebeat data into separate indices (uses legacy index templates)</a> (March 15, 2021)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/how-to-create-maintainable-and-reusable-logstash-pipelines">How to create maintainable and reusable Logstash pipelines | Elastic Blog</a> (Feb 27, 2020)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/using-logstash-to-split-data-and-send-it-to-multiple-outputs">Using Logstash to Split Data and Send it to Multiple Outputs | Elastic Blog</a> (Jan 15, 2019)</p>
+</li>
+</ol>
+<h2 id="data-parsing--structuring">Data Parsing &amp; Structuring</h2>
+<ol>
+<li>
+<p><a href="/2020/11/09/using-kibanas-painless-lab-beta-to-test-an-ingest-processor-script/">Using Kibana’s Painless Lab (Beta) to test an ingest processor script</a> (Nov 9, 2020)</p>
+</li>
+<li>
+<p><a href="/2020/11/06/using-elasticsearch-painless-scripting-to-iterate-through-fields/">Using Elasticsearch Painless scripting to recursively iterate through JSON fields</a> (Nov 6, 2020)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/debugging-broken-grok-expressions-in-elasticsearch-ingest-processors">Debugging broken grok expressions in Elasticsearch ingest processors | Elastic Blog</a> (Sep 3, 2020)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/slow-and-steady-how-to-build-custom-grok-patterns-incrementally">Slow and steady: How to build custom grok patterns incrementally | Elastic Blog</a> (Aug 26, 2020)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/structuring-elasticsearch-data-with-grok-on-ingest-for-faster-analytics">Structuring Elasticsearch data with grok on ingest for faster analytics | Elastic Blog</a> (Jul 30, 2020)</p>
+</li>
+<li>
+<p><a href="/2020/03/17/converting-csv-to-json-in-filebeat/">Converting CSV to JSON in Filebeat</a> (Mar 17, 2020)</p>
+</li>
+<li>
+<p><a href="/2018/08/28/using-logstash-prune-capabilities-to-whitelist-sub-documents/">Using Logstash prune capabilities to whitelist sub-documents</a> (Aug 28, 2018)</p>
+</li>
+</ol>
+<h2 id="data-derivation--enrichment">Data Derivation &amp; Enrichment</h2>
+<ol>
+<li>
+<p><a href="https://alexmarquardt.com/2022/01/20/using-logstash-to-hash-sensitive-text/">Using Logstash to scan inside event contents and to replace sensitive data with a consistent hash</a> (Jan 20, 2022)</p>
+</li>
+<li>
+<p><a href="/2020/09/16/using-logstash-and-elasticsearch-scripted-upserts-to-calculate-transaction-duration-from-out-of-order-events/">Using Logstash and Elasticsearch to calculate transaction duration in a microservices architecture</a> (Sep 16, 2020)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/how-to-enrich-logs-and-metrics-using-an-elasticsearch-ingest-node">How to enrich logs and metrics using an Elasticsearch ingest node | Elastic Blog</a> (May 12, 2020)</p>
+</li>
+<li>
+<p><a href="/enriching-data-with-the-logstash-translate-filter/">Enriching data with the Logstash translate filter</a> (Mar 6, 2020)</p>
+</li>
+<li>
+<p><a href="/2019/12/17/logstash-and-elasticsearch-painless-scripted-upserts-transform-data/">Using Logstash and Elasticsearch scripted upserts to transform eCommerce purchasing data</a> (Dec 17, 2019)</p>
+</li>
+</ol>
+<h2 id="end-to-end-systems--reference-implementations">End-to-End Systems &amp; Reference Implementations</h2>
+<ol>
+<li>
+<p><a href="/es-local-indexer-desktop-search-built-with-elasticsearch/">ES Local Indexer – Desktop search powered by Elasticsearch</a> (Aug 7, 2019)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/how-to-keep-elasticsearch-synchronized-with-a-relational-database-using-logstash">How to keep Elasticsearch synchronized with a relational database using Logstash | Elastic Blog</a> (Jun 20, 2019)</p>
+</li>
+</ol>
+<h2 id="operational-foundations">Operational Foundations</h2>
+<ol>
+<li>
+<p><a href="https://www.elastic.co/blog/production-data-pre-production-environments-logstash">Safely sample production data into pre-production environments with Logstash | Elastic Blog</a> (Oct 1, 2024)</p>
+</li>
+<li>
+<p><a href="https://alexmarquardt.com/2024/05/03/automating-the-import-and-export-of-kibana-saved-objects/">Automating the Import and Export of Kibana Saved Objects</a> (May 3, 2024)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/calculating-ingest-lag-and-storing-ingest-time-in-elasticsearch-to-improve-observability">Calculating ingest lag and storing ingest time in Elasticsearch to improve observability | Elastic Blog</a> (Jun 16, 2020)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/converting-local-time-to-iso-8601-time-in-elasticsearch">Converting local time to ISO 8601 time in Elasticsearch | Elastic Blog</a> (Nov 7, 2019)</p>
+</li>
+<li>
+<p><a href="/2019/07/18/counting-unique-beats-agents-elasticsearch/">Counting unique beats agents sending data into Elasticsearch</a> (Jul 18, 2019)</p>
+</li>
+</ol>
+<h2 id="correctness-consistency--security">Correctness, Consistency &amp; Security</h2>
+<ol>
+<li>
+<p><a href="/2019/12/05/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/">Emulating transactional functionality in Elasticsearch with two-phase commits</a> (Dec 5, 2019)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/elasticsearch-security-configure-tls-ssl-pki-authentication">Elasticsearch Security: Configure TLS/SSL &amp; PKI Authentication | Elastic Blog</a> (Dec 12, 2018)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/how-to-find-and-remove-duplicate-documents-in-elasticsearch">How to Find and Remove Duplicate Documents in Elasticsearch | Elastic Blog</a> (Dec 11, 2018)</p>
+</li>
+</ol>
+<h2 id="system-behavior--advanced-techniques">System Behavior &amp; Advanced Techniques</h2>
+<ol>
+<li>
+<p><a href="/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/">Using Elastic machine learning to detect anomalies in derivative values</a> (Apr 21, 2020)</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/blog/how-to-debug-elasticsearch-source-code-in-intellij-idea">How to Debug Elasticsearch Source Code in IntelliJ IDEA | Elastic Blog</a> (Feb 14, 2019)</p>
+</li>
+</ol>
+<h1 id="airbyte">Airbyte</h1>
+<ol>
+<li>
+<p><a href="https://airbyte.com/blog/orchestrating-airbyte-api-airbyte-cloud-airflow">Using the new Airbyte API to orchestrate Airbyte Cloud with Airflow</a> (Mar 2, 2023)</p>
+</li>
+<li>
+<p><a href="https://airbyte.com/blog/airbyte-vs-airflow">The difference between Airbyte and Airflow</a> (Feb 24, 2023)</p>
+</li>
+<li>
+<p><a href="https://airbyte.com/tutorials/how-to-use-airflow-and-airbyte-together">Learn how to create an Airflow DAG (directed acyclic graph) that triggers Airbyte synchronizations</a> (Feb 8, 2023)</p>
+</li>
+<li>
+<p><a href="https://airbyte.com/blog/analyze-unstructured-data">You have collected unstructured data! Now what?</a> (Jan 11, 2022)</p>
+</li>
+<li>
+<p><a href="https://airbyte.com/blog/data-warehouse-vs-operational-database">Data Warehouse vs. Operational Database! What? How? Which One?</a> (Dec 16, 2022)</p>
+</li>
+<li>
+<p><a href="https://airbyte.com/blog/elt-pipeline">What is an ELT data pipeline?</a> (Nov 17, 2022)</p>
+</li>
+<li>
+<p><a href="https://airbyte.com/blog/etlt-gdpr-compliance">EtLT for improved GDPR compliance</a> (Oct 20, 2022)</p>
+</li>
+<li>
+<p><a href="https://airbyte.com/blog/understanding-data-replication-modes">An overview of Airbyte’s replication modes</a> (Oct 7, 2022)</p>
+</li>
+<li>
+<p><a href="https://airbyte.com/tutorials/incremental-change-data-capture-cdc-replication">Explore Airbyte&rsquo;s Change Data Capture (CDC) synchronization</a> (Sep 29, 2022)</p>
+</li>
+<li>
+<p><a href="https://airbyte.com/tutorials/incremental-data-synchronization">Explore Airbyte’s incremental data synchronization</a> (Sep 8, 2022)</p>
+</li>
+<li>
+<p><a href="https://airbyte.com/tutorials/full-data-synchronization">Explore Airbyte&rsquo;s full refresh data synchronization</a> (Aug 2, 2022)</p>
+</li>
+<li>
+<p><a href="https://airbyte.com/tutorials/extract-data-from-the-webflow-api">Build a connector to extract data from the Webflow API</a> (June 29, 2022)</p>
+</li>
+<li>
+<p><a href="https://airbyte.com/blog/data-integration">Data Integration Guide: Techniques, Technologies, and Tools</a> (May 19, 2022)</p>
+</li>
+</ol>
+<h1 id="mongodb">MongoDB</h1>
+<ol>
+<li>
+<p><a href="/2017/03/02/trade-offs-to-consider-when-storing-binary-data-in-mongodb/">Trade-offs to consider when storing binary data in MongoDB</a> (Mar 2, 2017)</p>
+</li>
+<li>
+<p><a href="/2017/01/30/how-to-generate-unique-identifiers-for-use-with-mongodb/">How to generate unique identifiers for use with MongoDB</a> (Jan 30, 2017)</p>
+</li>
+<li>
+<p><a href="/2017/01/25/mongodb-point-in-time-restore/">How to manually perform a point in time restore in MongoDB</a> (Jan 25, 2017)</p>
+</li>
+</ol>
+<h1 id="additional-information">Additional Information</h1>
+<ul>
+<li>
+<p><a href="https://alexmarquardt.com/about/">About the Author</a></p>
+</li>
+<li>
+<p><a href="https://alexmarquardt.com/scientific-publications-patents-awards-and-education/">Professional Record, Publications and Patents</a></p>
+</li>
+<li>
+<p><a href="https://alexmarquardt.com/other-areas-of-interest/">Finance, productivity, nutrition, and travel</a></p>
+</li>
+</ul>
 
     </div>
   </article>

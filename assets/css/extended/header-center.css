@@ -1,0 +1,91 @@
+/* =========================================================
+   PaperMod: center the logo in the header
+   (works with menu + theme toggle present)
+   ========================================================= */
+
+/* PaperMod uses .header > .nav as the main flex row */
+.header .nav {
+  position: relative;          /* anchor for absolute right items */
+  display: flex;
+  align-items: center;
+  justify-content: center;     /* center logo */
+}
+
+/* Keep logo centered */
+.header .logo {
+  margin: 0 auto;
+}
+
+/* Make the logo link behave predictably */
+.header .logo a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Push menu to the right without affecting centering */
+.header .menu,
+.header #menu {
+  position: absolute;
+  right: 1rem;
+}
+
+/* Theme toggle icon: also keep it on the right */
+.header .theme-toggle {
+  position: absolute;
+  right: 1rem;
+}
+
+/* If both menu and theme toggle exist, give toggle a bit more room */
+.header .menu ~ .theme-toggle,
+.header #menu ~ .theme-toggle {
+  right: 3.5rem;
+}
+
+/* Mobile: slightly tighter right padding */
+@media (max-width: 600px) {
+  .header .menu,
+  .header #menu {
+    right: 0.75rem;
+  }
+  .header .theme-toggle {
+    right: 0.75rem;
+  }
+  .header .menu ~ .theme-toggle,
+  .header #menu ~ .theme-toggle {
+    right: 3.0rem;
+  }
+}
+
+/* Hide raw text node inside the logo link (PaperMod) */
+.header .logo a {
+  font-size: 0 !important;      /* hides "Alexander Marquardt" text node */
+  line-height: 0 !important;
+}
+
+/* Keep the image visible */
+.header .logo a img {
+  display: inline-block;
+}
+
+/* Restore sizing for the theme toggle icon inside .logo-switches */
+.header .logo-switches,
+.header .logo-switches * {
+  font-size: 16px !important;
+  line-height: 1 !important;
+}
+
+/* Control logo size */
+.header .logo img {
+  height: 64px;     /* adjust */
+  width: auto;
+  max-height: 64px;
+}
+
+/* Slightly smaller on narrow screens */
+@media (max-width: 600px) {
+  .header .logo img {
+    height: 52px;   /* adjust */
+    max-height: 52px;
+  }
+}

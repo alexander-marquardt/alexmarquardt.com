@@ -10,9 +10,9 @@
     <atom:link href="http://localhost:1313/tags/tls/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>A step-by-step guide to enabling security, TLS/SSL, and PKI authentication in Elasticsearch</title>
-      <link>http://localhost:1313/posts/security-tls-ssl-pki-authentication-in-elasticsearch/</link>
+      <link>http://localhost:1313/elastic/a-step-by-step-guide-to-enabling-security-tls/ssl-and-pki-authentication-in-elasticsearch/</link>
       <pubDate>Mon, 05 Nov 2018 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/security-tls-ssl-pki-authentication-in-elasticsearch/</guid>
+      <guid>http://localhost:1313/elastic/a-step-by-step-guide-to-enabling-security-tls/ssl-and-pki-authentication-in-elasticsearch/</guid>
       <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/elasticsearch-security-configure-tls-ssl-pki-authentication&#34;&gt;https://www.elastic.co/blog/elasticsearch-security-configure-tls-ssl-pki-authentication&lt;/a&gt;&lt;/p&gt;</description>
     </item>
   </channel>

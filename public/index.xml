@@ -10,9 +10,9 @@
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title></title>
-      <link>http://localhost:1313/personal/other-areas-of-interest/</link>
+      <link>http://localhost:1313/personal/</link>
       <pubDate>Fri, 26 Dec 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/personal/other-areas-of-interest/</guid>
+      <guid>http://localhost:1313/personal/</guid>
       <description>&lt;h1 id=&#34;other-areas-of-interest&#34;&gt;Other Areas of Interest&lt;/h1&gt;
 &lt;h2 id=&#34;finance&#34;&gt;Finance&lt;/h2&gt;
 &lt;ul&gt;
@@ -37,29 +37,6 @@
 &lt;/ul&gt;</description>
     </item>
     <item>
-      <title></title>
-      <link>http://localhost:1313/professional/scientific-publications-patents-awards-and-education/</link>
-      <pubDate>Fri, 26 Dec 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/professional/scientific-publications-patents-awards-and-education/</guid>
-      <description>&lt;h1 id=&#34;professional-record-and-publications&#34;&gt;Professional Record and Publications&lt;/h1&gt;
-&lt;p&gt;This page provides supporting material for my professional background, including selected publications, patents, open-source contributions, and formal education.&lt;/p&gt;
-&lt;h2 id=&#34;profiles&#34;&gt;Profiles&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;https://www.linkedin.com/in/alexandermarquardt/&#34;&gt;LinkedIn Profile&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/alexander-marquardt/&#34;&gt;Github page&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;recognition&#34;&gt;Recognition&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;Author of three papers that were selected to be amongst the &lt;a href=&#34;https://tcfpga.org/books/recommended-reading/page/fpga-20-reading-list&#34;&gt;25 most significant FPGA papers of the past 20 years&lt;/a&gt; at the 20th anniversary of the International Symposium on Field-Programmable Gate Arrays in 2012.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;scientific-publications&#34;&gt;Scientific Publications&lt;/h2&gt;
-&lt;p&gt;The publications listed below have been &lt;strong&gt;cited over 3600 times&lt;/strong&gt; according to &lt;a href=&#34;https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&amp;amp;hl=en&#34;&gt;Google Scholar.&lt;/a&gt; These publications reflect early work in FPGA architecture, placement, and routing algorithms.&lt;/p&gt;</description>
-    </item>
-    <item>
       <title>Ranking by Profit and Popularity in Elasticsearch</title>
       <link>http://localhost:1313/elastic/ranking-by-profit-and-popularity-in-elasticsearch/</link>
       <pubDate>Wed, 29 Oct 2025 00:00:00 +0000</pubDate>
@@ -68,9 +45,9 @@
     </item>
     <item>
       <title>Personalizing e-commerce search results based on purchase history in Elasticsearch (Without a need for Machine Learning Post Processing)</title>
-      <link>http://localhost:1313/elastic/personalizing-search-in-elasticsearch-without-ml-post-processing/</link>
+      <link>http://localhost:1313/elastic/personalizing-e-commerce-search-results-based-on-purchase-history-in-elasticsearch-without-a-need-for-machine-learning-post-processing/</link>
       <pubDate>Fri, 12 Sep 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/personalizing-search-in-elasticsearch-without-ml-post-processing/</guid>
+      <guid>http://localhost:1313/elastic/personalizing-e-commerce-search-results-based-on-purchase-history-in-elasticsearch-without-a-need-for-machine-learning-post-processing/</guid>
       <description>&lt;p&gt;Whether you’re looking for a product in an online store, an article in a news archive, or a file in a company knowledge base, the quality of the search experience determines how quickly you find what you need. Behind the scenes, many of these systems are powered by &lt;strong&gt;Elasticsearch&lt;/strong&gt;, a popular open-source search engine designed to handle large volumes of data and return relevant results in milliseconds.&lt;/p&gt;
 &lt;p&gt;At its core, Elasticsearch matches user queries against text fields and ranks results using relevance scoring. But search doesn’t have to stop there. That’s where &lt;strong&gt;personalization&lt;/strong&gt; comes in. By incorporating signals such as past purchases, browsing behavior, or recent activity, search results can be adjusted so the items most relevant to &lt;em&gt;you&lt;/em&gt; appear higher. For example, if two people both search for &lt;em&gt;“chips”&lt;/em&gt;, one might see &lt;em&gt;classic potato chips&lt;/em&gt; at the top, while the other sees &lt;em&gt;crispy thin-cut chips&lt;/em&gt;, depending on their history.&lt;/p&gt;</description>
     </item>
@@ -120,18 +97,18 @@
     </item>
     <item>
       <title>Re-directing Elasticsearch documents with out-of-range timestamps that (would) fail to get written into Time Series Data Streams</title>
-      <link>http://localhost:1313/elastic/catching-elasticsearch-documents-with-incorrect-timestamps-that-fail-to-get-written-into-time-series-data-streams/</link>
+      <link>http://localhost:1313/elastic/re-directing-elasticsearch-documents-with-out-of-range-timestamps-that-would-fail-to-get-written-into-time-series-data-streams/</link>
       <pubDate>Tue, 16 Apr 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/catching-elasticsearch-documents-with-incorrect-timestamps-that-fail-to-get-written-into-time-series-data-streams/</guid>
+      <guid>http://localhost:1313/elastic/re-directing-elasticsearch-documents-with-out-of-range-timestamps-that-would-fail-to-get-written-into-time-series-data-streams/</guid>
       <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;Elasticsearch &lt;a href=&#34;https://www.elastic.co/guide/en/elasticsearch/reference/current/tsds.html&#34;&gt;Time Series Data Streams (TSDS)&lt;/a&gt; are designed to provide an efficient and scalable way to handle time-based data within the Elasticsearch ecosystem. This feature is specifically optimized for storing, searching, and managing time-series data such as metrics, and events, where data is continuously indexed in chronological order. However, if events arrive with timestamps that fall outside of a pre-defined range, they will be lost.&lt;/p&gt;
 &lt;p&gt;In this blog I will demonstrate logic that can be added to an Elasticsearch ingest pipeline which can be used to intercept documents that would be rejected by the TSDS index due to timestamp range issues, and to instead redirect them to a &amp;ldquo;failed&amp;rdquo; index. The documents that are redirected to the &amp;ldquo;failed&amp;rdquo; index may (for example) be used to raise alerts and examined.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Cut and paste a table from Google Sheets into an HTML document – no code&amp;nbsp;required</title>
-      <link>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/</link>
+      <link>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-codenbsprequired/</link>
       <pubDate>Mon, 10 Oct 2022 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/</guid>
+      <guid>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-codenbsprequired/</guid>
       <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;In a &lt;a href=&#34;https://airbyte.com/blog/understanding-data-replication-modes&#34;&gt;recent article&lt;/a&gt; that I wrote for &lt;a href=&#34;http://www.airbyte.com/&#34;&gt;Airbyte&lt;/a&gt; it was necessary for me to copy and paste a table from Google Sheets into &lt;a href=&#34;http://www.webflow.com/&#34;&gt;Webflow&lt;/a&gt;. Unfortunately, Webflow doesn’t currently support copy/paste of tables directly in its editor.&lt;/p&gt;
 &lt;p&gt;In this blog, I present a workaround that can be used to convert a table from Google Sheets into HTML, which can then be written into a Webflow &lt;a href=&#34;https://university.webflow.com/lesson/custom-code-embed&#34;&gt;custom code block&lt;/a&gt;.&lt;/p&gt;
@@ -140,9 +117,9 @@
     </item>
     <item>
       <title>Using Logstash to scan inside event contents to replace sensitive data with a consistent hash</title>
-      <link>http://localhost:1313/elastic/using-logstash-to-hash-sensitive-text/</link>
+      <link>http://localhost:1313/elastic/using-logstash-to-scan-inside-event-contents-to-replace-sensitive-data-with-a-consistent-hash/</link>
       <pubDate>Thu, 20 Jan 2022 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/using-logstash-to-hash-sensitive-text/</guid>
+      <guid>http://localhost:1313/elastic/using-logstash-to-scan-inside-event-contents-to-replace-sensitive-data-with-a-consistent-hash/</guid>
       <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&#34;https://www.elastic.co/logstash/&#34;&gt;Logstash&lt;/a&gt; is commonly used for transforming data before it is sent to another system for storage, and so it is often well positioned for finding and replacing sensitive text, as may be required for GDPR compliance.&lt;/p&gt;
 &lt;p&gt;Therefore, in this blog I show how Logstash can make use of a ruby filter to scan through the contents of an event and to replace &lt;em&gt;each occurrence&lt;/em&gt; of sensitive text with the value of its hash.&lt;/p&gt;</description>
@@ -191,9 +168,9 @@
     </item>
     <item>
       <title>Using Elasticsearch Painless scripting to recursively iterate through JSON fields</title>
-      <link>http://localhost:1313/elastic/using-elasticsearch-painless-scripting-to-iterate-through-fields/</link>
+      <link>http://localhost:1313/elastic/using-elasticsearch-painless-scripting-to-recursively-iterate-through-json-fields/</link>
       <pubDate>Fri, 06 Nov 2020 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/using-elasticsearch-painless-scripting-to-iterate-through-fields/</guid>
+      <guid>http://localhost:1313/elastic/using-elasticsearch-painless-scripting-to-recursively-iterate-through-json-fields/</guid>
       <description>&lt;h2 id=&#34;authors&#34;&gt;Authors&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Alexander Marquardt&lt;/li&gt;
@@ -204,17 +181,17 @@
     </item>
     <item>
       <title>Understanding and fixing &#34;too many script compilations&#34; errors in Elasticsearch</title>
-      <link>http://localhost:1313/elastic/elasticsearch-too-many-script-compilations/</link>
+      <link>http://localhost:1313/elastic/understanding-and-fixing-too-many-script-compilations-errors-in-elasticsearch/</link>
       <pubDate>Wed, 21 Oct 2020 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/elasticsearch-too-many-script-compilations/</guid>
+      <guid>http://localhost:1313/elastic/understanding-and-fixing-too-many-script-compilations-errors-in-elasticsearch/</guid>
       <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;When using Elasticsearch, in some rare instances you may see an error such as &amp;ldquo;Too many dynamic script compilations within X minutes&amp;rdquo;. Such an error may be caused by a poor script design &lt;a href=&#34;https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-scripting-using.html#prefer-params&#34;&gt;where parameters are hard-coded&lt;/a&gt;. In other cases this may be due to the script cache being too small or the compilation limit being too low. In this article, I will show how to determine if these default limits are too low, and how these limits can be modified.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Using Logstash and Elasticsearch to calculate transaction duration in a microservices architecture</title>
-      <link>http://localhost:1313/elastic/using-logstash-and-elasticsearch-scripted-upserts-to-calculate-transaction-duration-from-out-of-order-events/</link>
+      <link>http://localhost:1313/elastic/using-logstash-and-elasticsearch-to-calculate-transaction-duration-in-a-microservices-architecture/</link>
       <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/using-logstash-and-elasticsearch-scripted-upserts-to-calculate-transaction-duration-from-out-of-order-events/</guid>
+      <guid>http://localhost:1313/elastic/using-logstash-and-elasticsearch-to-calculate-transaction-duration-in-a-microservices-architecture/</guid>
       <description>&lt;p&gt;September 16, 2020&lt;/p&gt;
 &lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Elasticsearch  allows you to unify your observability data in a powerful datastore so you can search and apply interactive analytics in real time to a huge number of use cases.&lt;/p&gt;
@@ -247,16 +224,16 @@
     </item>
     <item>
       <title>Using boolean queries to improve search relevancy in Elasticsearch</title>
-      <link>http://localhost:1313/elastic/a-simple-and-powerful-technique-to-improve-search-relevancy-in-elasticsearch/</link>
+      <link>http://localhost:1313/elastic/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/</link>
       <pubDate>Tue, 12 May 2020 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/a-simple-and-powerful-technique-to-improve-search-relevancy-in-elasticsearch/</guid>
+      <guid>http://localhost:1313/elastic/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/</guid>
       <description>&lt;p&gt;Page moved to &lt;a href=&#34;https://alexmarquardt.com/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/&#34;&gt;https://alexmarquardt.com/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>Using boolean queries to improve search relevance in Elasticsearch</title>
-      <link>http://localhost:1313/elastic/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/</link>
+      <link>http://localhost:1313/elastic/using-boolean-queries-to-improve-search-relevance-in-elasticsearch/</link>
       <pubDate>Fri, 01 May 2020 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/</guid>
+      <guid>http://localhost:1313/elastic/using-boolean-queries-to-improve-search-relevance-in-elasticsearch/</guid>
       <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/how-to-improve-elasticsearch-search-relevance-with-boolean-queries&#34;&gt;https://www.elastic.co/blog/how-to-improve-elasticsearch-search-relevance-with-boolean-queries&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
@@ -287,9 +264,9 @@
     </item>
     <item>
       <title>Using the Elasticsearch Enrich Processor with CSV data</title>
-      <link>http://localhost:1313/elastic/enriching-elasticsearch-documents-with-data-from-csv-files/</link>
+      <link>http://localhost:1313/elastic/using-the-elasticsearch-enrich-processor-with-csv-data/</link>
       <pubDate>Sat, 21 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/enriching-elasticsearch-documents-with-data-from-csv-files/</guid>
+      <guid>http://localhost:1313/elastic/using-the-elasticsearch-enrich-processor-with-csv-data/</guid>
       <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/how-to-enrich-logs-and-metrics-using-an-elasticsearch-ingest-node&#34;&gt;https://www.elastic.co/blog/how-to-enrich-logs-and-metrics-using-an-elasticsearch-ingest-node&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
@@ -319,9 +296,9 @@
     </item>
     <item>
       <title>Using Logstash and Elasticsearch scripted upserts to transform eCommerce purchasing data</title>
-      <link>http://localhost:1313/elastic/logstash-and-elasticsearch-painless-scripted-upserts-transform-data/</link>
+      <link>http://localhost:1313/elastic/using-logstash-and-elasticsearch-scripted-upserts-to-transform-ecommerce-purchasing-data/</link>
       <pubDate>Tue, 17 Dec 2019 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/logstash-and-elasticsearch-painless-scripted-upserts-transform-data/</guid>
+      <guid>http://localhost:1313/elastic/using-logstash-and-elasticsearch-scripted-upserts-to-transform-ecommerce-purchasing-data/</guid>
       <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;&lt;a href=&#34;https://www.elastic.co/guide/en/logstash/7.5/introduction.html&#34;&gt;Logstash&lt;/a&gt; is a tool that can be used to collect, process, and forward events to Elasticsearch. In order to demonstrate the power of Logstash when used in conjunction with Elasticsearch’s &lt;a href=&#34;https://www.elastic.co/guide/en/elasticsearch/reference/7.5/docs-update.html#scripted_upsert&#34;&gt;scripted upserts&lt;/a&gt;, I will show you how to create a near-real-time &lt;a href=&#34;https://www.elastic.co/elasticon/2015/sf/building-entity-centric-indexes&#34;&gt;entity-centric index&lt;/a&gt;. Once data is transformed into an entity-centric index, many kinds of analysis become possible with simple (cheap) queries rather than more computationally intensive aggregations.&lt;/p&gt;
 &lt;p&gt;As a note, using the approach demonstrated here would result in documents similar to those generated by &lt;a href=&#34;https://www.elastic.co/guide/en/elasticsearch/reference/7.5/transforms.html&#34;&gt;Elasticsearch transforms&lt;/a&gt;. Nevertheless, the technique that is documented has not been benchmarked against Elasticsearch transforms, as the main goal of this blog is to demonstrate the power and flexibility of Logstash combined with scripted upserts.&lt;/p&gt;</description>
@@ -350,9 +327,9 @@
     </item>
     <item>
       <title>ES Local Indexer – Desktop search powered by Elasticsearch</title>
-      <link>http://localhost:1313/elastic/es-local-indexer-desktop-search-built-with-elasticsearch/</link>
+      <link>http://localhost:1313/elastic/es-local-indexer-desktop-search-powered-by-elasticsearch/</link>
       <pubDate>Thu, 08 Aug 2019 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/es-local-indexer-desktop-search-built-with-elasticsearch/</guid>
+      <guid>http://localhost:1313/elastic/es-local-indexer-desktop-search-powered-by-elasticsearch/</guid>
       <description>&lt;p&gt;August 7, 2019&lt;/p&gt;
 &lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Elasticsearch provides search functionality for some of the most important websites in the world including &lt;a href=&#34;https://blog.wikimedia.org/2014/01/06/wikimedia-moving-to-elasticsearch/&#34;&gt;Wikimedia (i.e. Wikipedia)&lt;/a&gt;, &lt;a href=&#34;https://www.elastic.co/videos/ebay-and-elasticsearch-this-is-not-small-data&#34;&gt;eBay&lt;/a&gt;, &lt;a href=&#34;https://engineeringblog.yelp.com/2017/06/moving-yelps-core-business-search-to-elasticsearch.html&#34;&gt;Yelp&lt;/a&gt;, &lt;a href=&#34;https://www.elastic.co/elasticon/conf/2017/sf/tinder-using-the-elastic-stack-to-make-connections-around-the-world&#34;&gt;Tinder&lt;/a&gt;, and many others. Elasticsearch is super scalable, which means that just as easily as it can be scaled it up for use in huge complex systems, it can also be scaled down for use in smaller projects.&lt;/p&gt;
@@ -376,9 +353,9 @@
     </item>
     <item>
       <title>Counting unique beats agents sending data into Elasticsearch</title>
-      <link>http://localhost:1313/elastic/counting-unique-beats-agents-elasticsearch/</link>
+      <link>http://localhost:1313/elastic/counting-unique-beats-agents-sending-data-into-elasticsearch/</link>
       <pubDate>Thu, 18 Jul 2019 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/counting-unique-beats-agents-elasticsearch/</guid>
+      <guid>http://localhost:1313/elastic/counting-unique-beats-agents-sending-data-into-elasticsearch/</guid>
       <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;When using Beats with Elasticsearch, it may be useful to keep track of how many unique agents are sending data into an Elasticsearch cluster, and how many documents each agent is submitting. Such information for example could be useful for detecting if beats agents are behaving as expected.&lt;/p&gt;
 &lt;p&gt;In this blog post, I first discuss how to efficiently specify a filter for documents corresponding to a particular time range, followed by several methods for detecting how many beats agents are sending documents to Elasticsearch within the specified time range.&lt;/p&gt;</description>
@@ -391,84 +368,6 @@
       <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/using-parallel-logstash-pipelines-to-improve-persistent-queue-performance&#34;&gt;https://www.elastic.co/blog/using-parallel-logstash-pipelines-to-improve-persistent-queue-performance&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Patents</title>
-      <link>http://localhost:1313/professional/patents/</link>
-      <pubDate>Fri, 29 Mar 2019 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/professional/patents/</guid>
-      <description>&lt;h4 id=&#34;method-and-system-for-estimating-the-reliability-of-blacklists-of-botnet-infected-computers&#34;&gt;Method and system for estimating the reliability of blacklists of botnet-infected computers&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;US patent 8,516,595.&lt;/li&gt;
-&lt;li&gt;Issued Aug 20, 2013&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&amp;amp;Sect2=HITOFF&amp;amp;d=PALL&amp;amp;p=1&amp;amp;u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&amp;amp;r=1&amp;amp;f=G&amp;amp;l=50&amp;amp;s1=8516595.PN.&amp;amp;OS=PN/8516595&amp;amp;RS=PN/8516595&#34;&gt;See patent.&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;versatile-logic-element-and-logic-array-block&#34;&gt;Versatile logic element and logic array block&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;US patent 7,218,133&lt;/li&gt;
-&lt;li&gt;Issued May 15, 2007 &lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&amp;amp;Sect2=HITOFF&amp;amp;d=PALL&amp;amp;p=1&amp;amp;u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&amp;amp;r=1&amp;amp;f=G&amp;amp;l=50&amp;amp;s1=7218133.PN.&amp;amp;OS=PN/7218133&amp;amp;RS=PN/7218133&#34;&gt;See patent.&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;routing-architecture-for-a-programmable-logic-device&#34;&gt;Routing Architecture For A Programmable Logic Device&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;US patent 6,970,014 &lt;/li&gt;
-&lt;li&gt;Issued Nov 29, 2005&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&amp;amp;Sect2=HITOFF&amp;amp;d=PALL&amp;amp;p=1&amp;amp;u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&amp;amp;r=1&amp;amp;f=G&amp;amp;l=50&amp;amp;s1=6970014.PN.&amp;amp;OS=PN/6970014&amp;amp;RS=PN/6970014&#34;&gt;See patent.&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description>
-    </item>
-    <item>
-      <title>Publications</title>
-      <link>http://localhost:1313/professional/publications/</link>
-      <pubDate>Fri, 22 Mar 2019 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/professional/publications/</guid>
-      <description>&lt;h2 id=&#34;book&#34;&gt;Book&lt;/h2&gt;
-&lt;h4 id=&#34;architecture-and-cad-for-deep-sub-micron-fpgas&#34;&gt;Architecture and CAD for Deep Sub-Micron FPGAs&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;Mar 1999 &amp;ndash; This book covers the software and hardware that is used for architecting and programming/re-configuring FPGAs.&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.amazon.com/Architecture-Deep-Submicron-Springer-International-Engineering/dp/0792384601?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3BJQDFjH2rTFyqLTVXSfr%2Bqg%3D%3D&#34;&gt;See book on Amazon.com.&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=5046844827750126682&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 1402 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;thesis&#34;&gt;Thesis&lt;/h2&gt;
-&lt;h4 id=&#34;cluster-based-architecture-timing-driven-packing-and-timing-driven-placement-for-fpgas&#34;&gt;Cluster-Based Architecture, Timing-Driven Packing, and Timing-Driven Placement for FPGAs&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;Apr 1999 &amp;ndash; M.A.Sc Thesis - National Library of Canada.&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.collectionscanada.ca/obj/s4/f2/dsk1/tape8/PQDD_0004/MQ45993.pdf&#34;&gt;See publication.&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=5625098770910011035&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 15 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;scientific-papers&#34;&gt;Scientific Papers&lt;/h2&gt;
-&lt;h4 id=&#34;the-stratix-ii-logic-and-routing-architecture&#34;&gt;The Stratix II Logic and Routing Architecture&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;Nov 2005  -- ACM/Sigda 13th International Symposium on Field-Programmabel Gate Arrays&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.eecg.toronto.edu/~jayar/pubs/lewis/lewisfpga05.pdf&#34;&gt;See publication.&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=5968923824677940858&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 213 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;the-stratix-routing-and-logic-architecture&#34;&gt;The Stratix Routing and Logic Architecture&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;Feb 2003  -- ACM/Sigda International Symposium on Field-Programmable Gate Arrays, 2003&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.eecg.utoronto.ca/~vaughn/papers/fpga_2003.pdf&#34;&gt;See publication.&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Voted as one of the &lt;a href=&#34;http://tcfpga.org/fpga20/fpga20.html&#34;&gt;25 most significant FPGA papers of the past 20 years&lt;/a&gt; at the 20th anniversary of the International Symposium on Field-Programmable Gate Arrays in 2012. &lt;a href=&#34;http://tcfpga.org/fpga20/p222.pdf&#34;&gt;See endorsement.&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=14159395481451854012&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 146 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;speed-and-area-trade-offs-in-cluster-based-fpga-architectures&#34;&gt;Speed and Area Trade-Offs in Cluster-Based FPGA Architectures&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;Feb 2000  -- IEEE Transactions on VLSI&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.eecg.toronto.edu/~vaughn/papers/tvlsi2000_arm.pdf&#34;&gt;See publication.&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=12206654961109400147&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 72 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;timing-driven-placement-for-fpgas&#34;&gt;Timing-Driven Placement for FPGAs&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;Feb 2000 &amp;ndash; Proc. 8th. ACM/SIGDA Intl. Symposium on FPGAs.&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.eecg.toronto.edu/~vaughn/papers/fpga2000_arm.pdf?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3BJQDFjH2rTFyqLTVXSfr%2Bqg%3D%3D&#34;&gt;See publication.&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Voted as one of the &lt;a href=&#34;http://tcfpga.org/fpga20/fpga20.html&#34;&gt;25 most significant FPGA papers of the past 20 years&lt;/a&gt; at the 20th anniversary of the International Symposium on Field-Programmable Gate Arrays in 2012. &lt;a href=&#34;http://tcfpga.org/fpga20/p174.pdf&#34;&gt;See endorsement.&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=9315566072038561579&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 285 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;using-cluster-based-logic-blocks-and-timing-driven-packing-to-improve-fpga-speed-and-density&#34;&gt;Using Cluster Based Logic Blocks and Timing-Driven Packing to Improve FPGA Speed and Density&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;Feb 1999  -- Proc. 7th ACM/SIGDA Intl. Symposium on FPGAs&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www2.engr.arizona.edu/~ece506/readings/project-reading/6-cad/fpga99marq.pdf&#34;&gt;See publication.&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Voted as one of the &lt;a href=&#34;http://tcfpga.org/fpga20/fpga20.html&#34;&gt;25 most significant FPGA papers of the past 20 years&lt;/a&gt; at the 20th anniversary of the International Symposium on Field-Programmable Gate Arrays in 2012. &lt;a href=&#34;http://tcfpga.org/fpga20/p138.pdf&#34;&gt;See endorsement.&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=253764427430804918&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 264 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
-&lt;/ul&gt;</description>
-    </item>
-    <item>
       <title>Debugging Elasticsearch and Lucene with IntelliJ IDEA</title>
       <link>http://localhost:1313/elastic/debugging-elasticsearch-and-lucene-with-intellij-idea/</link>
       <pubDate>Sat, 02 Feb 2019 00:00:00 +0000</pubDate>
@@ -477,9 +376,9 @@
     </item>
     <item>
       <title>A step-by-step guide to enabling security, TLS/SSL, and PKI authentication in Elasticsearch</title>
-      <link>http://localhost:1313/elastic/security-tls-ssl-pki-authentication-in-elasticsearch/</link>
+      <link>http://localhost:1313/elastic/a-step-by-step-guide-to-enabling-security-tls/ssl-and-pki-authentication-in-elasticsearch/</link>
       <pubDate>Mon, 05 Nov 2018 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/security-tls-ssl-pki-authentication-in-elasticsearch/</guid>
+      <guid>http://localhost:1313/elastic/a-step-by-step-guide-to-enabling-security-tls/ssl-and-pki-authentication-in-elasticsearch/</guid>
       <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/elasticsearch-security-configure-tls-ssl-pki-authentication&#34;&gt;https://www.elastic.co/blog/elasticsearch-security-configure-tls-ssl-pki-authentication&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
@@ -542,29 +441,42 @@
     </item>
     <item>
       <title></title>
-      <link>http://localhost:1313/about/about/</link>
+      <link>http://localhost:1313/legacy/welcome-to-alexmarquardt-com/</link>
       <pubDate>Wed, 25 Jan 2017 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/about/about/</guid>
-      <description>&lt;h1 id=&#34;about-the-author&#34;&gt;About the Author&lt;/h1&gt;
-&lt;h2 id=&#34;senior-principal-architect--genai--search&#34;&gt;Senior Principal Architect | GenAI &amp;amp; Search&lt;/h2&gt;
-&lt;p&gt;I work on complex technical systems where performance, scale, and real-world constraints intersect. My focus is on architectural decision-making in distributed search and AI platforms, identifying structural risks, design trade-offs, and system behaviors that shape reliability and performance at scale.&lt;/p&gt;
-&lt;p&gt;In my current role at Elastic, I operate at enterprise scale across GenAI and Search. I apply systems-level reasoning to high-impact problems, with an emphasis on creating reusable architectural assets, including patterns, middleware, tools, and delivery models. This reduces recurring escalations and improves how teams design, operate, and reason about similar systems over time.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Contact</title>
-      <link>http://localhost:1313/professional/contact/</link>
-      <pubDate>Wed, 25 Jan 2017 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/professional/contact/</guid>
-      <description>&lt;p&gt;Alexander Marquardt’s LinkedIn profile can be found at &lt;a href=&#34;https://www.linkedin.com/in/alexandermarquardt/&#34;&gt;https://www.linkedin.com/in/alexandermarquardt/&lt;/a&gt;&lt;/p&gt;</description>
+      <guid>http://localhost:1313/legacy/welcome-to-alexmarquardt-com/</guid>
+      <description>&lt;h1 id=&#34;about-this-site&#34;&gt;About this site&lt;/h1&gt;
+&lt;p&gt;This site brings together technical writing focused on search, data pipelines, and distributed systems at enterprise scale. It is informed by real production systems and reflects recurring patterns, trade-offs, and architectural decisions observed across system design, deployment, and long-term operation.&lt;/p&gt;
+&lt;p&gt;The material emphasizes architectural reasoning for large-scale systems. It examines how relevance models, reliability mechanisms, and ingest pipelines behave under real-world constraints, with attention to system-level decisions that shape scalability, maintainability, and long-term operational effort.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to manually perform a point in time restore in MongoDB</title>
-      <link>http://localhost:1313/mongodb/mongodb-point-in-time-restore/</link>
+      <link>http://localhost:1313/mongodb/how-to-manually-perform-a-point-in-time-restore-in-mongodb/</link>
       <pubDate>Wed, 25 Jan 2017 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/mongodb/mongodb-point-in-time-restore/</guid>
-      <description>&lt;h2 id=&#34;human-error-in-finance&#34;&gt;&lt;img alt=&#34;human-error-in-finance&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/mongodb/mongodb-point-in-time-restore/images/human-error-in-finance.jpg&#34;&gt;&lt;/h2&gt;
+      <guid>http://localhost:1313/mongodb/how-to-manually-perform-a-point-in-time-restore-in-mongodb/</guid>
+      <description>&lt;h2 id=&#34;human-error-in-finance&#34;&gt;&lt;img alt=&#34;human-error-in-finance&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/mongodb/how-to-manually-perform-a-point-in-time-restore-in-mongodb/images/human-error-in-finance.jpg&#34;&gt;&lt;/h2&gt;
 &lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;While MongoDB provides high-availability and data durability through &lt;a href=&#34;https://docs.mongodb.com/manual/replication/&#34;&gt;automatic replication&lt;/a&gt; of data to multiple servers, this replication does not protect the database against human or application errors. For example, if an administrator drops a database, the drop operation will be replicated across the MongoDB deployment, and data will be deleted. If such an event occurs through human or application error, then data will have to be retrieved from backups.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title></title>
+      <link>http://localhost:1313/legacy/_drafts/id-1088/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/legacy/_drafts/id-1088/</guid>
+      <description>&lt;p&gt;Enriching Elasticsearch documents with CSV data&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>About</title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/about/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Professional Record</title>
+      <link>http://localhost:1313/professional/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/professional/</guid>
+      <description></description>
     </item>
   </channel>
 </rss>

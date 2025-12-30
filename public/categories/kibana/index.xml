@@ -10,9 +10,9 @@
     <atom:link href="http://localhost:1313/categories/kibana/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Converting local time to ISO 8601 time in Elasticsearch</title>
-      <link>http://localhost:1313/posts/converting-local-time-to-iso-8601-time-in-elasticsearch/</link>
+      <link>http://localhost:1313/elastic/converting-local-time-to-iso-8601-time-in-elasticsearch/</link>
       <pubDate>Wed, 16 Oct 2019 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/converting-local-time-to-iso-8601-time-in-elasticsearch/</guid>
+      <guid>http://localhost:1313/elastic/converting-local-time-to-iso-8601-time-in-elasticsearch/</guid>
       <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/converting-local-time-to-iso-8601-time-in-elasticsearch&#34;&gt;https://www.elastic.co/blog/converting-local-time-to-iso-8601-time-in-elasticsearch&lt;/a&gt;&lt;/p&gt;</description>
     </item>
   </channel>

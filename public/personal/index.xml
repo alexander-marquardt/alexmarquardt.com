@@ -10,9 +10,9 @@
     <atom:link href="http://localhost:1313/personal/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title></title>
-      <link>http://localhost:1313/personal/other-areas-of-interest/</link>
+      <link>http://localhost:1313/personal/</link>
       <pubDate>Fri, 26 Dec 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/personal/other-areas-of-interest/</guid>
+      <guid>http://localhost:1313/personal/</guid>
       <description>&lt;h1 id=&#34;other-areas-of-interest&#34;&gt;Other Areas of Interest&lt;/h1&gt;
 &lt;h2 id=&#34;finance&#34;&gt;Finance&lt;/h2&gt;
 &lt;ul&gt;
@@ -37,15 +37,76 @@
 &lt;/ul&gt;</description>
     </item>
     <item>
+      <title>Barcelona: A Personal Guide</title>
+      <link>http://localhost:1313/personal/barcelona-a-personal-guide/</link>
+      <pubDate>Sun, 21 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/personal/barcelona-a-personal-guide/</guid>
+      <description>&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#motivation&#34;&gt;Motivation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#welcome-to-barcelona&#34;&gt;Welcome to Barcelona!&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#language-and-navigation&#34;&gt;Language and Navigation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#choosing-your-base&#34;&gt;Choosing Your Base&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#getting-around&#34;&gt;Getting Around&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#must-see-attractions&#34;&gt;Must-See Attractions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#dining&#34;&gt;Dining&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#nightlife-in-barcelona&#34;&gt;Nightlife in Barcelona&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#safety&#34;&gt;Safety&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#cultural-insights-and-local-etiquette&#34;&gt;Cultural Insights and Local Etiquette&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#biking-and-hiking-around-barcelona&#34;&gt;Biking and Hiking Around Barcelona&lt;/a&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#biking-adventures&#34;&gt;Biking Adventures:&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#hiking-escapes&#34;&gt;Hiking Escapes:&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#day-and-weekend-trips&#34;&gt;Day and Weekend Trips&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#conclusion&#34;&gt;Conclusion&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;motivation&#34;&gt;Motivation&lt;/h2&gt;
+&lt;p&gt;Originally from Canada, I have lived in Barcelona on and off since 2003. Over the years, many friends and acquaintances have asked for my recommendations on what to see and do in this beautiful city. To save time and ensure no detail is missed, I’ve compiled this comprehensive guide based on my personal experiences and research I&amp;rsquo;ve done over the years.&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>Cut and paste a table from Google Sheets into an HTML document – no code&amp;nbsp;required</title>
-      <link>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/</link>
+      <link>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-codenbsprequired/</link>
       <pubDate>Mon, 10 Oct 2022 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/</guid>
+      <guid>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-codenbsprequired/</guid>
       <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;In a &lt;a href=&#34;https://airbyte.com/blog/understanding-data-replication-modes&#34;&gt;recent article&lt;/a&gt; that I wrote for &lt;a href=&#34;http://www.airbyte.com/&#34;&gt;Airbyte&lt;/a&gt; it was necessary for me to copy and paste a table from Google Sheets into &lt;a href=&#34;http://www.webflow.com/&#34;&gt;Webflow&lt;/a&gt;. Unfortunately, Webflow doesn’t currently support copy/paste of tables directly in its editor.&lt;/p&gt;
 &lt;p&gt;In this blog, I present a workaround that can be used to convert a table from Google Sheets into HTML, which can then be written into a Webflow &lt;a href=&#34;https://university.webflow.com/lesson/custom-code-embed&#34;&gt;custom code block&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 id=&#34;acknowledgement&#34;&gt;Acknowledgement&lt;/h2&gt;
 &lt;p&gt;Thank you to &lt;a href=&#34;https://www.swyx.io/&#34;&gt;Shawn Wang&lt;/a&gt; for providing the steps that can be used to copy and paste a table from Google Sheets into HTML so easily.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>A summary of recent research on increasing lifespan</title>
+      <link>http://localhost:1313/personal/a-summary-of-recent-research-on-increasing-lifespan/</link>
+      <pubDate>Tue, 01 Jun 2021 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/personal/a-summary-of-recent-research-on-increasing-lifespan/</guid>
+      <description>&lt;h2 id=&#34;authors&#34;&gt;Authors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Ronald R. Marquardt&lt;/li&gt;
+&lt;li&gt;Suzhen Li&lt;/li&gt;
+&lt;li&gt;Alexander Marquardt&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In association with &lt;a href=&#34;https://annp.ca/&#34;&gt;All Natural Nutritional Products (ANNP) Inc.&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;This blog provides an overview of recent research in the field of ageing.&lt;/p&gt;
+&lt;h2 id=&#34;a-brief-overview-of-the-book-lifespan-why-we-age--and-why-we-dont-have-to&#34;&gt;A brief overview of the book: &amp;ldquo;Lifespan: Why we age — and why we don&amp;rsquo;t have to&amp;rdquo;&lt;/h2&gt;
+&lt;p&gt;David A. Sinclair and M. D. LaPlante have written a New York Times Bestseller called &lt;a href=&#34;https://lifespanbook.com/&#34;&gt;Lifespan: Why we age — and why we don&amp;rsquo;t have to&lt;/a&gt;. David Sinclair has also given many interviews and talks which can be found online.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to mitigate hangovers</title>
+      <link>http://localhost:1313/personal/how-to-mitigate-hangovers/</link>
+      <pubDate>Tue, 30 Jul 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/personal/how-to-mitigate-hangovers/</guid>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Many natural products exist that are purported to be able to prevent hangovers, but unfortunately when one talks about natural hangover remedies it is difficult to find many well funded scientific studies that validate or refute such claims. This is at least in part because few if any companies are willing to invest millions of dollars investigating and running clinical trials to validate natural products that cannot then be patented to make a profit from.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Financial implications of exercising share options</title>
+      <link>http://localhost:1313/personal/financial-implications-of-exercising-share-options/</link>
+      <pubDate>Sat, 27 Jul 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/personal/financial-implications-of-exercising-share-options/</guid>
+      <description>&lt;h1 id=&#34;disclaimer&#34;&gt;Disclaimer&lt;/h1&gt;
+&lt;p&gt;I am not an accountant and this article &lt;strong&gt;should not be considered as financial or tax advice&lt;/strong&gt;. I am providing analysis and calculations which may be used at your own peril. This article is written to demonstrate basic concepts, and does not account for country-specific tax laws or company-specific share option details. Your individual situation may invalidate some or all of the arguments and/or calculations made in this blog post.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

@@ -10,9 +10,9 @@
     <atom:link href="http://localhost:1313/tags/transactions/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Emulating transactional functionality in Elasticsearch with two-phase commits</title>
-      <link>http://localhost:1313/posts/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/</link>
+      <link>http://localhost:1313/elastic/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/</link>
       <pubDate>Thu, 05 Dec 2019 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/</guid>
+      <guid>http://localhost:1313/elastic/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/</guid>
       <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Elasticsearch supports atomic create, update, and delete operations at the individual document level, but does not have built-in &lt;a href=&#34;https://www.elastic.co/blog/found-elasticsearch-as-nosql#transactions&#34;&gt;support for multi-document transactions&lt;/a&gt;. Although Elasticsearch does not position itself as a system of record for storing data, in some cases it may be necessary to modify multiple documents as a single cohesive unit. Therefore, in this blog post we present a &lt;a href=&#34;https://en.wikipedia.org/wiki/Two-phase_commit_protocol&#34;&gt;two-phase commit protocol&lt;/a&gt; which can be used to &lt;em&gt;emulate&lt;/em&gt; multi-document transactions.&lt;/p&gt;</description>
     </item>

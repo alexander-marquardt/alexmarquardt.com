@@ -77,6 +77,47 @@
     Distributed database and big data
   </div>
 </header>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Trade-offs to consider when storing binary data in MongoDB
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Introduction When using MongoDB there are several approaches that make it easy to store and retrieve binary data, but it is not always clear which approach is the most appropriate for a given application. Therefore, in this blog post I discuss several methods for storing binary data when using MongoDB and the trade-offs associated with each method. Many of the trade-offs discussed here would likely apply to most other databases as well.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2017-03-02 00:00:00 +0000 UTC'>March 2, 2017</span>&nbsp;·&nbsp;<span>8 min</span></footer>
+  <a class="entry-link" aria-label="post link to Trade-offs to consider when storing binary data in MongoDB" href="http://localhost:1313/mongodb/trade-offs-to-consider-when-storing-binary-data-in-mongodb/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">How to generate unique identifiers for use with MongoDB
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p> This blog article has been re-published with my permission by MongoDB at https://www.mongodb.com/blog/post/generating-globally-unique-identifiers-for-use-with-mongodb
+Motivation By default, MongoDB generates a unique ObjectID identifier that is assigned to the _id field in a new document before writing that document to the database. In many cases the default unique identifiers assigned by MongoDB will meet application requirements. However, in some cases an application may need to create custom unique identifiers, such as:
+The application may require unique identifiers with a precise number of digits. For example, unique 12 digit identifiers might be required for bank account numbers. Unique identifiers may need to be generated in a monotonically increasing and continuous sequential order. Unique identifiers may need to be independent of a specific database vendor. Due to the multi-threaded and distributed nature of modern applications, it is not always a straightforward task to generate unique identifiers that satisfy application requirements.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2017-01-30 00:00:00 +0000 UTC'>January 30, 2017</span>&nbsp;·&nbsp;<span>13 min</span></footer>
+  <a class="entry-link" aria-label="post link to How to generate unique identifiers for use with MongoDB" href="http://localhost:1313/mongodb/how-to-generate-unique-identifiers-for-use-with-mongodb/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">How to manually perform a point in time restore in MongoDB
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p> Introduction While MongoDB provides high-availability and data durability through automatic replication of data to multiple servers, this replication does not protect the database against human or application errors. For example, if an administrator drops a database, the drop operation will be replicated across the MongoDB deployment, and data will be deleted. If such an event occurs through human or application error, then data will have to be retrieved from backups.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2017-01-25 00:00:00 +0000 UTC'>January 25, 2017</span>&nbsp;·&nbsp;<span>6 min</span></footer>
+  <a class="entry-link" aria-label="post link to How to manually perform a point in time restore in MongoDB" href="http://localhost:1313/mongodb/how-to-manually-perform-a-point-in-time-restore-in-mongodb/"></a>
+</article>
     </main>
     
 <footer class="footer">

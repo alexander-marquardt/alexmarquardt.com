@@ -10,9 +10,9 @@
     <atom:link href="http://localhost:1313/categories/nutrition/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>How to mitigate hangovers</title>
-      <link>http://localhost:1313/posts/how-to-mitigate-hangovers/</link>
+      <link>http://localhost:1313/personal/how-to-mitigate-hangovers/</link>
       <pubDate>Tue, 30 Jul 2019 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/how-to-mitigate-hangovers/</guid>
+      <guid>http://localhost:1313/personal/how-to-mitigate-hangovers/</guid>
       <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Many natural products exist that are purported to be able to prevent hangovers, but unfortunately when one talks about natural hangover remedies it is difficult to find many well funded scientific studies that validate or refute such claims. This is at least in part because few if any companies are willing to invest millions of dollars investigating and running clinical trials to validate natural products that cannot then be patented to make a profit from.&lt;/p&gt;</description>
     </item>

@@ -2,37 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/pages/other-areas-of-interest/</loc>
-    <lastmod>2025-12-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/pages/scientific-publications-patents-awards-and-education/</loc>
-    <lastmod>2025-12-26T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/</loc>
     <lastmod>2025-12-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/</loc>
+    <loc>http://localhost:1313/personal/</loc>
     <lastmod>2025-12-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/ranking-by-profit-and-popularity-in-elasticsearch/</loc>
+    <loc>http://localhost:1313/personal/</loc>
+    <lastmod>2025-12-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/elastic/</loc>
     <lastmod>2025-10-29T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/personalizing-search-in-elasticsearch-without-ml-post-processing/</loc>
+    <loc>http://localhost:1313/elastic/ranking-by-profit-and-popularity-in-elasticsearch/</loc>
+    <lastmod>2025-10-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/elastic/personalizing-e-commerce-search-results-based-on-purchase-history-in-elasticsearch-without-a-need-for-machine-learning-post-processing/</loc>
     <lastmod>2025-09-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/efficient-bitwise-matching-of-documents-in-elasticsearch/</loc>
+    <loc>http://localhost:1313/elastic/efficient-bitwise-matching-of-documents-in-elasticsearch/</loc>
     <lastmod>2024-06-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/automating-the-import-and-export-of-kibana-saved-objects/</loc>
+    <loc>http://localhost:1313/elastic/automating-the-import-and-export-of-kibana-saved-objects/</loc>
     <lastmod>2024-05-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/elasticsearch/</loc>
     <lastmod>2024-05-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/kibana/</loc>
-    <lastmod>2024-05-03T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/posts/</loc>
     <lastmod>2024-05-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/python/</loc>
@@ -47,7 +44,7 @@
     <loc>http://localhost:1313/tags/barcelona/</loc>
     <lastmod>2024-04-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/barcelona-a-personal-guide/</loc>
+    <loc>http://localhost:1313/personal/barcelona-a-personal-guide/</loc>
     <lastmod>2024-04-21T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/europe/</loc>
@@ -59,28 +56,28 @@
     <loc>http://localhost:1313/tags/travel/</loc>
     <lastmod>2024-04-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/catching-elasticsearch-documents-with-incorrect-timestamps-that-fail-to-get-written-into-time-series-data-streams/</loc>
+    <loc>http://localhost:1313/elastic/re-directing-elasticsearch-documents-with-out-of-range-timestamps-that-would-fail-to-get-written-into-time-series-data-streams/</loc>
     <lastmod>2024-04-16T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/</loc>
+    <loc>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-codenbsprequired/</loc>
     <lastmod>2022-10-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/using-logstash-to-hash-sensitive-text/</loc>
+    <loc>http://localhost:1313/elastic/using-logstash-to-scan-inside-event-contents-to-replace-sensitive-data-with-a-consistent-hash/</loc>
     <lastmod>2022-01-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/a-summary-of-recent-research-on-increasing-lifespan/</loc>
+    <loc>http://localhost:1313/personal/a-summary-of-recent-research-on-increasing-lifespan/</loc>
     <lastmod>2021-06-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/combining-elasticsearch-stemmers-and-synonyms-to-improve-search-relevance/</loc>
+    <loc>http://localhost:1313/elastic/combining-elasticsearch-stemmers-and-synonyms-to-improve-search-relevance/</loc>
     <lastmod>2021-05-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/search-engine/</loc>
     <lastmod>2021-05-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/driving-filebeat-data-into-separate-indices-uses-legacy-index-templates/</loc>
+    <loc>http://localhost:1313/elastic/driving-filebeat-data-into-separate-indices-uses-legacy-index-templates/</loc>
     <lastmod>2021-03-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/using-kibanas-painless-lab-beta-to-test-an-ingest-processor-script/</loc>
+    <loc>http://localhost:1313/elastic/using-kibanas-painless-lab-beta-to-test-an-ingest-processor-script/</loc>
     <lastmod>2020-11-09T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/</loc>
@@ -92,37 +89,37 @@
     <loc>http://localhost:1313/categories/painless/</loc>
     <lastmod>2020-11-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/using-elasticsearch-painless-scripting-to-iterate-through-fields/</loc>
+    <loc>http://localhost:1313/elastic/using-elasticsearch-painless-scripting-to-recursively-iterate-through-json-fields/</loc>
     <lastmod>2020-11-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/elasticsearch-too-many-script-compilations/</loc>
+    <loc>http://localhost:1313/elastic/understanding-and-fixing-too-many-script-compilations-errors-in-elasticsearch/</loc>
     <lastmod>2020-10-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/using-logstash-and-elasticsearch-scripted-upserts-to-calculate-transaction-duration-from-out-of-order-events/</loc>
+    <loc>http://localhost:1313/elastic/using-logstash-and-elasticsearch-to-calculate-transaction-duration-in-a-microservices-architecture/</loc>
     <lastmod>2020-09-16T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/using-grok-with-elasticsearch-to-add-structure-to-your-data/</loc>
+    <loc>http://localhost:1313/elastic/using-grok-with-elasticsearch-to-add-structure-to-your-data/</loc>
     <lastmod>2020-07-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/storing-ingest-time-and-calculating-ingest-lag-in-elasticsearch/</loc>
+    <loc>http://localhost:1313/elastic/storing-ingest-time-and-calculating-ingest-lag-in-elasticsearch/</loc>
     <lastmod>2020-06-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/a-simple-and-powerful-technique-to-improve-search-relevancy-in-elasticsearch/</loc>
+    <loc>http://localhost:1313/elastic/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/</loc>
     <lastmod>2020-05-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/</loc>
+    <loc>http://localhost:1313/elastic/using-boolean-queries-to-improve-search-relevance-in-elasticsearch/</loc>
     <lastmod>2020-05-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/using-slow-logs-in-elastic-cloud-enterprise/</loc>
+    <loc>http://localhost:1313/elastic/using-slow-logs-in-elastic-cloud-enterprise/</loc>
     <lastmod>2020-04-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/</loc>
+    <loc>http://localhost:1313/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/</loc>
     <lastmod>2020-04-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/enriching-elasticsearch-documents-with-data-from-csv-files/</loc>
+    <loc>http://localhost:1313/elastic/using-the-elasticsearch-enrich-processor-with-csv-data/</loc>
     <lastmod>2020-03-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/converting-csv-to-json-in-filebeat/</loc>
+    <loc>http://localhost:1313/elastic/converting-csv-to-json-in-filebeat/</loc>
     <lastmod>2020-03-17T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/csv/</loc>
@@ -140,37 +137,37 @@
     <loc>http://localhost:1313/tags/json/</loc>
     <lastmod>2020-03-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/enriching-data-with-the-logstash-translate-filter/</loc>
+    <loc>http://localhost:1313/elastic/enriching-data-with-the-logstash-translate-filter/</loc>
     <lastmod>2020-03-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/how-to-create-maintainable-and-reusable-logstash-pipelines/</loc>
+    <loc>http://localhost:1313/elastic/how-to-create-maintainable-and-reusable-logstash-pipelines/</loc>
     <lastmod>2020-02-26T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/logstash/</loc>
     <lastmod>2019-12-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/logstash-and-elasticsearch-painless-scripted-upserts-transform-data/</loc>
+    <loc>http://localhost:1313/elastic/using-logstash-and-elasticsearch-scripted-upserts-to-transform-ecommerce-purchasing-data/</loc>
     <lastmod>2019-12-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/</loc>
+    <loc>http://localhost:1313/elastic/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/</loc>
     <lastmod>2019-12-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/transactions/</loc>
     <lastmod>2019-12-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/converting-local-time-to-iso-8601-time-in-elasticsearch/</loc>
+    <loc>http://localhost:1313/elastic/converting-local-time-to-iso-8601-time-in-elasticsearch/</loc>
     <lastmod>2019-10-16T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/kibana/</loc>
     <lastmod>2019-10-16T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/es-local-indexer-using-elasticsearch-for-searching-locally-stored-documents/</loc>
+    <loc>http://localhost:1313/elastic/es-local-indexer-using-elasticsearch-for-searching-locally-stored-documents/</loc>
     <lastmod>2019-08-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/es-local-indexer-desktop-search-built-with-elasticsearch/</loc>
+    <loc>http://localhost:1313/elastic/es-local-indexer-desktop-search-powered-by-elasticsearch/</loc>
     <lastmod>2019-08-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/how-to-mitigate-hangovers/</loc>
+    <loc>http://localhost:1313/personal/how-to-mitigate-hangovers/</loc>
     <lastmod>2019-07-30T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/nutrition/</loc>
@@ -179,7 +176,7 @@
     <loc>http://localhost:1313/categories/finance/</loc>
     <lastmod>2019-07-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/financial-implications-of-exercising-share-options/</loc>
+    <loc>http://localhost:1313/personal/financial-implications-of-exercising-share-options/</loc>
     <lastmod>2019-07-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/investing/</loc>
@@ -188,10 +185,10 @@
     <loc>http://localhost:1313/tags/share-options/</loc>
     <lastmod>2019-07-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/counting-unique-beats-agents-elasticsearch/</loc>
+    <loc>http://localhost:1313/elastic/counting-unique-beats-agents-sending-data-into-elasticsearch/</loc>
     <lastmod>2019-07-18T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/improving-the-performance-of-logstash-persistent-queues/</loc>
+    <loc>http://localhost:1313/elastic/improving-the-performance-of-logstash-persistent-queues/</loc>
     <lastmod>2019-06-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/logstash/</loc>
@@ -203,19 +200,13 @@
     <loc>http://localhost:1313/tags/persistent-queue/</loc>
     <lastmod>2019-06-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/patents/</loc>
-    <lastmod>2019-03-29T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/pages/publications/</loc>
-    <lastmod>2019-03-22T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/tags/debugger/</loc>
     <lastmod>2019-02-02T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/debugging/</loc>
     <lastmod>2019-02-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/debugging-elasticsearch-and-lucene-with-intellij-idea/</loc>
+    <loc>http://localhost:1313/elastic/debugging-elasticsearch-and-lucene-with-intellij-idea/</loc>
     <lastmod>2019-02-02T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/developer/</loc>
@@ -233,7 +224,7 @@
     <loc>http://localhost:1313/tags/software-development/</loc>
     <lastmod>2019-02-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/security-tls-ssl-pki-authentication-in-elasticsearch/</loc>
+    <loc>http://localhost:1313/elastic/a-step-by-step-guide-to-enabling-security-tls/ssl-and-pki-authentication-in-elasticsearch/</loc>
     <lastmod>2018-11-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/security/</loc>
@@ -245,7 +236,7 @@
     <loc>http://localhost:1313/tags/tls/</loc>
     <lastmod>2018-11-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/how-to-tune-elasticsearch-for-aggregation-performance/</loc>
+    <loc>http://localhost:1313/elastic/how-to-tune-elasticsearch-for-aggregation-performance/</loc>
     <lastmod>2018-10-02T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/clone/</loc>
@@ -254,10 +245,10 @@
     <loc>http://localhost:1313/tags/etl/</loc>
     <lastmod>2018-08-31T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/using-logstash-to-drive-filtered-data-from-a-single-source-into-multiple-output-destinations/</loc>
+    <loc>http://localhost:1313/elastic/using-logstash-to-drive-filtered-data-from-a-single-source-into-multiple-output-destinations/</loc>
     <lastmod>2018-08-31T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/using-logstash-prune-capabilities-to-whitelist-sub-documents/</loc>
+    <loc>http://localhost:1313/elastic/using-logstash-prune-capabilities-to-whitelist-sub-documents/</loc>
     <lastmod>2018-08-28T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/cleanup/</loc>
@@ -266,7 +257,7 @@
     <loc>http://localhost:1313/tags/deduplicate/</loc>
     <lastmod>2018-07-23T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/deduplicating-documents-in-elasticsearch/</loc>
+    <loc>http://localhost:1313/elastic/deduplicating-documents-in-elasticsearch/</loc>
     <lastmod>2018-07-23T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/methods/</loc>
@@ -278,10 +269,13 @@
     <loc>http://localhost:1313/categories/mongodb/</loc>
     <lastmod>2017-03-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/trade-offs-to-consider-when-storing-binary-data-in-mongodb/</loc>
+    <loc>http://localhost:1313/mongodb/</loc>
     <lastmod>2017-03-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/how-to-generate-unique-identifiers-for-use-with-mongodb/</loc>
+    <loc>http://localhost:1313/mongodb/trade-offs-to-consider-when-storing-binary-data-in-mongodb/</loc>
+    <lastmod>2017-03-02T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/mongodb/how-to-generate-unique-identifiers-for-use-with-mongodb/</loc>
     <lastmod>2017-01-30T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/unique-identifiers/</loc>
@@ -290,16 +284,13 @@
     <loc>http://localhost:1313/tags/uuid/</loc>
     <lastmod>2017-01-30T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/about/</loc>
+    <loc>http://localhost:1313/legacy/welcome-to-alexmarquardt-com/</loc>
     <lastmod>2017-01-25T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/welcome-to-alexmarquardt-com/</loc>
+    <loc>http://localhost:1313/mongodb/how-to-manually-perform-a-point-in-time-restore-in-mongodb/</loc>
     <lastmod>2017-01-25T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/contact/</loc>
-    <lastmod>2017-01-25T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/posts/mongodb-point-in-time-restore/</loc>
+    <loc>http://localhost:1313/legacy/</loc>
     <lastmod>2017-01-25T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/point-in-time/</loc>
@@ -308,10 +299,12 @@
     <loc>http://localhost:1313/tags/restore/</loc>
     <lastmod>2017-01-25T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/pages/_drafts/id-1088/</loc>
+    <loc>http://localhost:1313/legacy/_drafts/id-1088/</loc>
   </url><url>
-    <loc>http://localhost:1313/posts/_drafts/id-1402/</loc>
+    <loc>http://localhost:1313/about/</loc>
   </url><url>
-    <loc>http://localhost:1313/posts/_drafts/id-1631/</loc>
+    <loc>http://localhost:1313/airbyte/</loc>
+  </url><url>
+    <loc>http://localhost:1313/professional/</loc>
   </url>
 </urlset>

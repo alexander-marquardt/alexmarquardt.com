@@ -17,3 +17,11 @@ title = 'Alexander Marquardt'
   ShowToc = true
   TocOpen = false
 
+  mainSections = ["elastic", "airbyte", "mongodb"]
+
+[permalinks]
+  elastic = "/elastic/:slug/"
+  airbyte = "/airbyte/:slug/"
+  mongodb = "/mongodb/:slug/"
+  personal = "/personal/:slug/"
+

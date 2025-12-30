@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto" data-theme="light">
+<html lang="en" dir="auto" data-theme="auto">
 
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,7 +10,7 @@
 <meta name="description" content="Architectural patterns, failure modes, and large-scale system behavior in Elasticsearch and related components.">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/elastic/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2fe4dc5b52567b7454ee976e121c74370e14415db7564bb5ae6de9bd591821ff.css" integrity="sha256-L&#43;TcW1JWe3RU7pduEhx0Nw4UQV23Vku1rm3pvVkYIf8=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.16015f91a66b46ba261d7a8bdc4ebc41b1453d8387302aef098118ac6f00fe06.css" integrity="sha256-FgFfkaZrRromHXqL3E68QbFFPYOHMCrvCYEYrG8A/gY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -28,10 +28,47 @@
         }
 
     </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
 </noscript>
 <script>
     if (localStorage.getItem("pref-theme") === "dark") {
         document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
     }
 
 </script>
@@ -40,7 +77,9 @@
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">Alexander Marquardt</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">
+                <img src="http://localhost:1313/alexmarquardt.png" alt="" aria-label="logo"
+                    height="30">Alexander Marquardt</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -87,7 +126,7 @@
     <p>Moved to Elastic’s blog - https://www.elastic.co/search-labs/blog/function-score-query-boosting-profit-popularity-elasticsearch
 </p>
   </div>
-  <footer class="entry-footer"><span title='2025-10-29 00:00:00 +0000 UTC'>October 29, 2025</span>&nbsp;·&nbsp;<span>1 min</span></footer>
+  <footer class="entry-footer"><span title='2025-10-29 00:00:00 +0000 UTC'>October 29, 2025</span></footer>
   <a class="entry-link" aria-label="post link to Ranking by Profit and Popularity in Elasticsearch" href="http://localhost:1313/elastic/ranking-by-profit-and-popularity-in-elasticsearch/"></a>
 </article>
 
@@ -101,7 +140,7 @@
 At its core, Elasticsearch matches user queries against text fields and ranks results using relevance scoring. But search doesn’t have to stop there. That’s where personalization comes in. By incorporating signals such as past purchases, browsing behavior, or recent activity, search results can be adjusted so the items most relevant to you appear higher. For example, if two people both search for “chips”, one might see classic potato chips at the top, while the other sees crispy thin-cut chips, depending on their history.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2025-09-12 00:00:00 +0000 UTC'>September 12, 2025</span>&nbsp;·&nbsp;<span>6 min</span></footer>
+  <footer class="entry-footer"><span title='2025-09-12 00:00:00 +0000 UTC'>September 12, 2025</span></footer>
   <a class="entry-link" aria-label="post link to Personalizing e-commerce search results based on purchase history in Elasticsearch (Without a need for Machine Learning Post Processing)" href="http://localhost:1313/elastic/personalizing-e-commerce-search-results-based-on-purchase-history-in-elasticsearch-without-a-need-for-machine-learning-post-processing/"></a>
 </article>
 
@@ -114,7 +153,7 @@ At its core, Elasticsearch matches user queries against text fields and ranks re
     <p>This article has now been published on Elastic’s website. Please check it out at: https://www.elastic.co/search-labs/blog/efficient-bitwise-matching-in-elasticsearch
 </p>
   </div>
-  <footer class="entry-footer"><span title='2024-06-15 00:00:00 +0000 UTC'>June 15, 2024</span>&nbsp;·&nbsp;<span>1 min</span></footer>
+  <footer class="entry-footer"><span title='2024-06-15 00:00:00 +0000 UTC'>June 15, 2024</span></footer>
   <a class="entry-link" aria-label="post link to Efficient bitwise matching of documents in Elasticsearch" href="http://localhost:1313/elastic/efficient-bitwise-matching-of-documents-in-elasticsearch/"></a>
 </article>
 
@@ -128,7 +167,7 @@ At its core, Elasticsearch matches user queries against text fields and ranks re
 While Kibana offers a robust user interface for managing many tasks, certain operations can become tedious and time-consuming when done manually, especially for operations teams managing large and complex environments. One such operation is the migration of Kibana spaces and objects between environments—a task that can be critical in scenarios where clients cannot utilize the snapshot/restore functionality provided by Elasticsearch.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-05-03 00:00:00 +0000 UTC'>May 3, 2024</span>&nbsp;·&nbsp;<span>3 min</span></footer>
+  <footer class="entry-footer"><span title='2024-05-03 00:00:00 +0000 UTC'>May 3, 2024</span></footer>
   <a class="entry-link" aria-label="post link to Automating the Import and Export of Kibana Saved Objects" href="http://localhost:1313/elastic/automating-the-import-and-export-of-kibana-saved-objects/"></a>
 </article>
 
@@ -142,7 +181,7 @@ While Kibana offers a robust user interface for managing many tasks, certain ope
 In this blog I will demonstrate logic that can be added to an Elasticsearch ingest pipeline which can be used to intercept documents that would be rejected by the TSDS index due to timestamp range issues, and to instead redirect them to a “failed” index. The documents that are redirected to the “failed” index may (for example) be used to raise alerts and examined.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-04-16 00:00:00 +0000 UTC'>April 16, 2024</span>&nbsp;·&nbsp;<span>4 min</span></footer>
+  <footer class="entry-footer"><span title='2024-04-16 00:00:00 +0000 UTC'>April 16, 2024</span></footer>
   <a class="entry-link" aria-label="post link to Re-directing Elasticsearch documents with out-of-range timestamps that (would) fail to get written into Time Series Data Streams" href="http://localhost:1313/elastic/re-directing-elasticsearch-documents-with-out-of-range-timestamps-that-would-fail-to-get-written-into-time-series-data-streams/"></a>
 </article>
 
@@ -156,7 +195,7 @@ In this blog I will demonstrate logic that can be added to an Elasticsearch inge
 Therefore, in this blog I show how Logstash can make use of a ruby filter to scan through the contents of an event and to replace each occurrence of sensitive text with the value of its hash.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2022-01-20 00:00:00 +0000 UTC'>January 20, 2022</span>&nbsp;·&nbsp;<span>3 min</span></footer>
+  <footer class="entry-footer"><span title='2022-01-20 00:00:00 +0000 UTC'>January 20, 2022</span></footer>
   <a class="entry-link" aria-label="post link to Using Logstash to scan inside event contents to replace sensitive data with a consistent hash" href="http://localhost:1313/elastic/using-logstash-to-scan-inside-event-contents-to-replace-sensitive-data-with-a-consistent-hash/"></a>
 </article>
 
@@ -169,7 +208,7 @@ Therefore, in this blog I show how Logstash can make use of a ruby filter to sca
     <p>This is now published on Elastic’s official blog. Please check it out at: https://www.elastic.co/blog/improve-search-relevance-by-combining-elasticsearch-stemmers-and-synonyms
 </p>
   </div>
-  <footer class="entry-footer"><span title='2021-05-15 00:00:00 +0000 UTC'>May 15, 2021</span>&nbsp;·&nbsp;<span>1 min</span></footer>
+  <footer class="entry-footer"><span title='2021-05-15 00:00:00 +0000 UTC'>May 15, 2021</span></footer>
   <a class="entry-link" aria-label="post link to Combining Elasticsearch stemmers and synonyms to improve search relevance" href="http://localhost:1313/elastic/combining-elasticsearch-stemmers-and-synonyms-to-improve-search-relevance/"></a>
 </article>
 
@@ -183,7 +222,7 @@ Therefore, in this blog I show how Logstash can make use of a ruby filter to sca
 In this post, we’ll use Filebeat to send data from separate sources into multiple indices, and then we’ll use index lifecycle management (ILM), legacy index templates, and a custom ingest pipeline to further control that data.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2021-03-15 00:00:00 +0000 UTC'>March 15, 2021</span>&nbsp;·&nbsp;<span>6 min</span></footer>
+  <footer class="entry-footer"><span title='2021-03-15 00:00:00 +0000 UTC'>March 15, 2021</span></footer>
   <a class="entry-link" aria-label="post link to Driving Filebeat data into separate indices (uses legacy index templates)" href="http://localhost:1313/elastic/driving-filebeat-data-into-separate-indices-uses-legacy-index-templates/"></a>
 </article>
 
@@ -197,7 +236,7 @@ In this post, we’ll use Filebeat to send data from separate sources into multi
 While developing such scripts, it may be helpful to use Painless Lab (Beta) in Kibana to debug Painless scripts. In this blog I will show how to use Painless Lab to develop and debug custom scripts, and then show how these can be then easily copied into ingest pipelines.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2020-11-09 00:00:00 +0000 UTC'>November 9, 2020</span>&nbsp;·&nbsp;<span>3 min</span></footer>
+  <footer class="entry-footer"><span title='2020-11-09 00:00:00 +0000 UTC'>November 9, 2020</span></footer>
   <a class="entry-link" aria-label="post link to Using Kibana&#39;s Painless Lab (Beta) to test an ingest processor script" href="http://localhost:1313/elastic/using-kibanas-painless-lab-beta-to-test-an-ingest-processor-script/"></a>
 </article>
 
@@ -210,7 +249,7 @@ While developing such scripts, it may be helpful to use Painless Lab (Beta) in K
     <p>Authors Alexander Marquardt Honza Kral Introduction Painless is a simple, secure scripting language designed specifically for use with Elasticsearch. It is the default scripting language for Elasticsearch and can safely be used for inline and stored scripts. In one of its many use cases, Painless can modify documents as they are ingested into your Elasticsearch cluster. In this use case, you may find that you would like to use Painless to evaluate every field in each document that is received by Elasticsearch. However, because of the hierarchical nature of JSON documents, how to iterate over all of the fields may be non-obvious.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2020-11-06 00:00:00 +0000 UTC'>November 6, 2020</span>&nbsp;·&nbsp;<span>4 min</span></footer>
+  <footer class="entry-footer"><span title='2020-11-06 00:00:00 +0000 UTC'>November 6, 2020</span></footer>
   <a class="entry-link" aria-label="post link to Using Elasticsearch Painless scripting to recursively iterate through JSON fields" href="http://localhost:1313/elastic/using-elasticsearch-painless-scripting-to-iterate-through-fields/"></a>
 </article>
 <footer class="page-footer">

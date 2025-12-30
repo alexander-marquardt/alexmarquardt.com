@@ -6,6 +6,14 @@ title = 'Alexander Marquardt'
     path = "github.com/adityatelange/hugo-PaperMod"
 
 [params]
+  logo = "/alexmarquardt.png"
+
+  # Header label configuration
+  [params.label]
+    text = "Alexander Marquardt"
+    icon = "/alexmarquardt.png"
+    iconHeight = 30
+
   defaultTheme = "light"
   disableThemeToggle = false
 

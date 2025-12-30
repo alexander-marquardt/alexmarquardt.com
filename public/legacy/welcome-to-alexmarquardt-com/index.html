@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto" data-theme="light">
+<html lang="en" dir="auto" data-theme="auto">
 
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,7 +12,7 @@ This site brings together technical writing focused on search, data pipelines, a
 The material emphasizes architectural reasoning for large-scale systems. It examines how relevance models, reliability mechanisms, and ingest pipelines behave under real-world constraints, with attention to system-level decisions that shape scalability, maintainability, and long-term operational effort.">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/legacy/welcome-to-alexmarquardt-com/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2fe4dc5b52567b7454ee976e121c74370e14415db7564bb5ae6de9bd591821ff.css" integrity="sha256-L&#43;TcW1JWe3RU7pduEhx0Nw4UQV23Vku1rm3pvVkYIf8=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.16015f91a66b46ba261d7a8bdc4ebc41b1453d8387302aef098118ac6f00fe06.css" integrity="sha256-FgFfkaZrRromHXqL3E68QbFFPYOHMCrvCYEYrG8A/gY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -29,10 +29,47 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
         }
 
     </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
 </noscript>
 <script>
     if (localStorage.getItem("pref-theme") === "dark") {
         document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
     }
 
 </script>
@@ -41,7 +78,9 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">Alexander Marquardt</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">
+                <img src="http://localhost:1313/alexmarquardt.png" alt="" aria-label="logo"
+                    height="30">Alexander Marquardt</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -77,52 +116,10 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
     <h1 class="post-title entry-hint-parent">
       
     </h1>
-    <div class="post-meta"><span title='2017-01-25 00:00:00 +0000 UTC'>January 25, 2017</span>&nbsp;·&nbsp;<span>5 min</span>
+    <div class="post-meta"><span title='2017-01-25 00:00:00 +0000 UTC'>January 25, 2017</span>
 
 </div>
-  </header> <div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
-        </summary>
-
-        <div class="inner"><ul>
-                <li>
-                    <a href="#about-this-site" aria-label="About this site">About this site</a></li>
-                <li>
-                    <a href="#elastic-stack" aria-label="Elastic Stack">Elastic Stack</a><ul>
-                        
-                <li>
-                    <a href="#search--relevance" aria-label="Search &amp; Relevance">Search &amp; Relevance</a></li>
-                <li>
-                    <a href="#performance-reliability--failure-analysis" aria-label="Performance, Reliability &amp; Failure Analysis">Performance, Reliability &amp; Failure Analysis</a></li>
-                <li>
-                    <a href="#ingest-architecture" aria-label="Ingest Architecture">Ingest Architecture</a></li>
-                <li>
-                    <a href="#data-parsing--structuring" aria-label="Data Parsing &amp; Structuring">Data Parsing &amp; Structuring</a></li>
-                <li>
-                    <a href="#data-derivation--enrichment" aria-label="Data Derivation &amp; Enrichment">Data Derivation &amp; Enrichment</a></li>
-                <li>
-                    <a href="#end-to-end-systems--reference-implementations" aria-label="End-to-End Systems &amp; Reference Implementations">End-to-End Systems &amp; Reference Implementations</a></li>
-                <li>
-                    <a href="#operational-foundations" aria-label="Operational Foundations">Operational Foundations</a></li>
-                <li>
-                    <a href="#correctness-consistency--security" aria-label="Correctness, Consistency &amp; Security">Correctness, Consistency &amp; Security</a></li>
-                <li>
-                    <a href="#system-behavior--advanced-techniques" aria-label="System Behavior &amp; Advanced Techniques">System Behavior &amp; Advanced Techniques</a></li></ul>
-                </li>
-                <li>
-                    <a href="#airbyte" aria-label="Airbyte">Airbyte</a></li>
-                <li>
-                    <a href="#mongodb" aria-label="MongoDB">MongoDB</a></li>
-                <li>
-                    <a href="#additional-information" aria-label="Additional Information">Additional Information</a>
-                </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
+  </header> 
   <div class="post-content"><h1 id="about-this-site">About this site<a hidden class="anchor" aria-hidden="true" href="#about-this-site">#</a></h1>
 <p>This site brings together technical writing focused on search, data pipelines, and distributed systems at enterprise scale. It is informed by real production systems and reflects recurring patterns, trade-offs, and architectural decisions observed across system design, deployment, and long-term operation.</p>
 <p>The material emphasizes architectural reasoning for large-scale systems. It examines how relevance models, reliability mechanisms, and ingest pipelines behave under real-world constraints, with attention to system-level decisions that shape scalability, maintainability, and long-term operational effort.</p>
@@ -350,7 +347,6 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-
   </footer>
 </article>
     </main>
@@ -429,53 +425,6 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
         }
     })
 
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
-        const container = codeblock.parentNode.parentNode;
-
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = 'copy';
-
-        function copyingDone() {
-            copybutton.innerHTML = 'copied!';
-            setTimeout(() => {
-                copybutton.innerHTML = 'copy';
-            }, 2000);
-        }
-
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
-        });
-
-        if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
-        } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
-        } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
-        }
-    });
 </script>
 </body>
 

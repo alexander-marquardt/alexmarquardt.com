@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto" data-theme="light">
+<html lang="en" dir="auto" data-theme="auto">
 
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,7 +10,7 @@
 <meta name="description" content="Architectural patterns, failure modes, and large-scale system behavior in Elasticsearch and related components.">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/elastic/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2fe4dc5b52567b7454ee976e121c74370e14415db7564bb5ae6de9bd591821ff.css" integrity="sha256-L&#43;TcW1JWe3RU7pduEhx0Nw4UQV23Vku1rm3pvVkYIf8=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.16015f91a66b46ba261d7a8bdc4ebc41b1453d8387302aef098118ac6f00fe06.css" integrity="sha256-FgFfkaZrRromHXqL3E68QbFFPYOHMCrvCYEYrG8A/gY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -28,10 +28,47 @@
         }
 
     </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
 </noscript>
 <script>
     if (localStorage.getItem("pref-theme") === "dark") {
         document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
     }
 
 </script>
@@ -40,7 +77,9 @@
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">Alexander Marquardt</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">
+                <img src="http://localhost:1313/alexmarquardt.png" alt="" aria-label="logo"
+                    height="30">Alexander Marquardt</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -89,7 +128,7 @@ Introduction Logstash is an open source, server-side data processing pipeline th
 Logstash supports several different lookup plugin filters that can be used for enriching data. Many of these rely on components that are external to the Logstash pipeline for storing enrichment data. On the other hand, the translate filter plugin can be used for looking up data and enriching documents without dependencies. Therefore, in this blog article I focus on using Logstash with the translate filter plugin for enriching data.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2020-03-06 00:00:00 +0000 UTC'>March 6, 2020</span>&nbsp;·&nbsp;<span>7 min</span></footer>
+  <footer class="entry-footer"><span title='2020-03-06 00:00:00 +0000 UTC'>March 6, 2020</span></footer>
   <a class="entry-link" aria-label="post link to Enriching data with the Logstash translate filter" href="http://localhost:1313/elastic/enriching-data-with-the-logstash-translate-filter/"></a>
 </article>
 
@@ -102,7 +141,7 @@ Logstash supports several different lookup plugin filters that can be used for e
     <p>This article is available at: https://www.elastic.co/blog/how-to-create-maintainable-and-reusable-logstash-pipelines
 </p>
   </div>
-  <footer class="entry-footer"><span title='2020-02-26 00:00:00 +0000 UTC'>February 26, 2020</span>&nbsp;·&nbsp;<span>1 min</span></footer>
+  <footer class="entry-footer"><span title='2020-02-26 00:00:00 +0000 UTC'>February 26, 2020</span></footer>
   <a class="entry-link" aria-label="post link to How to create maintainable and reusable logstash pipelines" href="http://localhost:1313/elastic/how-to-create-maintainable-and-reusable-logstash-pipelines/"></a>
 </article>
 
@@ -116,7 +155,7 @@ Logstash supports several different lookup plugin filters that can be used for e
 As a note, using the approach demonstrated here would result in documents similar to those generated by Elasticsearch transforms. Nevertheless, the technique that is documented has not been benchmarked against Elasticsearch transforms, as the main goal of this blog is to demonstrate the power and flexibility of Logstash combined with scripted upserts.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2019-12-17 00:00:00 +0000 UTC'>December 17, 2019</span>&nbsp;·&nbsp;<span>7 min</span></footer>
+  <footer class="entry-footer"><span title='2019-12-17 00:00:00 +0000 UTC'>December 17, 2019</span></footer>
   <a class="entry-link" aria-label="post link to Using Logstash and Elasticsearch scripted upserts to transform eCommerce purchasing data" href="http://localhost:1313/elastic/logstash-and-elasticsearch-painless-scripted-upserts-transform-data/"></a>
 </article>
 
@@ -129,7 +168,7 @@ As a note, using the approach demonstrated here would result in documents simila
     <p>Introduction Elasticsearch supports atomic create, update, and delete operations at the individual document level, but does not have built-in support for multi-document transactions. Although Elasticsearch does not position itself as a system of record for storing data, in some cases it may be necessary to modify multiple documents as a single cohesive unit. Therefore, in this blog post we present a two-phase commit protocol which can be used to emulate multi-document transactions.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2019-12-05 00:00:00 +0000 UTC'>December 5, 2019</span>&nbsp;·&nbsp;<span>27 min</span></footer>
+  <footer class="entry-footer"><span title='2019-12-05 00:00:00 +0000 UTC'>December 5, 2019</span></footer>
   <a class="entry-link" aria-label="post link to Emulating transactional functionality in Elasticsearch with two-phase commits" href="http://localhost:1313/elastic/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/"></a>
 </article>
 
@@ -142,7 +181,7 @@ As a note, using the approach demonstrated here would result in documents simila
     <p>This article is available at: https://www.elastic.co/blog/converting-local-time-to-iso-8601-time-in-elasticsearch
 </p>
   </div>
-  <footer class="entry-footer"><span title='2019-10-16 00:00:00 +0000 UTC'>October 16, 2019</span>&nbsp;·&nbsp;<span>1 min</span></footer>
+  <footer class="entry-footer"><span title='2019-10-16 00:00:00 +0000 UTC'>October 16, 2019</span></footer>
   <a class="entry-link" aria-label="post link to Converting local time to ISO 8601 time in Elasticsearch" href="http://localhost:1313/elastic/converting-local-time-to-iso-8601-time-in-elasticsearch/"></a>
 </article>
 
@@ -155,7 +194,7 @@ As a note, using the approach demonstrated here would result in documents simila
     <p>Moved to: https://alexmarquardt.com/es-local-indexer-desktop-search-built-with-elasticsearch/
 </p>
   </div>
-  <footer class="entry-footer"><span title='2019-08-08 00:00:00 +0000 UTC'>August 8, 2019</span>&nbsp;·&nbsp;<span>1 min</span></footer>
+  <footer class="entry-footer"><span title='2019-08-08 00:00:00 +0000 UTC'>August 8, 2019</span></footer>
   <a class="entry-link" aria-label="post link to Es Local Indexer - using Elasticsearch for searching locally stored documents" href="http://localhost:1313/elastic/es-local-indexer-using-elasticsearch-for-searching-locally-stored-documents/"></a>
 </article>
 
@@ -170,7 +209,7 @@ Introduction Elasticsearch provides search functionality for some of the most im
 ES Local Indexer is a small desktop search application that runs on top of a local Elasticsearch installation. It indexes HTML documents into Elasticsearch and provides an intuitive browser-based interface for searching through the ingested documents. The ES Local Indexer project consists of two main components:
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2019-08-08 00:00:00 +0000 UTC'>August 8, 2019</span>&nbsp;·&nbsp;<span>5 min</span></footer>
+  <footer class="entry-footer"><span title='2019-08-08 00:00:00 +0000 UTC'>August 8, 2019</span></footer>
   <a class="entry-link" aria-label="post link to ES Local Indexer – Desktop search powered by Elasticsearch" href="http://localhost:1313/elastic/es-local-indexer-desktop-search-built-with-elasticsearch/"></a>
 </article>
 
@@ -184,7 +223,7 @@ ES Local Indexer is a small desktop search application that runs on top of a loc
 In this blog post, I first discuss how to efficiently specify a filter for documents corresponding to a particular time range, followed by several methods for detecting how many beats agents are sending documents to Elasticsearch within the specified time range.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2019-07-18 00:00:00 +0000 UTC'>July 18, 2019</span>&nbsp;·&nbsp;<span>6 min</span></footer>
+  <footer class="entry-footer"><span title='2019-07-18 00:00:00 +0000 UTC'>July 18, 2019</span></footer>
   <a class="entry-link" aria-label="post link to Counting unique beats agents sending data into Elasticsearch" href="http://localhost:1313/elastic/counting-unique-beats-agents-elasticsearch/"></a>
 </article>
 
@@ -197,7 +236,7 @@ In this blog post, I first discuss how to efficiently specify a filter for docum
     <p>This article is available at: https://www.elastic.co/blog/using-parallel-logstash-pipelines-to-improve-persistent-queue-performance
 </p>
   </div>
-  <footer class="entry-footer"><span title='2019-06-15 00:00:00 +0000 UTC'>June 15, 2019</span>&nbsp;·&nbsp;<span>1 min</span></footer>
+  <footer class="entry-footer"><span title='2019-06-15 00:00:00 +0000 UTC'>June 15, 2019</span></footer>
   <a class="entry-link" aria-label="post link to Improving the performance of Logstash persistent queues" href="http://localhost:1313/elastic/improving-the-performance-of-logstash-persistent-queues/"></a>
 </article>
 
@@ -210,7 +249,7 @@ In this blog post, I first discuss how to efficiently specify a filter for docum
     <p>This article can be found at: https://www.elastic.co/blog/how-to-debug-elasticsearch-source-code-in-intellij-idea
 </p>
   </div>
-  <footer class="entry-footer"><span title='2019-02-02 00:00:00 +0000 UTC'>February 2, 2019</span>&nbsp;·&nbsp;<span>1 min</span></footer>
+  <footer class="entry-footer"><span title='2019-02-02 00:00:00 +0000 UTC'>February 2, 2019</span></footer>
   <a class="entry-link" aria-label="post link to Debugging Elasticsearch and Lucene with IntelliJ IDEA" href="http://localhost:1313/elastic/debugging-elasticsearch-and-lucene-with-intellij-idea/"></a>
 </article>
 <footer class="page-footer">

@@ -44,31 +44,31 @@
       <description></description>
     </item>
     <item>
-      <title>Mongodb</title>
-      <link>http://localhost:1313/categories/mongodb/</link>
-      <pubDate>Thu, 02 Mar 2017 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/categories/mongodb/</guid>
+      <title>Nutrition</title>
+      <link>http://localhost:1313/categories/nutrition/</link>
+      <pubDate>Tue, 30 Jul 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/categories/nutrition/</guid>
       <description></description>
     </item>
     <item>
       <title>Finance</title>
       <link>http://localhost:1313/categories/finance/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 27 Jul 2019 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/categories/finance/</guid>
       <description></description>
     </item>
     <item>
       <title>Investing</title>
       <link>http://localhost:1313/categories/investing/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 27 Jul 2019 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/categories/investing/</guid>
       <description></description>
     </item>
     <item>
-      <title>Nutrition</title>
-      <link>http://localhost:1313/categories/nutrition/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/categories/nutrition/</guid>
+      <title>Mongodb</title>
+      <link>http://localhost:1313/categories/mongodb/</link>
+      <pubDate>Thu, 02 Mar 2017 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/categories/mongodb/</guid>
       <description></description>
     </item>
   </channel>

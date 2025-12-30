@@ -30,6 +30,41 @@
       <description></description>
     </item>
     <item>
+      <title>Architecture</title>
+      <link>http://localhost:1313/tags/architecture/</link>
+      <pubDate>Sun, 21 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/architecture/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Barcelona</title>
+      <link>http://localhost:1313/tags/barcelona/</link>
+      <pubDate>Sun, 21 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/barcelona/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Europe</title>
+      <link>http://localhost:1313/tags/europe/</link>
+      <pubDate>Sun, 21 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/europe/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Spain</title>
+      <link>http://localhost:1313/tags/spain/</link>
+      <pubDate>Sun, 21 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/spain/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Travel</title>
+      <link>http://localhost:1313/tags/travel/</link>
+      <pubDate>Sun, 21 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/travel/</guid>
+      <description></description>
+    </item>
+    <item>
       <title>Search-Engine</title>
       <link>http://localhost:1313/tags/search-engine/</link>
       <pubDate>Sat, 15 May 2021 00:00:00 +0000</pubDate>
@@ -69,6 +104,13 @@
       <link>http://localhost:1313/tags/transactions/</link>
       <pubDate>Thu, 05 Dec 2019 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/tags/transactions/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Share-Options</title>
+      <link>http://localhost:1313/tags/share-options/</link>
+      <pubDate>Sat, 27 Jul 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/share-options/</guid>
       <description></description>
     </item>
     <item>
@@ -230,48 +272,6 @@
       <link>http://localhost:1313/tags/restore/</link>
       <pubDate>Wed, 25 Jan 2017 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/tags/restore/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Architecture</title>
-      <link>http://localhost:1313/tags/architecture/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/architecture/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Barcelona</title>
-      <link>http://localhost:1313/tags/barcelona/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/barcelona/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Europe</title>
-      <link>http://localhost:1313/tags/europe/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/europe/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Share-Options</title>
-      <link>http://localhost:1313/tags/share-options/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/share-options/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Spain</title>
-      <link>http://localhost:1313/tags/spain/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/spain/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Travel</title>
-      <link>http://localhost:1313/tags/travel/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/travel/</guid>
       <description></description>
     </item>
   </channel>

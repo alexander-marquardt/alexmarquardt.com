@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto" data-theme="light">
+<html lang="en" dir="auto" data-theme="auto">
 
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,7 +12,7 @@ Elasticsearch Time Series Data Streams (TSDS) are designed to provide an efficie
 In this blog I will demonstrate logic that can be added to an Elasticsearch ingest pipeline which can be used to intercept documents that would be rejected by the TSDS index due to timestamp range issues, and to instead redirect them to a &ldquo;failed&rdquo; index. The documents that are redirected to the &ldquo;failed&rdquo; index may (for example) be used to raise alerts and examined.">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/elastic/re-directing-elasticsearch-documents-with-out-of-range-timestamps-that-would-fail-to-get-written-into-time-series-data-streams/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2fe4dc5b52567b7454ee976e121c74370e14415db7564bb5ae6de9bd591821ff.css" integrity="sha256-L&#43;TcW1JWe3RU7pduEhx0Nw4UQV23Vku1rm3pvVkYIf8=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.16015f91a66b46ba261d7a8bdc4ebc41b1453d8387302aef098118ac6f00fe06.css" integrity="sha256-FgFfkaZrRromHXqL3E68QbFFPYOHMCrvCYEYrG8A/gY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -29,10 +29,47 @@ In this blog I will demonstrate logic that can be added to an Elasticsearch inge
         }
 
     </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
 </noscript>
 <script>
     if (localStorage.getItem("pref-theme") === "dark") {
         document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
     }
 
 </script>
@@ -41,7 +78,9 @@ In this blog I will demonstrate logic that can be added to an Elasticsearch inge
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">Alexander Marquardt</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">
+                <img src="http://localhost:1313/alexmarquardt.png" alt="" aria-label="logo"
+                    height="30">Alexander Marquardt</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -77,30 +116,10 @@ In this blog I will demonstrate logic that can be added to an Elasticsearch inge
     <h1 class="post-title entry-hint-parent">
       Re-directing Elasticsearch documents with out-of-range timestamps that (would) fail to get written into Time Series Data Streams
     </h1>
-    <div class="post-meta"><span title='2024-04-16 00:00:00 +0000 UTC'>April 16, 2024</span>&nbsp;·&nbsp;<span>4 min</span>
+    <div class="post-meta"><span title='2024-04-16 00:00:00 +0000 UTC'>April 16, 2024</span>
 
 </div>
-  </header> <div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
-        </summary>
-
-        <div class="inner"><ul>
-                <li>
-                    <a href="#introduction" aria-label="Introduction">Introduction</a></li>
-                <li>
-                    <a href="#motivation" aria-label="Motivation">Motivation</a></li>
-                <li>
-                    <a href="#design" aria-label="Design">Design</a></li>
-                <li>
-                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
-                </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
+  </header> 
   <div class="post-content"><h2 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h2>
 <p>Elasticsearch <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/tsds.html">Time Series Data Streams (TSDS)</a> are designed to provide an efficient and scalable way to handle time-based data within the Elasticsearch ecosystem. This feature is specifically optimized for storing, searching, and managing time-series data such as metrics, and events, where data is continuously indexed in chronological order. However, if events arrive with timestamps that fall outside of a pre-defined range, they will be lost.</p>
 <p>In this blog I will demonstrate logic that can be added to an Elasticsearch ingest pipeline which can be used to intercept documents that would be rejected by the TSDS index due to timestamp range issues, and to instead redirect them to a &ldquo;failed&rdquo; index. The documents that are redirected to the &ldquo;failed&rdquo; index may (for example) be used to raise alerts and examined.</p>
@@ -194,7 +213,6 @@ PUT /_index_template/my-data-stream-template?pretty
     <ul class="post-tags">
       <li><a href="http://localhost:1313/tags/elasticsearch/">Elasticsearch</a></li>
     </ul>
-
   </footer>
 </article>
     </main>
@@ -273,53 +291,6 @@ PUT /_index_template/my-data-stream-template?pretty
         }
     })
 
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
-        const container = codeblock.parentNode.parentNode;
-
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = 'copy';
-
-        function copyingDone() {
-            copybutton.innerHTML = 'copied!';
-            setTimeout(() => {
-                copybutton.innerHTML = 'copy';
-            }, 2000);
-        }
-
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
-        });
-
-        if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
-        } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
-        } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
-        }
-    });
 </script>
 </body>
 

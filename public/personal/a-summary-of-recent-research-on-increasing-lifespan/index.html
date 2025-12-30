@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto" data-theme="light">
+<html lang="en" dir="auto" data-theme="auto">
 
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,7 +20,7 @@ A brief overview of the book: &ldquo;Lifespan: Why we age — and why we don&rsq
 David A. Sinclair and M. D. LaPlante have written a New York Times Bestseller called Lifespan: Why we age — and why we don&rsquo;t have to. David Sinclair has also given many interviews and talks which can be found online.">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/personal/a-summary-of-recent-research-on-increasing-lifespan/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2fe4dc5b52567b7454ee976e121c74370e14415db7564bb5ae6de9bd591821ff.css" integrity="sha256-L&#43;TcW1JWe3RU7pduEhx0Nw4UQV23Vku1rm3pvVkYIf8=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.16015f91a66b46ba261d7a8bdc4ebc41b1453d8387302aef098118ac6f00fe06.css" integrity="sha256-FgFfkaZrRromHXqL3E68QbFFPYOHMCrvCYEYrG8A/gY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -37,10 +37,47 @@ David A. Sinclair and M. D. LaPlante have written a New York Times Bestseller ca
         }
 
     </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
 </noscript>
 <script>
     if (localStorage.getItem("pref-theme") === "dark") {
         document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
     }
 
 </script>
@@ -49,7 +86,9 @@ David A. Sinclair and M. D. LaPlante have written a New York Times Bestseller ca
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">Alexander Marquardt</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">
+                <img src="http://localhost:1313/alexmarquardt.png" alt="" aria-label="logo"
+                    height="30">Alexander Marquardt</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -85,48 +124,10 @@ David A. Sinclair and M. D. LaPlante have written a New York Times Bestseller ca
     <h1 class="post-title entry-hint-parent">
       A summary of recent research on increasing lifespan
     </h1>
-    <div class="post-meta"><span title='2021-06-01 00:00:00 +0000 UTC'>June 1, 2021</span>&nbsp;·&nbsp;<span>10 min</span>
+    <div class="post-meta"><span title='2021-06-01 00:00:00 +0000 UTC'>June 1, 2021</span>
 
 </div>
-  </header> <div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
-        </summary>
-
-        <div class="inner"><ul>
-                <li>
-                    <a href="#authors" aria-label="Authors">Authors</a></li>
-                <li>
-                    <a href="#introduction" aria-label="Introduction">Introduction</a></li>
-                <li>
-                    <a href="#a-brief-overview-of-the-book-lifespan-why-we-age--and-why-we-dont-have-to" aria-label="A brief overview of the book: &ldquo;Lifespan: Why we age — and why we don&rsquo;t have to&rdquo;">A brief overview of the book: &ldquo;Lifespan: Why we age — and why we don&rsquo;t have to&rdquo;</a></li>
-                <li>
-                    <a href="#metabolic-changes-associated-with-ageing" aria-label="Metabolic changes associated with ageing">Metabolic changes associated with ageing</a></li>
-                <li>
-                    <a href="#suggestions-for-life-style-regime-for-longevity-and-healthy-living-what-does-david-do" aria-label="Suggestions for life style regime for longevity and healthy living (What does David do?)">Suggestions for life style regime for longevity and healthy living (What does David do?)</a></li>
-                <li>
-                    <a href="#autophagy-a-requirement-for-healthy-living-and-longevity" aria-label="Autophagy A requirement for healthy living and longevity">Autophagy A requirement for healthy living and longevity</a></li>
-                <li>
-                    <a href="#supplements-that-can-increase-sirtuin-activity-and-autophagy" aria-label="Supplements that can increase sirtuin activity and autophagy">Supplements that can increase sirtuin activity and autophagy</a></li>
-                <li>
-                    <a href="#summary-of-nad-and-its-precursors" aria-label="Summary of NAD&#43; and its precursors:">Summary of NAD+ and its precursors:</a></li>
-                <li>
-                    <a href="#e-pathways-for-synthesis-of-different-precursors-of-nad" aria-label="E. Pathways for synthesis of different precursors of NAD&#43;">E. Pathways for synthesis of different precursors of NAD+</a></li>
-                <li>
-                    <a href="#a-model-for-the-connection-between-nad-sirtuins-and-autophagy" aria-label="A model for the connection between NAD&#43;, sirtuins and autophagy">A model for the connection between NAD+, sirtuins and autophagy</a></li>
-                <li>
-                    <a href="#overview-on-procedures-to-increase-nad-in-the-body" aria-label="Overview on procedures to increase NAD&#43; in the body">Overview on procedures to increase NAD+ in the body</a></li>
-                <li>
-                    <a href="#a-summary-of-therapeutic-approaches-to-restore-nad-levels-and-their-impact-on-health" aria-label="A summary of therapeutic approaches to restore NAD&#43; levels and their impact on health">A summary of therapeutic approaches to restore NAD+ levels and their impact on health</a></li>
-                <li>
-                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
-                </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
+  </header> 
   <div class="post-content"><h2 id="authors">Authors<a hidden class="anchor" aria-hidden="true" href="#authors">#</a></h2>
 <ul>
 <li>Ronald R. Marquardt</li>
@@ -239,7 +240,6 @@ David A. Sinclair and M. D. LaPlante have written a New York Times Bestseller ca
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-
   </footer>
 </article>
     </main>
@@ -318,53 +318,6 @@ David A. Sinclair and M. D. LaPlante have written a New York Times Bestseller ca
         }
     })
 
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
-        const container = codeblock.parentNode.parentNode;
-
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = 'copy';
-
-        function copyingDone() {
-            copybutton.innerHTML = 'copied!';
-            setTimeout(() => {
-                copybutton.innerHTML = 'copy';
-            }, 2000);
-        }
-
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
-        });
-
-        if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
-        } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
-        } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
-        }
-    });
 </script>
 </body>
 

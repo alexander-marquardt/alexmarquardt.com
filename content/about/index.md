@@ -25,6 +25,6 @@ I operate across engineering, product management, consulting, and architecture, 
 
 ## Additional Information
 
-- [Professional Record, Publications and Patents](https://alexmarquardt.com/scientific-publications-patents-awards-and-education/)
+- [Professional Record, Publications and Patents](/professional/)
 
-- [Finance, productivity, nutrition, and travel](https://alexmarquardt.com/other-areas-of-interest/)
+- [Finance, productivity, nutrition, and travel](/personal/)

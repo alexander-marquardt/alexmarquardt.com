@@ -107,7 +107,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 ## System Behavior & Advanced Techniques
 
-1. [Using Elastic machine learning to detect anomalies in derivative values](/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/) (Apr 21, 2020)
+1. [Using Elastic machine learning to detect anomalies in derivative values](/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/) (Apr 21, 2020)
 
 3. [How to Debug Elasticsearch Source Code in IntelliJ IDEA | Elastic Blog](https://www.elastic.co/blog/how-to-debug-elasticsearch-source-code-in-intellij-idea) (Feb 14, 2019)
 

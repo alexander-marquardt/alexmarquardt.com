@@ -1,0 +1,74 @@
+/* =========================================================
+   PaperMod: global visual consistency
+   - make HOME + single pages share the same white background
+   - reduce gap between header and page content
+   ========================================================= */
+
+:root {
+  --theme: #ffffff;   /* page background */
+  --entry: #ffffff;   /* cards/containers */
+}
+
+/* Ensure wrappers don't reintroduce gray */
+body,
+.main {
+  background: var(--theme) !important;
+}
+
+/* Reduce gap between header and page content */
+.main {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* Reduce top margin on first heading */
+.main h1:first-child,
+.main h2:first-child {
+  margin-top: 0.6em;
+}
+
+/* =========================================================
+   Wider reading column on large displays (PaperMod)
+   ========================================================= */
+
+/* Default PaperMod variables; override them at desktop sizes */
+@media (min-width: 1100px) {
+  :root {
+    --main-width: 1120px;     /* try 1080–1200; 1120 is a good start */
+    --nav-width: 1120px;
+  }
+}
+
+/* On ultra-wide screens, allow a bit more width */
+@media (min-width: 1500px) {
+  :root {
+    --main-width: 1200px;     /* try 1200–1280 if you like */
+    --nav-width: 1200px;
+  }
+}
+
+/* =========================================================
+   Justified paragraphs (keep headings/lists/code left-aligned)
+   ========================================================= */
+
+.post-content p {
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+}
+
+/* Keep headings / lists / code left aligned */
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6,
+.post-content ul,
+.post-content ol,
+.post-content li,
+.post-content pre,
+.post-content code {
+  text-align: left;
+}

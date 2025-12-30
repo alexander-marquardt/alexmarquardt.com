@@ -1,91 +1,130 @@
 /* =========================================================
-   PaperMod: center the logo in the header
-   (works with menu + theme toggle present)
+   PaperMod header – authoritative override
+   - Center logo
+   - Hide text
+   - FORCE large logo
+   - Respect light/dark theme
    ========================================================= */
 
-/* PaperMod uses .header > .nav as the main flex row */
+/* ---------------------------------------------------------
+   Header + nav: remove size constraints
+   --------------------------------------------------------- */
+.header,
 .header .nav {
-  position: relative;          /* anchor for absolute right items */
-  display: flex;
-  align-items: center;
-  justify-content: center;     /* center logo */
-}
-
-/* Keep logo centered */
-.header .logo {
-  margin: 0 auto;
-}
-
-/* Make the logo link behave predictably */
-.header .logo a {
+  height: auto !important;
+  min-height: unset !important;
+  max-height: unset !important;
+  overflow: visible !important;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Push menu to the right without affecting centering */
-.header .menu,
-.header #menu {
+/* ---------------------------------------------------------
+   Logo container
+   --------------------------------------------------------- */
+.header .logo {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+}
+
+/* Hide text label completely */
+.header .logo a {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+/* ---------------------------------------------------------
+   FORCE LOGO SIZE (this is the key section)
+   --------------------------------------------------------- */
+
+/* Nuke ALL PaperMod limits */
+.header img,
+.header .logo img,
+.header .logo-switches img,
+.header .logo a img {
+  height: 160px !important;        /* ← DESKTOP SIZE */
+  width: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  display: block !important;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .header img,
+  .header .logo img,
+  .header .logo-switches img,
+  .header .logo a img {
+    height: 108px !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   Light / Dark logo swap
+   --------------------------------------------------------- */
+html:not([data-theme="dark"]) .header .logo img {
+  content: url("/alexmarquardt-light.png") !important;
+}
+
+html[data-theme="dark"] .header .logo img {
+  content: url("/alexmarquardt-dark.png") !important;
+}
+
+/* ---------------------------------------------------------
+   Header vertical spacing (prevents clipping)
+   --------------------------------------------------------- */
+.header {
+  padding-top: 20px !important;
+  padding-bottom: 14px !important;
+}
+
+/* ---------------------------------------------------------
+   Menu + theme toggle (right side, absolute)
+   --------------------------------------------------------- */
+.header #menu,
+.header .menu {
   position: absolute;
   right: 1rem;
 }
 
-/* Theme toggle icon: also keep it on the right */
 .header .theme-toggle {
   position: absolute;
   right: 1rem;
 }
 
-/* If both menu and theme toggle exist, give toggle a bit more room */
-.header .menu ~ .theme-toggle,
-.header #menu ~ .theme-toggle {
-  right: 3.5rem;
+.header #menu ~ .theme-toggle,
+.header .menu ~ .theme-toggle {
+  right: 3.25rem;
 }
 
-/* Mobile: slightly tighter right padding */
+/* Mobile tightening */
 @media (max-width: 600px) {
-  .header .menu,
-  .header #menu {
+  .header #menu,
+  .header .menu {
     right: 0.75rem;
   }
+
   .header .theme-toggle {
     right: 0.75rem;
   }
-  .header .menu ~ .theme-toggle,
-  .header #menu ~ .theme-toggle {
-    right: 3.0rem;
+
+  .header #menu ~ .theme-toggle,
+  .header .menu ~ .theme-toggle {
+    right: 2.75rem;
   }
 }
 
-/* Hide raw text node inside the logo link (PaperMod) */
-.header .logo a {
-  font-size: 0 !important;      /* hides "Alexander Marquardt" text node */
-  line-height: 0 !important;
-}
-
-/* Keep the image visible */
-.header .logo a img {
-  display: inline-block;
-}
-
-/* Restore sizing for the theme toggle icon inside .logo-switches */
+/* ---------------------------------------------------------
+   Restore toggle icon sizing (PaperMod regression fix)
+   --------------------------------------------------------- */
 .header .logo-switches,
 .header .logo-switches * {
   font-size: 16px !important;
   line-height: 1 !important;
-}
-
-/* Control logo size */
-.header .logo img {
-  height: 64px;     /* adjust */
-  width: auto;
-  max-height: 64px;
-}
-
-/* Slightly smaller on narrow screens */
-@media (max-width: 600px) {
-  .header .logo img {
-    height: 52px;   /* adjust */
-    max-height: 52px;
-  }
 }

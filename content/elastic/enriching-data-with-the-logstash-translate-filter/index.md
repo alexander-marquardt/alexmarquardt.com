@@ -1,6 +1,9 @@
 ---
 title: "Enriching data with the Logstash translate filter"
 date: 2020-03-06
+slug: enriching-data-with-the-logstash-translate-filter
+aliases:
+  - /enriching-data-with-the-logstash-translate-filter/
 ---
 
 March 6, 2020

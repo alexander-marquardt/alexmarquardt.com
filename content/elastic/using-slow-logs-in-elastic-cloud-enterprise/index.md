@@ -1,6 +1,9 @@
 ---
 title: "Using slow logs in Elastic Cloud Enterprise"
 date: 2020-04-26
+slug: using-slow-logs-in-elastic-cloud-enterprise
+aliases:
+  - /using-slow-logs-in-elastic-cloud-enterprise/
 ---
 
 April 26, 2020

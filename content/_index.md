@@ -33,13 +33,13 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 3. [Understanding and fixing "too many script compilations" errors in Elasticsearch](/elastic/elasticsearch-too-many-script-compilations/) (Oct 21, 2020)
 
-5. [Using slow logs in Elastic Cloud Enterprise](/using-slow-logs-in-elastic-cloud-enterprise/) (Apr 26, 2020)
+5. [Using slow logs in Elastic Cloud Enterprise](/elastic/using-slow-logs-in-elastic-cloud-enterprise/) (Apr 26, 2020)
 
 7. [Using parallel Logstash pipelines to improve persistent queue throughput | Elastic Blog](https://www.elastic.co/blog/using-parallel-logstash-pipelines-to-improve-persistent-queue-performance) (Nov 14, 2019)
 
 9. [Improving the performance of high-cardinality terms aggregations | Elastic Blog](https://www.elastic.co/blog/improving-the-performance-of-high-cardinality-terms-aggregations-in-elasticsearch) (May 9, 2019)
 
-11. [How to tune Elasticsearch for aggregation performance](/how-to-tune-elasticsearch-for-aggregation-performance/) (Oct 2, 2018)
+11. [How to tune Elasticsearch for aggregation performance](/elastic/how-to-tune-elasticsearch-for-aggregation-performance/) (Oct 2, 2018)
 
 ## Ingest Architecture
 
@@ -53,9 +53,9 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 ## Data Parsing & Structuring
 
-1. [Using Kibana’s Painless Lab (Beta) to test an ingest processor script](/2020/11/09/using-kibanas-painless-lab-beta-to-test-an-ingest-processor-script/) (Nov 9, 2020)
+1. [Using Kibana’s Painless Lab (Beta) to test an ingest processor script](/elastic/using-kibanas-painless-lab-beta-to-test-an-ingest-processor-script/) (Nov 9, 2020)
 
-3. [Using Elasticsearch Painless scripting to recursively iterate through JSON fields](/2020/11/06/using-elasticsearch-painless-scripting-to-iterate-through-fields/) (Nov 6, 2020)
+3. [Using Elasticsearch Painless scripting to recursively iterate through JSON fields](/elastic/using-elasticsearch-painless-scripting-to-iterate-through-fields/) (Nov 6, 2020)
 
 5. [Debugging broken grok expressions in Elasticsearch ingest processors | Elastic Blog](https://www.elastic.co/blog/debugging-broken-grok-expressions-in-elasticsearch-ingest-processors) (Sep 3, 2020)
 
@@ -65,23 +65,23 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 11. [Converting CSV to JSON in Filebeat](/2020/03/17/converting-csv-to-json-in-filebeat/) (Mar 17, 2020)
 
-13. [Using Logstash prune capabilities to whitelist sub-documents](/2018/08/28/using-logstash-prune-capabilities-to-whitelist-sub-documents/) (Aug 28, 2018)
+13. [Using Logstash prune capabilities to whitelist sub-documents](/elastic/using-logstash-prune-capabilities-to-whitelist-sub-documents/) (Aug 28, 2018)
 
 ## Data Derivation & Enrichment
 
 1. [Using Logstash to scan inside event contents and to replace sensitive data with a consistent hash](https://alexmarquardt.com/2022/01/20/using-logstash-to-hash-sensitive-text/) (Jan 20, 2022)
 
-3. [Using Logstash and Elasticsearch to calculate transaction duration in a microservices architecture](/2020/09/16/using-logstash-and-elasticsearch-scripted-upserts-to-calculate-transaction-duration-from-out-of-order-events/) (Sep 16, 2020)
+3. [Using Logstash and Elasticsearch to calculate transaction duration in a microservices architecture](/elastic/using-logstash-and-elasticsearch-scripted-upserts-to-calculate-transaction-duration-from-out-of-order-events/) (Sep 16, 2020)
 
 5. [How to enrich logs and metrics using an Elasticsearch ingest node | Elastic Blog](https://www.elastic.co/blog/how-to-enrich-logs-and-metrics-using-an-elasticsearch-ingest-node) (May 12, 2020)
 
-7. [Enriching data with the Logstash translate filter](/enriching-data-with-the-logstash-translate-filter/) (Mar 6, 2020)
+7. [Enriching data with the Logstash translate filter](/elastic/enriching-data-with-the-logstash-translate-filter/) (Mar 6, 2020)
 
-9. [Using Logstash and Elasticsearch scripted upserts to transform eCommerce purchasing data](/2019/12/17/logstash-and-elasticsearch-painless-scripted-upserts-transform-data/) (Dec 17, 2019)
+9. [Using Logstash and Elasticsearch scripted upserts to transform eCommerce purchasing data](/elastic/logstash-and-elasticsearch-painless-scripted-upserts-transform-data/) (Dec 17, 2019)
 
 ## End-to-End Systems & Reference Implementations
 
-1. [ES Local Indexer – Desktop search powered by Elasticsearch](/es-local-indexer-desktop-search-built-with-elasticsearch/) (Aug 7, 2019)
+1. [ES Local Indexer – Desktop search powered by Elasticsearch](/elastic/es-local-indexer-desktop-search-built-with-elasticsearch/) (Aug 7, 2019)
 
 3. [How to keep Elasticsearch synchronized with a relational database using Logstash | Elastic Blog](https://www.elastic.co/blog/how-to-keep-elasticsearch-synchronized-with-a-relational-database-using-logstash) (Jun 20, 2019)
 

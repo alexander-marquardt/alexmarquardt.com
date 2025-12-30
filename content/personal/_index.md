@@ -1,14 +1,11 @@
 ---
-title: "Personal"
-description: "Other areas of interest"
 layout: "single"
+title: "Other Areas of Interest"
+description: "Occasional writing outside of my technical work, including notes on finance, travel, productivity, and other personal interests."
 slug: personal
 aliases:
   - /other-areas-of-interest/
 ---
-# Other Areas of Interest
-Occasional writing outside of my technical work, including notes on finance,
-travel, productivity, and other personal interests.
 
 ## Finance
 

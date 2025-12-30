@@ -1,14 +1,10 @@
 ---
-date: 2025-12-26
+title: Professional Record and Publications
+description: This page provides supporting material for my professional background, including selected publications, patents, open-source contributions, and formal education.
 slug: professional
 aliases:
   - /scientific-publications-patents-awards-and-education/
 ---
-
-# Professional Record and Publications
-
-This page provides supporting material for my professional background, including selected publications, patents, open-source contributions, and formal education.
-
 ## Profiles
 
 - [LinkedIn Profile](https://www.linkedin.com/in/alexandermarquardt/)

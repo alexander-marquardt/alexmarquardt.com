@@ -1,10 +1,6 @@
 ---
-title: ""
-layout: "page"
+title: About the Author
 ---
-
-# About the Author
-
 ## Senior Principal Architect | GenAI & Search
 
 I work on complex technical systems where performance, scale, and real-world constraints intersect. My focus is on architectural decision-making in distributed search and AI platforms, identifying structural risks, design trade-offs, and system behaviors that shape reliability and performance at scale.

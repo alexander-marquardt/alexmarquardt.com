@@ -31,7 +31,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 1. [How excessive replica counts can degrade performance, and what to do about it | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/elasticsearch-replica-counts-right-sizing) (Dec 8, 2025)
 
-3. [Understanding and fixing "too many script compilations" errors in Elasticsearch](/2020/10/21/elasticsearch-too-many-script-compilations/) (Oct 21, 2020)
+3. [Understanding and fixing "too many script compilations" errors in Elasticsearch](/elastic/elasticsearch-too-many-script-compilations/) (Oct 21, 2020)
 
 5. [Using slow logs in Elastic Cloud Enterprise](/using-slow-logs-in-elastic-cloud-enterprise/) (Apr 26, 2020)
 

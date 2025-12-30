@@ -17,7 +17,7 @@ title = 'Alexander Marquardt'
   ShowToc = true
   TocOpen = false
 
-  mainSections = ["elastic", "airbyte", "mongodb"]
+  mainSections = []
 
 [permalinks]
   elastic = "/elastic/:slug/"

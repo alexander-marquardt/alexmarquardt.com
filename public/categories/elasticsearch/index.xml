@@ -23,9 +23,9 @@
     </item>
     <item>
       <title>Understanding and fixing &#34;too many script compilations&#34; errors in Elasticsearch</title>
-      <link>http://localhost:1313/elastic/understanding-and-fixing-too-many-script-compilations-errors-in-elasticsearch/</link>
+      <link>http://localhost:1313/elastic/elasticsearch-too-many-script-compilations/</link>
       <pubDate>Wed, 21 Oct 2020 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/understanding-and-fixing-too-many-script-compilations-errors-in-elasticsearch/</guid>
+      <guid>http://localhost:1313/elastic/elasticsearch-too-many-script-compilations/</guid>
       <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;When using Elasticsearch, in some rare instances you may see an error such as &amp;ldquo;Too many dynamic script compilations within X minutes&amp;rdquo;. Such an error may be caused by a poor script design &lt;a href=&#34;https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-scripting-using.html#prefer-params&#34;&gt;where parameters are hard-coded&lt;/a&gt;. In other cases this may be due to the script cache being too small or the compilation limit being too low. In this article, I will show how to determine if these default limits are too low, and how these limits can be modified.&lt;/p&gt;</description>
     </item>

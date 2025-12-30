@@ -1,81 +1,130 @@
-/* Center logo */
+/* =========================================================
+   PaperMod header override
+   - Center logo + theme toggle as one group
+   - Large logo
+   - Correct light / dark logo swap
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   Header layout
+   --------------------------------------------------------- */
+
 .header .nav {
-  position: relative;
   display: flex;
+  justify-content: center;     /* center the group */
   align-items: center;
-  justify-content: center;
-  overflow: visible;
+  position: relative;
+  line-height: normal;         /* avoid 60px PaperMod line-box issues */
 }
+
+/* ---------------------------------------------------------
+   Logo + toggle group
+   --------------------------------------------------------- */
 
 .header .logo {
-  margin: 0 auto;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 16px;                   /* space between logo and toggle */
+  margin: 0 auto;
 }
 
-/* Hide text label by not rendering it; safeguard anyway */
+/* Hide text label cleanly */
 .header .logo a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
   font-size: 0;
   line-height: 0;
 }
 
-/* Size both logo images */
-.header .logo a img.am-logo {
-  height: 160px;
-  width: auto;
-  max-height: none;
-  display: block;
+/* ---------------------------------------------------------
+   Logo sizing (authoritative)
+   --------------------------------------------------------- */
+
+.header .logo img.am-logo {
+  height: 160px !important;    /* DESKTOP SIZE */
+  width: auto !important;
+  max-height: none !important;
+  display: block !important;
 }
-
-/* Only show one logo at a time */
-.header img.am-logo-light { display: block; }
-.header img.am-logo-dark  { display: none; }
-
-html[data-theme="dark"] .header img.am-logo-light { display: none; }
-html[data-theme="dark"] .header img.am-logo-dark  { display: block; }
 
 /* Mobile */
 @media (max-width: 600px) {
-  .header .logo a img.am-logo { height: 108px; }
+  .header .logo img.am-logo {
+    height: 108px !important;
+  }
 }
 
-/* Prevent clipping */
+/* ---------------------------------------------------------
+   Light / Dark logo swap (robust, minimal)
+   --------------------------------------------------------- */
+
+/* Default = light */
+.header img.am-logo-light {
+  display: block !important;
+}
+
+.header img.am-logo-dark {
+  display: none !important;
+}
+
+/* Dark mode */
+html[data-theme="dark"] .header img.am-logo-light {
+  display: none !important;
+}
+
+html[data-theme="dark"] .header img.am-logo-dark {
+  display: block !important;
+}
+
+/* ---------------------------------------------------------
+   Theme toggle alignment
+   --------------------------------------------------------- */
+
+.header .logo-switches {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+/* ---------------------------------------------------------
+   IMPORTANT: neutralize PaperMod positioning hacks
+   --------------------------------------------------------- */
+
+.header #menu,
+.header .menu,
+.header #theme-toggle,
+.header .theme-toggle {
+  position: static !important;
+  right: auto !important;
+}
+
+/* ---------------------------------------------------------
+   Header vertical spacing
+   --------------------------------------------------------- */
+
 .header {
-  padding-top: 20px;
-  padding-bottom: 14px;
+  padding-top: 20px !important;
+  padding-bottom: 14px !important;
   overflow: visible;
 }
 
-/* Keep menu + toggle on the right */
-.header #menu { position: absolute; right: 1rem; }
-.header #theme-toggle { position: absolute; right: 1rem; }
+/* ===== FINAL, AUTHORITATIVE LOGO SWAP (keep at END of file) ===== */
 
-.header #menu ~ #theme-toggle { right: 3.25rem; }
-
-@media (max-width: 600px) {
-  .header #menu { right: 0.75rem; }
-  .header #theme-toggle { right: 0.75rem; }
-  .header #menu ~ #theme-toggle { right: 2.75rem; }
+/* Default to light logo unless explicitly dark */
+html:not([data-theme="dark"]) .header .logo a > img.am-logo-light {
+  display: block !important;
+}
+html:not([data-theme="dark"]) .header .logo a > img.am-logo-dark {
+  display: none !important;
 }
 
-/* =========================================================
-   Force exactly ONE logo visible based on PaperMod theme
-   html[data-theme="light"] or html[data-theme="dark"]
-   ========================================================= */
-
-/* Default: LIGHT mode shows light logo only */
-html[data-theme="light"] .header .logo a img.am-logo-light { display: block !important; }
-html[data-theme="light"] .header .logo a img.am-logo-dark  { display: none  !important; }
-
-/* DARK mode shows dark logo only */
-html[data-theme="dark"] .header .logo a img.am-logo-light { display: none  !important; }
-html[data-theme="dark"] .header .logo a img.am-logo-dark  { display: block !important; }
-
-/* Safety fallback: if data-theme is missing, treat as light */
-html:not([data-theme]) .header .logo a img.am-logo-light { display: block !important; }
-html:not([data-theme]) .header .logo a img.am-logo-dark  { display: none  !important; }
+/* Dark mode */
+html[data-theme="dark"] .header .logo a > img.am-logo-light {
+  display: none !important;
+}
+html[data-theme="dark"] .header .logo a > img.am-logo-dark {
+  display: block !important;
+}

@@ -3,6 +3,9 @@ title: "Re-directing Elasticsearch documents with out-of-range timestamps that (
 date: 2024-04-16
 tags: 
   - "elasticsearch"
+slug: catching-elasticsearch-documents-with-incorrect-timestamps-that-fail-to-get-written-into-time-series-data-streams
+aliases:
+  - /2024/04/16/catching-elasticsearch-documents-with-incorrect-timestamps-that-fail-to-get-written-into-time-series-data-streams/
 ---
 
 ## Introduction

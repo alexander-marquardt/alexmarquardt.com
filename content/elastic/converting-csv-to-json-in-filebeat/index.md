@@ -9,6 +9,9 @@ tags:
   - "ingest"
   - "javascript"
   - "json"
+slug: converting-csv-to-json-in-filebeat/
+aliases:
+  - /2020/03/17/converting-csv-to-json-in-filebeat/
 ---
 
 # Introduction

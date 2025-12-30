@@ -1,6 +1,9 @@
 ---
 title: "Personalizing e-commerce search results based on purchase history in Elasticsearch (Without a need for Machine Learning Post Processing)"
 date: 2025-09-12
+slug: personalizing-search-in-elasticsearch-without-ml-post-processing
+aliases:
+  - /personalizing-search-in-elasticsearch-without-ml-post-processing/
 ---
 
 Whether you’re looking for a product in an online store, an article in a news archive, or a file in a company knowledge base, the quality of the search experience determines how quickly you find what you need. Behind the scenes, many of these systems are powered by **Elasticsearch**, a popular open-source search engine designed to handle large volumes of data and return relevant results in milliseconds.

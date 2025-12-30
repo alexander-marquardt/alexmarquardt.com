@@ -1,6 +1,9 @@
 ---
 title: "Driving Filebeat data into separate indices (uses legacy index templates)"
 date: 2021-03-15
+slug: driving-filebeat-data-into-separate-indices-uses-legacy-index-templates
+aliases: 
+  - /2021/03/15/driving-filebeat-data-into-separate-indices-uses-legacy-index-templates/
 ---
 
 ## Introduction

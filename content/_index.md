@@ -19,7 +19,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 5. [How to improve e-commerce search relevance with personalized cohort-aware ranking | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-relevance-cohort-aware-ranking-elasticsearch) (Dec 10, 2025)
 
-7. [Personalizing e-commerce search results based on purchase history in Elasticsearch (Without a need for Machine Learning Post Processing)](https://alexmarquardt.com/personalizing-search-in-elasticsearch-without-ml-post-processing/) (Sep 12, 2025)
+7. [Personalizing e-commerce search results based on purchase history in Elasticsearch (Without a need for Machine Learning Post Processing)](/elastic/personalizing-search-in-elasticsearch-without-ml-post-processing/) (Sep 12, 2025)
 
 9. [Efficient bitwise matching of documents in Elasticsearch | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/efficient-bitwise-matching-in-elasticsearch) (Oct 21, 2024)
 
@@ -43,9 +43,9 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 ## Ingest Architecture
 
-1. [Re-directing Elasticsearch documents with out-of-range timestamps that (would) fail to get written into Time Series Data Streams](https://alexmarquardt.com/2024/04/16/catching-elasticsearch-documents-with-incorrect-timestamps-that-fail-to-get-written-into-time-series-data-streams/) (Apr 16, 2024)
+1. [Re-directing Elasticsearch documents with out-of-range timestamps that (would) fail to get written into Time Series Data Streams](/elastic/catching-elasticsearch-documents-with-incorrect-timestamps-that-fail-to-get-written-into-time-series-data-streams/) (Apr 16, 2024)
 
-3. [Driving Filebeat data into separate indices (uses legacy index templates)](https://alexmarquardt.com/2021/03/15/driving-filebeat-data-into-separate-indices-uses-legacy-index-templates/) (March 15, 2021)
+3. [Driving Filebeat data into separate indices (uses legacy index templates)](/elastic/driving-filebeat-data-into-separate-indices-uses-legacy-index-templates/) (March 15, 2021)
 
 5. [How to create maintainable and reusable Logstash pipelines | Elastic Blog](https://www.elastic.co/blog/how-to-create-maintainable-and-reusable-logstash-pipelines) (Feb 27, 2020)
 
@@ -63,13 +63,13 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 9. [Structuring Elasticsearch data with grok on ingest for faster analytics | Elastic Blog](https://www.elastic.co/blog/structuring-elasticsearch-data-with-grok-on-ingest-for-faster-analytics) (Jul 30, 2020)
 
-11. [Converting CSV to JSON in Filebeat](/2020/03/17/converting-csv-to-json-in-filebeat/) (Mar 17, 2020)
+11. [Converting CSV to JSON in Filebeat](/elastic/converting-csv-to-json-in-filebeat/) (Mar 17, 2020)
 
 13. [Using Logstash prune capabilities to whitelist sub-documents](/elastic/using-logstash-prune-capabilities-to-whitelist-sub-documents/) (Aug 28, 2018)
 
 ## Data Derivation & Enrichment
 
-1. [Using Logstash to scan inside event contents and to replace sensitive data with a consistent hash](https://alexmarquardt.com/2022/01/20/using-logstash-to-hash-sensitive-text/) (Jan 20, 2022)
+1. [Using Logstash to scan inside event contents and to replace sensitive data with a consistent hash](/elastic/using-logstash-to-hash-sensitive-text/) (Jan 20, 2022)
 
 3. [Using Logstash and Elasticsearch to calculate transaction duration in a microservices architecture](/elastic/using-logstash-and-elasticsearch-scripted-upserts-to-calculate-transaction-duration-from-out-of-order-events/) (Sep 16, 2020)
 
@@ -89,7 +89,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 1. [Safely sample production data into pre-production environments with Logstash | Elastic Blog](https://www.elastic.co/blog/production-data-pre-production-environments-logstash) (Oct 1, 2024)
 
-3. [Automating the Import and Export of Kibana Saved Objects](https://alexmarquardt.com/2024/05/03/automating-the-import-and-export-of-kibana-saved-objects/) (May 3, 2024)
+3. [Automating the Import and Export of Kibana Saved Objects](/elastic/automating-the-import-and-export-of-kibana-saved-objects/) (May 3, 2024)
 
 5. [Calculating ingest lag and storing ingest time in Elasticsearch to improve observability | Elastic Blog](https://www.elastic.co/blog/calculating-ingest-lag-and-storing-ingest-time-in-elasticsearch-to-improve-observability) (Jun 16, 2020)
 

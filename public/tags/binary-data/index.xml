@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Binary-Data on Alexander Marquardt</title>
+    <link>http://localhost:1313/tags/binary-data/</link>
+    <description>Recent content in Binary-Data on Alexander Marquardt</description>
+    <generator>Hugo -- 0.153.4</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 02 Mar 2017 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/binary-data/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Trade-offs to consider when storing binary data in MongoDB</title>
+      <link>http://localhost:1313/posts/trade-offs-to-consider-when-storing-binary-data-in-mongodb/</link>
+      <pubDate>Thu, 02 Mar 2017 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/trade-offs-to-consider-when-storing-binary-data-in-mongodb/</guid>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;When using MongoDB there are several approaches that make it easy to store and retrieve binary data, but it is not always clear which approach is the most appropriate for a given application. Therefore, in this blog post I discuss several methods for storing binary data when using MongoDB and the trade-offs associated with each method. Many of the trade-offs discussed here would likely apply to most other databases as well.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

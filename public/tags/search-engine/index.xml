@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Search-Engine on Alexander Marquardt</title>
+    <link>http://localhost:1313/tags/search-engine/</link>
+    <description>Recent content in Search-Engine on Alexander Marquardt</description>
+    <generator>Hugo -- 0.153.4</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 15 May 2021 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/search-engine/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Combining Elasticsearch stemmers and synonyms to improve search relevance</title>
+      <link>http://localhost:1313/posts/combining-elasticsearch-stemmers-and-synonyms-to-improve-search-relevance/</link>
+      <pubDate>Sat, 15 May 2021 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/combining-elasticsearch-stemmers-and-synonyms-to-improve-search-relevance/</guid>
+      <description>&lt;p&gt;This is now published on Elastic&amp;rsquo;s official blog. Please check it out at: &lt;a href=&#34;https://www.elastic.co/blog/improve-search-relevance-by-combining-elasticsearch-stemmers-and-synonyms&#34;&gt;https://www.elastic.co/blog/improve-search-relevance-by-combining-elasticsearch-stemmers-and-synonyms&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Debugging Elasticsearch and Lucene with IntelliJ IDEA</title>
+      <link>http://localhost:1313/posts/debugging-elasticsearch-and-lucene-with-intellij-idea/</link>
+      <pubDate>Sat, 02 Feb 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/debugging-elasticsearch-and-lucene-with-intellij-idea/</guid>
+      <description>&lt;p&gt;This article can be found at: &lt;a href=&#34;https://www.elastic.co/blog/how-to-debug-elasticsearch-source-code-in-intellij-idea&#34;&gt;https://www.elastic.co/blog/how-to-debug-elasticsearch-source-code-in-intellij-idea&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>A step-by-step guide to enabling security, TLS/SSL, and PKI authentication in Elasticsearch</title>
+      <link>http://localhost:1313/posts/security-tls-ssl-pki-authentication-in-elasticsearch/</link>
+      <pubDate>Mon, 05 Nov 2018 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/security-tls-ssl-pki-authentication-in-elasticsearch/</guid>
+      <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/elasticsearch-security-configure-tls-ssl-pki-authentication&#34;&gt;https://www.elastic.co/blog/elasticsearch-security-configure-tls-ssl-pki-authentication&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="light">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Using slow logs in Elastic Cloud Enterprise | Alexander Marquardt</title>
+<meta name="keywords" content="">
+<meta name="description" content="April 26, 2020
+Authors
+
+Tom Schreiber
+Alex Marquardt
+
+Version
+This blog article is based on ECE 2.4.3.
+Introduction
+Elastic Cloud Enterprise (ECE) is a platform designed to ease the management, deployment, and configuration of multiple Elasticsearch clusters through a single administrative user interface. ECE, is the same product that powers the Elasticsearch Service hosted offering, and is available for installation on customer-managed servers. ECE can be deployed anywhere - on public or private clouds, virtual machines, or even on bare metal hardware. Once installed, ECE allows Elasticsearch clusters to be created, upgraded, or deleted with the click of a button.">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/elastic/using-slow-logs-in-elastic-cloud-enterprise/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.343cc480b9ffc8f04ccbe5e968ad674880cab773ec19905e93033065c1e7a804.css" integrity="sha256-NDzEgLn/yPBMy&#43;XpaK1nSIDKt3PsGZBekwMwZcHnqAQ=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/elastic/using-slow-logs-in-elastic-cloud-enterprise/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">Alexander Marquardt</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Using slow logs in Elastic Cloud Enterprise
+    </h1>
+    <div class="post-meta"><span title='2020-04-26 00:00:00 +0000 UTC'>April 26, 2020</span>&nbsp;·&nbsp;<span>11 min</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#authors" aria-label="Authors">Authors</a></li>
+                <li>
+                    <a href="#version" aria-label="Version">Version</a></li>
+                <li>
+                    <a href="#introduction" aria-label="Introduction">Introduction</a></li>
+                <li>
+                    <a href="#why-not-use-the-built-in-logging-and-metrics-cluster-for-analysis-alerting-and-dashboards" aria-label="Why not use the built-in Logging and Metrics cluster for analysis, alerting, and dashboards?">Why not use the built-in Logging and Metrics cluster for analysis, alerting, and dashboards?</a></li>
+                <li>
+                    <a href="#create-additional-clusters" aria-label="Create additional clusters">Create additional clusters</a></li>
+                <li>
+                    <a href="#enable-the-sample-data-and-execute-queries" aria-label="Enable the sample data and execute queries">Enable the sample data and execute queries</a></li>
+                <li>
+                    <a href="#enabling-slow-logs-for-the-sample-data" aria-label="Enabling slow logs for the sample data">Enabling slow logs for the sample data</a></li>
+                <li>
+                    <a href="#execute-queries-against-the-sample-data" aria-label="Execute queries against the sample data">Execute queries against the sample data</a><ul>
+                        
+                <li>
+                    <a href="#view-the-slow-logs-in-the-logging-and-metrics-cluster" aria-label="View the slow logs in the Logging and Metrics cluster">View the slow logs in the Logging and Metrics cluster</a></li>
+                <li>
+                    <a href="#extract-fields-from-the-message-string" aria-label="Extract fields from the message string">Extract fields from the message string</a></li>
+                <li>
+                    <a href="#grok" aria-label="Grok">Grok</a></li>
+                <li>
+                    <a href="#test-the-pipeline" aria-label="Test the pipeline">Test the pipeline</a></li>
+                <li>
+                    <a href="#reindex-data-from-the-logging-and-metrics-cluster-into-the-analysis-cluster" aria-label="Reindex data from the Logging and Metrics cluster into the analysis cluster">Reindex data from the Logging and Metrics cluster into the analysis cluster</a></li>
+                <li>
+                    <a href="#result-of-the-reindex-operation" aria-label="Result of the reindex operation">Result of the reindex operation</a></li>
+                <li>
+                    <a href="#automate-the-execution-of-the-reindex-operation" aria-label="Automate the execution of the reindex operation">Automate the execution of the reindex operation</a></li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>April 26, 2020</p>
+<h1 id="authors">Authors<a hidden class="anchor" aria-hidden="true" href="#authors">#</a></h1>
+<ul>
+<li>Tom Schreiber</li>
+<li>Alex Marquardt</li>
+</ul>
+<h1 id="version">Version<a hidden class="anchor" aria-hidden="true" href="#version">#</a></h1>
+<p>This blog article is based on ECE 2.4.3.</p>
+<h1 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h1>
+<p><a href="https://www.elastic.co/guide/en/cloud-enterprise/2.4/Elastic-Cloud-Enterprise-overview.html">Elastic Cloud Enterprise</a> (ECE) is a platform designed to ease the management, deployment, and configuration of multiple Elasticsearch clusters through a single administrative user interface. ECE, is the same product that powers the <a href="https://www.elastic.co/elasticsearch/service">Elasticsearch Service</a> hosted offering, and is available for installation on customer-managed servers. ECE can be deployed anywhere - on public or private clouds, virtual machines, or even on bare metal hardware. Once installed, ECE allows Elasticsearch clusters to be created, upgraded, or deleted with the click of a button.</p>
+<p>When using Elasticsearch, a very important metric from a client perspective is how long it takes for queries to be satisfied. If query response time is not measured and monitored, then it is difficult to know how well Elasticsearch is performing.</p>
+<p>Elasticsearch can be configured to write <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.6/index-modules-slowlog.html">slow operations to log files</a>. Because ECE builds clusters on top of Docker containers, direct access to Elasticsearch log files is non trivial. In order to provide easy access to these logs, ECE ingests logs from managed clusters into an <a href="https://www.elastic.co/guide/en/cloud-enterprise/current/ece-monitoring-ece.html">internal centralized Logging and Metrics cluster</a>. However, the Logging and Metrics cluster is not generally accessible by non-administrator users, and the slow logs in this cluster are not structured in a way that can be used for driving dashboards or creating alerts.</p>
+<p>In this blog, we will show how to extract slow logs from the Logging and Metrics cluster and add structure to them as they are driven into a separate analysis cluster. This separate analysis cluster can then be used for detecting performance issues and driving Kibana dashboards.</p>
+<h1 id="why-not-use-the-built-in-logging-and-metrics-cluster-for-analysis-alerting-and-dashboards">Why not use the built-in Logging and Metrics cluster for analysis, alerting, and dashboards?<a hidden class="anchor" aria-hidden="true" href="#why-not-use-the-built-in-logging-and-metrics-cluster-for-analysis-alerting-and-dashboards">#</a></h1>
+<p>ECE internally uses <a href="https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-overview.html">Filebeat</a> to ingest the slow log entries from all of the nodes that are under ECE management into its internal Logging and Metrics cluster. However, directly using the slow logs data in the Logging and Metrics cluster is generally undesirable for the following reasons:</p>
+<ol>
+<li>The slow logs information that is stored in the Logging and Metrics cluster is stored as a single string, which is not useful for creating dashboards or for viewing metrics.</li>
+<li>At the time of writing, the Logging and Metrics cluster is built on Elasticsearch 6.8.5 which does not contain as much functionality as newer versions of Elasticsearch.</li>
+<li>Given that the Logging and Metrics cluster is designed for internal usage, we do not wish to burden this internal cluster with Kibana dashboards and user requests.</li>
+<li>We may wish to give wide access to information about slow operations. Such wide access directly to the internal Logging and Metrics cluster would be undesirable, as the monitoring functions could be compromised if it were to be overloaded.</li>
+</ol>
+<p>For these reasons, we will show how to extract slow logs from the Logging and Metrics cluster into a new cluster within our ECE deployment.</p>
+<h1 id="create-additional-clusters">Create additional clusters<a hidden class="anchor" aria-hidden="true" href="#create-additional-clusters">#</a></h1>
+<p>We will <a href="https://www.elastic.co/guide/en/cloud-enterprise/2.4/ece-create-deployment.html">create two additional clusters</a>. An analysis cluster which will be used for monitoring and alerting as well as driving Kibana dashboards, and a slow queries cluster where we will simulate a workload that generates slow logs entries.</p>
+<p>By default, slow logs from all ECE clusters are combined together into <em>cluster-logs-*</em> indices in the Logging and Metrics cluster.</p>
+<h1 id="enable-the-sample-data-and-execute-queries">Enable the sample data and execute queries<a hidden class="anchor" aria-hidden="true" href="#enable-the-sample-data-and-execute-queries">#</a></h1>
+<p>For demonstration purposes, we will install the demo <em>kibana_sample_data_flights</em> into our slow queries cluster as described in <a href="https://www.elastic.co/guide/en/kibana/7.6/tutorial-sample-data.html">Explore Kibana using sample data</a>.</p>
+<h1 id="enabling-slow-logs-for-the-sample-data">Enabling slow logs for the sample data<a hidden class="anchor" aria-hidden="true" href="#enabling-slow-logs-for-the-sample-data">#</a></h1>
+<p>We enable logging of all queries against the <em>kibana_sample_data_flights</em> index, which can be accomplished by logging all queries that take 0ms or longer. In the Kibana of the slow queries cluster, we can execute the following command in <a href="https://www.elastic.co/guide/en/kibana/7.6/console-kibana.html">Kibana Dev Tools</a>:</p>
+<pre tabindex="0"><code>PUT /kibana_sample_data_flights/_settings
+{
+    &#34;index.search.slowlog.threshold.query.info&#34;: &#34;0s&#34;,
+    &#34;index.search.slowlog.threshold.fetch.info&#34;: &#34;0s&#34;,
+    &#34;index.search.slowlog.level&#34;: &#34;info&#34;
+}
+</code></pre><p>Because the above command will write an entry to the slowlog file for every query that is executed against the <em>kibana_sample_data_flights</em> index, setting thresholds to zero should not be done for production deployments. Doing so would likely generate a large workload as well as excessive amounts of logging data.</p>
+<h1 id="execute-queries-against-the-sample-data">Execute queries against the sample data<a hidden class="anchor" aria-hidden="true" href="#execute-queries-against-the-sample-data">#</a></h1>
+<p>We can now generate slow logs entries by performing simple queries from Kibana against the <em>kibana_sample_data_flights</em> index in the slow queries cluster. For example, a query for flights where the destination country is Australia could be done as follows:</p>
+<pre tabindex="0"><code>GET kibana_sample_data_flights/_search
+{
+  &#34;query&#34;: {
+    &#34;match&#34;: {
+      &#34;DestCountry&#34;: &#34;AU&#34;
+    }
+  }
+}
+</code></pre><h2 id="view-the-slow-logs-in-the-logging-and-metrics-cluster">View the slow logs in the Logging and Metrics cluster<a hidden class="anchor" aria-hidden="true" href="#view-the-slow-logs-in-the-logging-and-metrics-cluster">#</a></h2>
+<p>We can confirm that the above query generated an event by logging into the Kibana instance associated with the Logging and Metrics cluster. Once in Kibana for the Logging and Metrics cluster, go to Discover and select the <em>cluster-logs-*</em> index pattern, and enter in the following query in the search input:</p>
+<pre tabindex="0"><code>source: *slowlog*
+</code></pre><p>Assuming that there are no other operations generating slow events, this query should return documents that contain information about the query that we just executed on the slow queries cluster. As the slow logs may be created on each shard which the query hits, there may be multiple slow log entries created by a single query.</p>
+<p>We are interested in the <em>message</em> field in the returned document, which contains the information about the query that we just executed, and which should look similar to the following:</p>
+<pre tabindex="0"><code>&#34;message&#34;: &#34;[2020-05-14T20:39:29,644][INFO ][index.search.slowlog.fetch.S-OhddFHTc2h6w8NDzPzIw] [instance-0000000000] [kibana_sample_data_flights][0] took[3.7ms], took_millis[3], total_hits[416 hits], types[], stats[], search_type[QUERY_THEN_FETCH], total_shards[1], source[{\&#34;query\&#34;:{\&#34;match\&#34;:{\&#34;DestCountry\&#34;:{\&#34;query\&#34;:\&#34;AU\&#34;,\&#34;operator\&#34;:\&#34;OR\&#34;,\&#34;prefix_length\&#34;:0,\&#34;max_expansions\&#34;:50,\&#34;fuzzy_transpositions\&#34;:true,\&#34;lenient\&#34;:false,\&#34;zero_terms_query\&#34;:\&#34;NONE\&#34;,\&#34;auto_generate_synonyms_phrase_query\&#34;:true,\&#34;boost\&#34;:1.0}}}}], id[], &#34;
+</code></pre><p>Notice how the information about the slow query is stored in a single string. In order to properly analyse this information, the data needs to be extracted and structured. The remainder of this blog shows how this can be done.</p>
+<h2 id="extract-fields-from-the-message-string">Extract fields from the message string<a hidden class="anchor" aria-hidden="true" href="#extract-fields-from-the-message-string">#</a></h2>
+<p>We must parse the message field that contains the slow log information, and extract useful data in order to be able to do meaningful analysis. The following ingest pipeline will extract the fields from the slowlog message string using a <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.6/grok-processor.html">grok processor</a>.</p>
+<pre tabindex="0"><code>PUT _ingest/pipeline/sl-pipeline
+{
+  &#34;processors&#34;: [
+    {
+      &#34;grok&#34;: {
+        &#34;field&#34;: &#34;message&#34;,
+        &#34;patterns&#34;: [
+&#34;&#34;&#34;\[%{TIMESTAMP_ISO8601:event.end}\]\[%{LOGLEVEL:log.level}\s*\]\[%{DATA:slowlog.type}\]\s*\[%{DATA:host.name}\]\s*\[%{DATA:slowlog.index}\]\s*\[%{DATA:slowlog.shard:int}]\stook\[%{DATA:slowlog.took}\],\stook_millis\[%{DATA:slowlog.took_millis:float}\],\stotal_hits\[%{DATA:slowlog.total_hits:int}\shits\]\,\stypes\[%{DATA:slowlog.types}\],\sstats\[%{DATA:slowlog.stats}\],\ssearch_type\[%{DATA:slowlog.search_type}\],\stotal_shards\[%{DATA:slowlog.total_shards:int}\],\ssource\[%{GREEDYDATA:slowlog.source}\],\sid\[%{DATA:slowlog.x-opaque-id}\]&#34;&#34;&#34;
+        ]
+      }
+    },
+    {
+      &#34;script&#34;: {
+        &#34;lang&#34;: &#34;painless&#34;,
+        &#34;source&#34;: &#34; ctx.event.duration = (ctx.slowlog.took_millis) * params.ms_to_ns_multiplier&#34;,
+        &#34;params&#34;: {
+          &#34;ms_to_ns_multiplier&#34;: 1000000
+        }
+      }
+    },
+    {
+      &#34;date_index_name&#34;: {
+        &#34;field&#34;: &#34;@timestamp&#34;,
+        &#34;index_name_prefix&#34;: &#34;slowlog-&#34;,
+        &#34;date_rounding&#34;: &#34;M&#34;
+      }
+    }
+  ]
+}
+</code></pre><p>As we wish to use the <a href="https://www.elastic.co/guide/en/ecs/current/index.html">Elastic Common Schema (ECS)</a> for as many fields as possible, we store the duration of the query in <em>event.duration</em>, which is <a href="https://www.elastic.co/guide/en/ecs/current/ecs-event.html">defined as the event duration in nanoseconds</a>. Therefore, we calculate <em>event.duration</em> by multiplying the <em>took_millis</em> value by 1000000. This does not actually result in nanosecond resolution. If more resolution is required, then <em>event.duration</em> should be calculated based on <em>took</em> rather than <em>took_millis</em>. However, because <em>took</em> contains a string with both a number and units, this would require additional processing which is out of scope of this blog.</p>
+<h2 id="grok">Grok<a hidden class="anchor" aria-hidden="true" href="#grok">#</a></h2>
+<p>The above grok expression was tested with ECE 2.4.3, and has ingested logs from an Elasticsearch cluster running version 7.5.0. However, because small changes to the format can break the above expression, it is worth noting that Kibana has a <a href="https://www.elastic.co/guide/en/kibana/7.6/xpack-grokdebugger.html">grok debugger</a> that can be helpful when trying to debug a grok expression that does not work as expected.</p>
+<h2 id="test-the-pipeline">Test the pipeline<a hidden class="anchor" aria-hidden="true" href="#test-the-pipeline">#</a></h2>
+<p>The above pipeline can be tested with the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.5/simulate-pipeline-api.html">simulate pipeline API</a> as follows:</p>
+<pre tabindex="0"><code>POST /_ingest/pipeline/sl-pipeline/_simulate
+{
+  &#34;docs&#34;: [
+    {
+      &#34;_index&#34;: &#34;test_idx&#34;,
+      &#34;_id&#34;: &#34;1&#34;,
+      &#34;_source&#34;: {
+        &#34;@timestamp&#34;: &#34;2020-05-14T20:39:29.691Z&#34;,
+        &#34;message&#34;: &#34;&#34;&#34;[2020-05-14T20:39:29,644][INFO ][index.search.slowlog.fetch.S-OhddFHTc2h6w8NDzPzIw] [instance-0000000000] [kibana_sample_data_flights][0] took[3.7ms], took_millis[3], total_hits[416 hits], types[], stats[], search_type[QUERY_THEN_FETCH], total_shards[1], source[{&#34;query&#34;:{&#34;match&#34;:{&#34;DestCountry&#34;:{&#34;query&#34;:&#34;AU&#34;,&#34;operator&#34;:&#34;OR&#34;,&#34;prefix_length&#34;:0,&#34;max_expansions&#34;:50,&#34;fuzzy_transpositions&#34;:true,&#34;lenient&#34;:false,&#34;zero_terms_query&#34;:&#34;NONE&#34;,&#34;auto_generate_synonyms_phrase_query&#34;:true,&#34;boost&#34;:1.0}}}}], id[], &#34;&#34;&#34;
+      }
+    }
+  ]
+}
+</code></pre><p>Which should respond with the following that shows us how documents will look after being processed by the pipeline:</p>
+<pre tabindex="0"><code>{
+  &#34;docs&#34; : [
+    {
+      &#34;doc&#34; : {
+        &#34;_index&#34; : &#34;&lt;slowlog-{2020-05-14||/M{yyyy-MM-dd|UTC}}&gt;&#34;,
+        &#34;_type&#34; : &#34;_doc&#34;,
+        &#34;_id&#34; : &#34;1&#34;,
+        &#34;_source&#34; : {
+          &#34;@timestamp&#34; : &#34;2020-05-14T20:39:29.691Z&#34;,
+          &#34;log&#34; : {
+            &#34;level&#34; : &#34;INFO&#34;
+          },
+          &#34;slowlog&#34; : {
+            &#34;took&#34; : &#34;3.7ms&#34;,
+            &#34;total_shards&#34; : 1,
+            &#34;types&#34; : &#34;&#34;,
+            &#34;took_millis&#34; : 3.0,
+            &#34;total_hits&#34; : 416,
+            &#34;stats&#34; : &#34;&#34;,
+            &#34;x-opaque-id&#34; : &#34;&#34;,
+            &#34;index&#34; : &#34;kibana_sample_data_flights&#34;,
+            &#34;source&#34; : &#34;&#34;&#34;{&#34;query&#34;:{&#34;match&#34;:{&#34;DestCountry&#34;:{&#34;query&#34;:&#34;AU&#34;,&#34;operator&#34;:&#34;OR&#34;,&#34;prefix_length&#34;:0,&#34;max_expansions&#34;:50,&#34;fuzzy_transpositions&#34;:true,&#34;lenient&#34;:false,&#34;zero_terms_query&#34;:&#34;NONE&#34;,&#34;auto_generate_synonyms_phrase_query&#34;:true,&#34;boost&#34;:1.0}}}}&#34;&#34;&#34;,
+            &#34;shard&#34; : 0,
+            &#34;type&#34; : &#34;index.search.slowlog.fetch.S-OhddFHTc2h6w8NDzPzIw&#34;,
+            &#34;search_type&#34; : &#34;QUERY_THEN_FETCH&#34;
+          },
+          &#34;host&#34; : {
+            &#34;name&#34; : &#34;instance-0000000000&#34;
+          },
+          &#34;message&#34; : &#34;&#34;&#34;[2020-05-14T20:39:29,644][INFO ][index.search.slowlog.fetch.S-OhddFHTc2h6w8NDzPzIw] [instance-0000000000] [kibana_sample_data_flights][0] took[3.7ms], took_millis[3], total_hits[416 hits], types[], stats[], search_type[QUERY_THEN_FETCH], total_shards[1], source[{&#34;query&#34;:{&#34;match&#34;:{&#34;DestCountry&#34;:{&#34;query&#34;:&#34;AU&#34;,&#34;operator&#34;:&#34;OR&#34;,&#34;prefix_length&#34;:0,&#34;max_expansions&#34;:50,&#34;fuzzy_transpositions&#34;:true,&#34;lenient&#34;:false,&#34;zero_terms_query&#34;:&#34;NONE&#34;,&#34;auto_generate_synonyms_phrase_query&#34;:true,&#34;boost&#34;:1.0}}}}], id[], &#34;&#34;&#34;,
+          &#34;event&#34; : {
+            &#34;duration&#34; : 3000000.0,
+            &#34;end&#34; : &#34;2020-05-14T20:39:29,644&#34;
+          }
+        },
+        &#34;_ingest&#34; : {
+          &#34;timestamp&#34; : &#34;2020-05-15T09:33:12.535Z&#34;
+        }
+      }
+    }
+  ]
+}
+</code></pre><p>Note that the <em>slowlog.source</em> field contains the query that was executed. Additionally, the duration of the query is now available in the <em>event.duration</em> field and can be used for analysis and in dashboards.</p>
+<h2 id="reindex-data-from-the-logging-and-metrics-cluster-into-the-analysis-cluster">Reindex data from the Logging and Metrics cluster into the analysis cluster<a hidden class="anchor" aria-hidden="true" href="#reindex-data-from-the-logging-and-metrics-cluster-into-the-analysis-cluster">#</a></h2>
+<p>Before executing a “reindex from remote” command, it is necessary to <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.6/reindex-upgrade-remote.html">whitelist the remote cluster</a> that data will be pulled from. Also, to keep this blog simple we turn off SSL certificate verification which removes protection against man in the middle attacks and certificate forgery. This is only done for demonstration purposes as security configuration is not the focus of this blog. Such a liberal security configuration should not generally be used for production systems. These settings will be modified in the <em>elasticsearch.yml</em> file.</p>
+<p>In ECE, <em>elasticsearch.yml</em> can be modified by clicking on the deployment name, and then clicking on “Edit” on the left menu. This will show a screen with the various nodes in the deployment. Under the data node, there is a “User setting overrides” button, which will allow the <em>elasticsearch.yml</em> file to be modified. We add the following lines which enable reindexing from any remote server as well as SSL to be used without certificate verification:</p>
+<pre tabindex="0"><code>reindex.remote.whitelist: [&#34;*.*&#34;]
+reindex.ssl.verification_mode: none
+</code></pre><p>In order to ingest the slow logs into the analysis cluster, we execute <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/reindex-upgrade-remote.html">reindex from remote</a> to pull data from the Logging and Metrics cluster, and pass all documents through the ingest processor called <em>sl-pipeline</em> that we previously described. The reindex operation can be executed on the analysis cluster with curl as follows:</p>
+<pre tabindex="0"><code>curl -XPOST &#34;https://&lt;analysis cluster URL&gt;:9243/_reindex&#34; -u elastic:&lt;analysis cluster password&gt; -k -H &#39;Content-Type: application/json&#39; -d&#39; 
+{ 
+ &#34;source&#34;: { 
+    &#34;remote&#34;: { 
+      &#34;host&#34;: &#34;https://&lt;Logging and Metrics cluster URL&gt;:9243&#34;, 
+      &#34;username&#34;: &#34;elastic&#34;, 
+      &#34;password&#34;: &#34;&lt;Logging and Metrics cluster password&gt; &#34; 
+    }, 
+    &#34;index&#34;: &#34;cluster-logs-*&#34;, 
+    &#34;query&#34;: { 
+      &#34;bool&#34;: { 
+        &#34;filter&#34;: [ 
+          { 
+            &#34;range&#34;: { 
+              &#34;@timestamp&#34;: { 
+                &#34;gte&#34;: &#34;now-1h&#34;, # ← this should be modified based on the frequency of executing this reindex operation
+                &#34;lt&#34;: &#34;now&#34; 
+              } 
+            } 
+          },
+          { 
+            &#34;query_string&#34;: { 
+              &#34;query&#34;: &#34;source: *slowlog*&#34;, 
+              &#34;analyze_wildcard&#34;: true 
+            } 
+          } 
+        ] 
+      } 
+    } 
+  }, 
+  &#34;dest&#34;: { 
+    &#34;index&#34;: &#34;fakename&#34;, # ← this name is unused as it is overwritten by the date_index_name processor in the ingest pipeline
+    &#34;pipeline&#34;: &#34;sl-pipeline&#34;, 
+    &#34;op_type&#34;: &#34;create&#34; 
+  }, 
+  &#34;conflicts&#34;: &#34;proceed&#34; 
+}
+&#39;
+</code></pre><p>Be sure to remove the comments starting with the “#” symbol from the above command before attempting to execute it, or it will not work correctly. </p>
+<h2 id="result-of-the-reindex-operation">Result of the reindex operation<a hidden class="anchor" aria-hidden="true" href="#result-of-the-reindex-operation">#</a></h2>
+<p>Once the above reindex operation has been executed, the analysis cluster should have documents that look like the following. These will be located in an index called <em>slowlog-<!-- raw HTML omitted --></em> which we declared in the pipeline called <em>sl-pipeline</em>. </p>
+<pre tabindex="0"><code>&#34;_source&#34; : {
+  &#34;@timestamp&#34; : &#34;2020-05-14T20:39:29.691Z&#34;,
+
+  ...
+
+  &#34;log&#34; : {
+    &#34;level&#34; : &#34;INFO&#34;
+  },
+  &#34;slowlog&#34; : {
+    &#34;took&#34; : &#34;3.7ms&#34;,
+    &#34;total_shards&#34; : 1,
+    &#34;types&#34; : &#34;&#34;,
+    &#34;took_millis&#34; : 3.0,
+    &#34;total_hits&#34; : 416,
+    &#34;stats&#34; : &#34;&#34;,
+    &#34;x-opaque-id&#34; : &#34;&#34;,
+    &#34;index&#34; : &#34;kibana_sample_data_flights&#34;,
+    &#34;source&#34; : &#34;&#34;&#34;{&#34;query&#34;:{&#34;match&#34;:{&#34;DestCountry&#34;:{&#34;query&#34;:&#34;AU&#34;,&#34;operator&#34;:&#34;OR&#34;,&#34;prefix_length&#34;:0,&#34;max_expansions&#34;:50,&#34;fuzzy_transpositions&#34;:true,&#34;lenient&#34;:false,&#34;zero_terms_query&#34;:&#34;NONE&#34;,&#34;auto_generate_synonyms_phrase_query&#34;:true,&#34;boost&#34;:1.0}}}}&#34;&#34;&#34;,
+    &#34;shard&#34; : 0,
+    &#34;type&#34; : &#34;index.search.slowlog.fetch.S-OhddFHTc2h6w8NDzPzIw&#34;,
+    &#34;search_type&#34; : &#34;QUERY_THEN_FETCH&#34;
+  },
+  &#34;host&#34; : {
+    &#34;name&#34; : &#34;instance-0000000000&#34;
+  },
+  &#34;message&#34; : &#34;&#34;&#34;[2020-05-14T20:39:29,644][INFO ][index.search.slowlog.fetch.S-OhddFHTc2h6w8NDzPzIw] [instance-0000000000] [kibana_sample_data_flights][0] took[3.7ms], took_millis[3], total_hits[416 hits], types[], stats[], search_type[QUERY_THEN_FETCH], total_shards[1], source[{&#34;query&#34;:{&#34;match&#34;:{&#34;DestCountry&#34;:{&#34;query&#34;:&#34;AU&#34;,&#34;operator&#34;:&#34;OR&#34;,&#34;prefix_length&#34;:0,&#34;max_expansions&#34;:50,&#34;fuzzy_transpositions&#34;:true,&#34;lenient&#34;:false,&#34;zero_terms_query&#34;:&#34;NONE&#34;,&#34;auto_generate_synonyms_phrase_query&#34;:true,&#34;boost&#34;:1.0}}}}], id[], &#34;&#34;&#34;,
+  &#34;event&#34; : {
+    &#34;duration&#34; : 3000000.0,
+    &#34;end&#34; : &#34;2020-05-14T20:39:29,644&#34;
+  }
+},
+</code></pre><p>As opposed to the documents that are stored in the Logging and Metrics cluster, these documents have a structure that includes fields that can be used for monitoring and alerting or driving dashboards. For example, the <em>event.duration</em> field could be monitored for queries that take longer than a critical threshold, and dashboards could be created that show which queries are commonly slow. Monitoring and alerting solutions as well as example dashboards that are based on this data will be presented in a future blog post.</p>
+<h2 id="automate-the-execution-of-the-reindex-operation">Automate the execution of the reindex operation<a hidden class="anchor" aria-hidden="true" href="#automate-the-execution-of-the-reindex-operation">#</a></h2>
+<p>The above reindex command can be stored in a shell script, and called from cron. For example, assuming that you have stored the above curl command in a file called <em>pull_logs.sh</em>, the following would execute the above reindex operation once per minute:</p>
+<pre tabindex="0"><code>crontab -e
+* * * * * /path/to/pull_logs.sh
+</code></pre><p>Note that because this would automate the reindex script to execute every minute, the data that is pulled from the Logging and Metrics cluster should include the last two minutes to reduce the possibility that documents are missed. This can be accomplished by specifying the range <em>now-2m</em> on the <em>@timestamp</em> field in the reindex operation that we previously presented. Because we execute the script every minute, and pull documents from the past 2 minutes, there will be some overlap which is intentional.</p>
+<p>In order to avoid writing the same documents twice when executing the reindex command, we specify that only new documents should be inserted into the <em>slowlogs-*</em> index, by specifying <em>&ldquo;op_type&rdquo;: &ldquo;create&rdquo;</em>.</p>
+<h2 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h2>
+<p>In this blog, we showed how to extract slow logs from the Logging and Metrics cluster into a separate analysis cluster, which can be used for detecting performance issues and driving Kibana dashboards. In an upcoming blog, we will show how to create dashboards and alerts that use the data that has been ingested into the analysis cluster.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Alexander Marquardt</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

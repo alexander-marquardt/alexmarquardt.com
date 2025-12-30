@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="light">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Emulating transactional functionality in Elasticsearch with two-phase commits | Alexander Marquardt</title>
+<meta name="keywords" content="transactions">
+<meta name="description" content="Introduction
+Elasticsearch supports atomic create, update, and delete operations at the individual document level, but does not have built-in support for multi-document transactions. Although Elasticsearch does not position itself as a system of record for storing data, in some cases it may be necessary to modify multiple documents as a single cohesive unit. Therefore, in this blog post we present a two-phase commit protocol which can be used to emulate multi-document transactions.">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.343cc480b9ffc8f04ccbe5e968ad674880cab773ec19905e93033065c1e7a804.css" integrity="sha256-NDzEgLn/yPBMy&#43;XpaK1nSIDKt3PsGZBekwMwZcHnqAQ=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">Alexander Marquardt</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Emulating transactional functionality in Elasticsearch with two-phase commits
+    </h1>
+    <div class="post-meta"><span title='2019-12-05 00:00:00 +0000 UTC'>December 5, 2019</span>&nbsp;·&nbsp;<span>27 min</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#introduction" aria-label="Introduction">Introduction</a></li>
+                <li>
+                    <a href="#overview" aria-label="Overview">Overview</a></li>
+                <li>
+                    <a href="#what-is-the-two-phase-commit-protocol" aria-label="What is the two-phase commit protocol">What is the two-phase commit protocol</a></li>
+                <li>
+                    <a href="#a-high-level-overview-of-a-two-phase-commit-implementation" aria-label="A high-level overview of a two-phase commit implementation">A high-level overview of a two-phase commit implementation</a></li>
+                <li>
+                    <a href="#create-mappings" aria-label="Create mappings">Create mappings</a><ul>
+                        
+                <li>
+                    <a href="#define-the-mappings-for-the-accounts-index" aria-label="Define the mappings for the accounts index">Define the mappings for the accounts index</a></li>
+                <li>
+                    <a href="#define-the-mappings-for-the-transactions-index" aria-label="Define the mappings for the transactions index">Define the mappings for the transactions index</a></li></ul>
+                </li>
+                <li>
+                    <a href="#initialize-accounts" aria-label="Initialize accounts">Initialize accounts</a></li>
+                <li>
+                    <a href="#define-an-ingest-pipeline-for-inserting-the-ingest-time" aria-label="Define an ingest pipeline for inserting the ingest time">Define an ingest pipeline for inserting the ingest time</a></li>
+                <li>
+                    <a href="#scripts-that-are-used-by-the-two-phase-commit" aria-label="Scripts that are used by the two-phase commit">Scripts that are used by the two-phase commit</a><ul>
+                        
+                <li>
+                    <a href="#script-to-update-the-transaction-state" aria-label="Script to update the transaction state">Script to update the transaction state</a></li>
+                <li>
+                    <a href="#script-to-apply-a-transaction-to-an-account" aria-label="Script to apply a transaction to an account">Script to apply a transaction to an account</a></li>
+                <li>
+                    <a href="#script-to-remove-a-transaction-from-an-account" aria-label="Script to remove a transaction from an account">Script to remove a transaction from an account</a></li>
+                <li>
+                    <a href="#script-to-undo-a-transaction-on-an-account" aria-label="Script to undo a transaction on an account">Script to undo a transaction on an account</a></li></ul>
+                </li>
+                <li>
+                    <a href="#create-a-transaction" aria-label="Create a transaction">Create a transaction</a></li>
+                <li>
+                    <a href="#core-two-phase-commit-operations" aria-label="Core two-phase commit operations">Core two-phase commit operations</a><ul>
+                        
+                <li>
+                    <a href="#core-step-1---update-transaction-state-to-pending" aria-label="Core step 1 - Update transaction state to &ldquo;pending&rdquo;">Core step 1 - Update transaction state to &ldquo;pending&rdquo;</a></li>
+                <li>
+                    <a href="#core-step-2---apply-the-transaction-to-the-source-account" aria-label="Core step 2 - Apply the transaction to the source account">Core step 2 - Apply the transaction to the source account</a></li>
+                <li>
+                    <a href="#core-step-3---apply-the-transaction-to-the-destination-account" aria-label="Core step 3 - Apply the transaction to the destination account">Core step 3 - Apply the transaction to the destination account</a></li>
+                <li>
+                    <a href="#core-step-4---update-the-transaction-state-to-committed" aria-label="Core step 4 - Update the transaction state to &ldquo;committed&rdquo;">Core step 4 - Update the transaction state to &ldquo;committed&rdquo;</a></li>
+                <li>
+                    <a href="#core-step-5---remove-the-transaction-identifier-from-the-source-account" aria-label="Core step 5 - Remove the transaction identifier from the source account">Core step 5 - Remove the transaction identifier from the source account</a></li>
+                <li>
+                    <a href="#core-step-6---remove-the-transaction-identifier-from-the-destination-account" aria-label="Core step 6 - Remove the transaction identifier from the destination account">Core step 6 - Remove the transaction identifier from the destination account</a></li>
+                <li>
+                    <a href="#core-step-7---update-transaction-state-to-finished" aria-label="Core step 7 - Update transaction state to &ldquo;finished&rdquo;">Core step 7 - Update transaction state to &ldquo;finished&rdquo;</a></li></ul>
+                </li>
+                <li>
+                    <a href="#rolling-back-transactions" aria-label="Rolling back transactions">Rolling back transactions</a><ul>
+                        
+                <li>
+                    <a href="#rollback-of-created-transactions" aria-label="Rollback of “created” transactions">Rollback of “created” transactions</a></li>
+                <li>
+                    <a href="#rollback-of-pending-transactions" aria-label="Rollback of “pending” transactions">Rollback of “pending” transactions</a><ul>
+                        
+                <li>
+                    <a href="#rollback-step-1---update-the-transaction-state-to-terminating" aria-label="Rollback step 1 - Update the transaction state to &ldquo;terminating&rdquo;">Rollback step 1 - Update the transaction state to &ldquo;terminating&rdquo;</a></li>
+                <li>
+                    <a href="#rollback-step-2---undo-the-transaction-on-the-source-account" aria-label="Rollback step 2 - Undo the transaction on the source account">Rollback step 2 - Undo the transaction on the source account</a></li>
+                <li>
+                    <a href="#rollback-step-3---undo-the-transaction-from-the-destination-account" aria-label="Rollback step 3 - Undo the transaction from the destination account">Rollback step 3 - Undo the transaction from the destination account</a></li>
+                <li>
+                    <a href="#rollback-step-4---set-the-transaction-state-to-rolled-back" aria-label="Rollback step 4 - Set the transaction state to “rolled-back”">Rollback step 4 - Set the transaction state to “rolled-back”</a></li></ul>
+                </li>
+                <li>
+                    <a href="#rollback-of-committed-transactions" aria-label="Rollback of “committed” transactions">Rollback of “committed” transactions</a></li></ul>
+                </li>
+                <li>
+                    <a href="#recovering-from-errors" aria-label="Recovering from errors">Recovering from errors</a><ul>
+                        
+                <li>
+                    <a href="#get-transactions-that-need-to-be-recovered" aria-label="Get transactions that need to be recovered">Get transactions that need to be recovered</a></li>
+                <li>
+                    <a href="#recover-transactions-that-are-stuck-in-the-created-state" aria-label="Recover transactions that are stuck in the “created” state">Recover transactions that are stuck in the “created” state</a></li>
+                <li>
+                    <a href="#recover-transactions-that-are-in-the-pending-state" aria-label="Recover transactions that are in the &ldquo;pending&rdquo; state">Recover transactions that are in the &ldquo;pending&rdquo; state</a></li>
+                <li>
+                    <a href="#recover-transactions-that-are-in-the-committed-state" aria-label="Recover transactions that are in the &ldquo;committed&rdquo; state">Recover transactions that are in the &ldquo;committed&rdquo; state</a></li>
+                <li>
+                    <a href="#recover-transactions-that-are-in-the-terminating-state" aria-label="Recover transactions that are in the &ldquo;terminating&rdquo; state">Recover transactions that are in the &ldquo;terminating&rdquo; state</a></li>
+                <li>
+                    <a href="#recover-very-long-running-transactions" aria-label="Recover very long running transactions">Recover very long running transactions</a></li></ul>
+                </li>
+                <li>
+                    <a href="#conclusions" aria-label="Conclusions">Conclusions</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h1>
+<p>Elasticsearch supports atomic create, update, and delete operations at the individual document level, but does not have built-in <a href="https://www.elastic.co/blog/found-elasticsearch-as-nosql#transactions">support for multi-document transactions</a>. Although Elasticsearch does not position itself as a system of record for storing data, in some cases it may be necessary to modify multiple documents as a single cohesive unit. Therefore, in this blog post we present a <a href="https://en.wikipedia.org/wiki/Two-phase_commit_protocol">two-phase commit protocol</a> which can be used to <em>emulate</em> multi-document transactions.</p>
+<h1 id="overview">Overview<a hidden class="anchor" aria-hidden="true" href="#overview">#</a></h1>
+<p>Create, update, and delete operations in Elasticsearch are atomic at the document level, which means that creating, modifying, or deleting a single document either fully succeeds or fails. However, there is no guarantee that an operation that has multiple steps and that impacts multiple documents will either succeed or fail as a cohesive unit.</p>
+<p>In some cases <a href="https://www.elastic.co/blog/managing-relations-inside-elasticsearch">inner objects and nested types</a> can be used to combine multiple documents into a single atomic unit, which would guarantee atomicity of create, update, and delete operations on the parent and its embedded sub-documents. In other cases it may not be possible or desirable to embed related documents inside a parent document. Therefore multi-document transactional functionality may be desired.</p>
+<p>Given the lack of built-in multi-document transactions in Elasticsearch, multi-document transactional functionality that is built on top of Elasticsearch must be implemented in application code. Such functionality can be achieved with the two-phase commit protocol.</p>
+<h1 id="what-is-the-two-phase-commit-protocol">What is the two-phase commit protocol<a hidden class="anchor" aria-hidden="true" href="#what-is-the-two-phase-commit-protocol">#</a></h1>
+<p>The <a href="https://en.wikipedia.org/wiki/Two-phase_commit_protocol">two-phase commit protocol</a> is a type of <a href="https://en.wikipedia.org/wiki/Atomic_commit">atomic commitment protocol</a> that coordinates processes that participate in a <a href="https://en.wikipedia.org/wiki/Distributed_transaction">distributed atomic transaction</a>. The protocol ultimately determines whether to <a href="https://en.wikipedia.org/wiki/Commit_(data_management)">commit</a> or rollback a transaction. The protocol achieves this goal even in the event of most temporary system failures.</p>
+<p>To permit recovery from a failure, the two-phase commit protocol logs the state of a given transaction as the sequential steps to perform the transaction are executed. In the event of a failure at any stage in a transaction these transaction logs will be used by recovery procedures to either complete the transaction or to roll it back.</p>
+<h1 id="a-high-level-overview-of-a-two-phase-commit-implementation">A high-level overview of a two-phase commit implementation<a hidden class="anchor" aria-hidden="true" href="#a-high-level-overview-of-a-two-phase-commit-implementation">#</a></h1>
+<p>In this article, we present an example of a two-phase commit transaction that is used for tracking the movement of “units” between two accounts, as described in the following sections:</p>
+<ol>
+<li><strong>Create mappings:</strong> Define the mappings for an accounts index and a transactions index.</li>
+<li><strong>Initialize accounts:</strong> Create sample accounts with balances that will be used in subsequent steps to demonstrate how the two-phase commit protocol can be used to ensure completion of the movement of units from one account balance to another.</li>
+<li><strong>Define an ingest pipeline for inserting the ingest time:</strong> An ingest pipeline is used to ensure that every transaction has a creation time written into it.</li>
+<li><strong>Scripts that are used by the two-phase commit:</strong> Define <a href="https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-scripting-painless.html">painless scripts</a> which are used in the two-phase commit.</li>
+<li><strong>Create a transaction</strong>: A transaction defines which accounts to move units between and how many units to move. It also logs the status of the transaction, which can be used for recovery or rollback.</li>
+<li><strong>Core two-phase commit operations</strong>: The steps that will be executed to implement the two-phase commit. By following a specific sequence of operations for multi-document transactions, we maintain sufficient state (i.e. a transaction log) at every step to either fix or rollback transactions that have only partially completed. The core operations are the following:
+<ol>
+<li>Update transaction state to “pending”.</li>
+<li>Apply the transaction to the source account.</li>
+<li>Apply the transaction to the destination account.</li>
+<li>Update the transaction state to “committed”.</li>
+<li>Remove the transaction identifier from the source account.</li>
+<li>Remove the transaction identifier from the destination account.</li>
+<li>Update transaction state to “finished”.</li>
+</ol>
+</li>
+<li><strong>Rolling back transactions</strong>: In rare cases some transactions may not be able to complete, and should be rolled-back. This section describes how to undo a two-phase commit that previously started.</li>
+<li><strong>Recovering from errors</strong>: This section describes the operations that are periodically executed to detect transactions that have become stuck in one of the two-phase commit or rollback stages. Stalled operation will then be restarted based on the most recent transaction state.</li>
+</ol>
+<h1 id="create-mappings">Create mappings<a hidden class="anchor" aria-hidden="true" href="#create-mappings">#</a></h1>
+<p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html">Mapping</a> is the process of defining how a document, and the fields it contains, are stored and indexed. This example defines an accounts index and a transactions index, for which the mappings are defined below.</p>
+<h2 id="define-the-mappings-for-the-accounts-index">Define the mappings for the accounts index<a hidden class="anchor" aria-hidden="true" href="#define-the-mappings-for-the-accounts-index">#</a></h2>
+<p>For our example, we define the following fields on the accounts index:</p>
+<ul>
+<li><strong>balance</strong>: the balance of each account. In this article we refer to the value stored in this field as “units”, which could be a currency, inventory, etc.</li>
+<li><strong>pending_transactions</strong>: an array that will contain a list of the _ids of each transaction that is currently “pending” on each account. The list of pending transactions serves two purposes: (1) it is used for ensuring that the same transaction will never be applied twice to the same account, and (2) it maintains state that will allow rollback steps to set this account back to its pre-transaction state in the event that the transaction cannot run to completion.</li>
+</ul>
+<p>Mappings should be defined before writing any documents into the accounts index, as follows:</p>
+<pre tabindex="0"><code>PUT accounts
+{
+  &#34;mappings&#34;: {
+    &#34;properties&#34;: {
+      &#34;balance&#34;: {
+        &#34;type&#34;:  &#34;long&#34;
+      }, 
+      &#34;pending_transactions&#34;: {
+        &#34;type&#34;: &#34;keyword&#34;
+      }
+    }
+  }
+}
+</code></pre><h2 id="define-the-mappings-for-the-transactions-index">Define the mappings for the transactions index<a hidden class="anchor" aria-hidden="true" href="#define-the-mappings-for-the-transactions-index">#</a></h2>
+<p>The transactions index will be used for tracking the state of each multi-document transaction, and will have the following fields defined:</p>
+<ul>
+<li><strong>amount</strong>: the value of the transfer.</li>
+<li><strong>creation_time</strong>: when was the transaction created. This is not strictly required, but stored for additional context.</li>
+<li><strong>modification_time</strong>: when was the transaction last modified. This will be used for determining if recovery should be started.</li>
+<li><strong>src_acct</strong>: the _id of the source account for the transfer.</li>
+<li><strong>dest_acct</strong>: the _id of the destination account for the transfer.</li>
+<li><strong>transaction_state</strong>: one of &ldquo;created&rdquo;, &ldquo;pending&rdquo;, &ldquo;committed&rdquo;, &ldquo;finished&rdquo;, &ldquo;terminating&rdquo;, or &ldquo;rolled-back&rdquo;. In a normal transaction without errors or rollbacks, the transaction state will move from “created” to “pending” to “committed”, and then to “finished”.</li>
+</ul>
+<p>Mappings should be defined before writing any documents into the transactions index, as follows:</p>
+<pre tabindex="0"><code>PUT transactions
+{
+  &#34;mappings&#34;: {
+    &#34;properties&#34;: {
+      &#34;amount&#34;: {
+        &#34;type&#34;:  &#34;long&#34;
+      },
+      &#34;creation_time&#34;: {
+        &#34;type&#34;: &#34;date&#34;
+      },
+      &#34;modification_time&#34;: {
+        &#34;type&#34;: &#34;date&#34;
+      },
+      &#34;dest_account&#34;: {
+        &#34;type&#34;: &#34;keyword&#34;
+      },
+      &#34;src_account&#34;: {
+        &#34;type&#34;: &#34;keyword&#34;
+      },
+      &#34;transaction_state&#34;: {
+        &#34;type&#34;: &#34;keyword&#34;
+      }
+    }
+  }
+}
+</code></pre><h1 id="initialize-accounts">Initialize accounts<a hidden class="anchor" aria-hidden="true" href="#initialize-accounts">#</a></h1>
+<p>We can initialize documents for accounts A and B, each with a balance of 500 as follows:</p>
+<pre tabindex="0"><code>PUT accounts/_doc/A
+{
+  &#34;balance&#34;: 500,
+  &#34;pending_transactions&#34;: []
+}
+
+PUT accounts/_doc/B
+{
+ &#34;balance&#34;: 500,
+ &#34;pending_transactions&#34;: []
+}
+</code></pre><h1 id="define-an-ingest-pipeline-for-inserting-the-ingest-time">Define an ingest pipeline for inserting the ingest time<a hidden class="anchor" aria-hidden="true" href="#define-an-ingest-pipeline-for-inserting-the-ingest-time">#</a></h1>
+<p>The following pipeline will be used to add “creation_time” and “modification_time” to the transaction documents. The modification_time will be required at later stages in the two-phase commit process for detecting transactions that have failed to complete within a reasonable amount of time. The creation time is stored for additional context.</p>
+<pre tabindex="0"><code>PUT _ingest/pipeline/initialize_time
+{
+ &#34;description&#34;: &#34;Add ingest timestamp&#34;,
+ &#34;processors&#34;: [
+   {
+     &#34;set&#34;: {
+       &#34;field&#34;: &#34;_source.creation_time&#34;,
+       &#34;value&#34;: &#34;{{_ingest.timestamp}}&#34;
+     }
+   },
+   {
+     &#34;set&#34;: {
+       &#34;field&#34;: &#34;_source.modification_time&#34;,
+       &#34;value&#34;: &#34;{{_ingest.timestamp}}&#34;
+     }
+   }
+ ]
+}
+</code></pre><h1 id="scripts-that-are-used-by-the-two-phase-commit">Scripts that are used by the two-phase commit<a hidden class="anchor" aria-hidden="true" href="#scripts-that-are-used-by-the-two-phase-commit">#</a></h1>
+<p>In this section we define several <a href="https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-scripting-painless.html">painless scripts</a> which will be executed by update operations that are performed in the two-phase commit steps. Given that updates are atomic, all of the operations inside each of these scripts will either succeed or fail as a unit.</p>
+<h2 id="script-to-update-the-transaction-state">Script to update the transaction state<a hidden class="anchor" aria-hidden="true" href="#script-to-update-the-transaction-state">#</a></h2>
+<p>This script will be used to update the transaction state from the current state to the desired state. The transaction state can be one of “created”, “pending”, “committed”, “finished”, “terminating”, or “rolled-back”.</p>
+<p>Note that if the transaction state on the current transaction is not equal to the current state (e.g. if is already set to the desired state), then this script will not modify the document and the corresponding update operation will return a result of “noop”.</p>
+<p>If the transaction state is updated, then this script also updates the modification time of the transaction document which will be required for <em>Recovering from errors</em> procedures.</p>
+<pre tabindex="0"><code>POST _scripts/update_transaction_state
+{
+  &#34;script&#34;: {
+    &#34;lang&#34;: &#34;painless&#34;,
+    &#34;source&#34;: &#34;&#34;&#34;
+      if (ctx._source.transaction_state == params.current_state) {
+        ctx._source.transaction_state = params.desired_state;
+
+        // Set the modification time in ISO 8601 (UTC)
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat(&#34;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSSSS&#39;Z&#39;&#34;);
+        df.setTimeZone(TimeZone.getTimeZone(&#34;UTC&#34;));
+        ctx._source.modification_time = df.format(date);
+
+      } else {
+        ctx.op = &#34;noop&#34;
+      }
+    &#34;&#34;&#34;
+  }
+}
+</code></pre><h2 id="script-to-apply-a-transaction-to-an-account">Script to apply a transaction to an account<a hidden class="anchor" aria-hidden="true" href="#script-to-apply-a-transaction-to-an-account">#</a></h2>
+<p>This script is used to add the current transaction amount to an account, and to push the the transaction identifier onto a list of pending transactions. Given the atomic nature of document updates, both of these operations will succeed or fail as an atomic unit. This script will be used for updating accounts once a transaction has entered into the “pending” state.</p>
+<p>In the event that the transaction has already been applied to the account (as determined by the transaction identifier being in the array of pending transactions for this account), then this script will not update the document and the corresponding update operation will return a result of “noop”.</p>
+<pre tabindex="0"><code>POST _scripts/apply_transaction_to_account
+{
+  &#34;script&#34;: {
+    &#34;lang&#34;: &#34;painless&#34;,
+    &#34;source&#34;: &#34;&#34;&#34;
+    
+      // Check if the transaction is already stored 
+      // in pending_transactions. 
+      // If the transaction is already on this account then the 
+      // location is &gt;= 0. Otherwise it is -1. 
+      def idx = ctx._source.pending_transactions.indexOf(params.trans_id);
+
+      if (idx &gt;= 0) {
+        // if the transaction already exists on this account, 
+        // do nothing 
+        ctx.op = &#34;noop&#34;;
+      } 
+      
+      else {
+        // New transaction - update the account balance 
+        // and add the transaction to pending_transactions
+        ctx._source.pending_transactions.add(params.trans_id);
+        ctx._source.balance += params.amount;
+      }
+    &#34;&#34;&#34;
+  }
+}
+</code></pre><h2 id="script-to-remove-a-transaction-from-an-account">Script to remove a transaction from an account<a hidden class="anchor" aria-hidden="true" href="#script-to-remove-a-transaction-from-an-account">#</a></h2>
+<p>This script is used for removing a transaction from the pending_transactions array on an account. This will be done once a transaction is no longer in the “pending” transaction state, and immediately after it has entered into the “committed” transaction state.</p>
+<p>In the event that the current transaction has already been removed from the account (as determined by the transaction identifier not appearing in the array of pending transactions for this account), then this script will not modify the document and the corresponding update operation will return a result of “noop”.</p>
+<pre tabindex="0"><code>POST _scripts/remove_transaction_from_account
+{
+  &#34;script&#34;: {
+    &#34;lang&#34;: &#34;painless&#34;,
+    &#34;source&#34;: &#34;&#34;&#34;
+    
+      // Check if the transaction is already stored in 
+      // pending_transactions. 
+      // If it exists, the location is &gt;= 0. Otherwise is -1. 
+      def idx = ctx._source.pending_transactions.indexOf(params.trans_id);
+      
+
+      if (idx &gt;= 0) {
+        // the transaction exists on this account, remove it 
+        ctx._source.pending_transactions.remove(idx);
+      } 
+      
+      else {
+        // previously already removed, do nothing 
+        ctx.op = &#34;noop&#34;;
+      }
+    &#34;&#34;&#34;
+  }
+}
+</code></pre><h2 id="script-to-undo-a-transaction-on-an-account">Script to undo a transaction on an account<a hidden class="anchor" aria-hidden="true" href="#script-to-undo-a-transaction-on-an-account">#</a></h2>
+<p>This script will be used in the event that a transaction is being rolled back. It reverses the previous change that was made to the account balance, and removes the transaction from the account’s pending_transactions array. Given the atomic nature of document updates, both of these operations will succeed or fail as an atomic unit.</p>
+<p>In the event that the current transaction has already been removed from the account (as determined by the transaction identifier not appearing in the array of pending transactions for this account), then this script will not modify the document and the corresponding update operation will return a result of “noop”.</p>
+<pre tabindex="0"><code>POST _scripts/undo_transaction_on_account
+{
+  &#34;script&#34;: {
+    &#34;lang&#34;: &#34;painless&#34;,
+    &#34;source&#34;: &#34;&#34;&#34;
+    
+      // Check if the transaction is already stored in pending_transactions. 
+      // If it exists, the location is &gt;= 0. Otherwise is -1. 
+      def idx = ctx._source.pending_transactions.indexOf(params.trans_id);
+      
+
+      if (idx &gt;= 0) {
+        // the transaction exists on this account, remove it 
+        ctx._source.pending_transactions.remove(idx);
+        ctx._source.balance -= params.amount;
+      } 
+      
+      else {
+        // previously already removed, do nothing 
+        ctx.op = &#34;noop&#34;;
+      }
+  &#34;&#34;&#34;
+  }
+}
+</code></pre><h1 id="create-a-transaction">Create a transaction<a hidden class="anchor" aria-hidden="true" href="#create-a-transaction">#</a></h1>
+<p>We create a new transaction, and once this transaction has been received by elasticsearch the subsequent steps covered in the remainder of this article will ensure that this transaction will eventually run to completion or will alternatively be rolled-back. This is true even if there is an intermediate failure in any of the individual two-phase commit steps.</p>
+<p>Note that the transaction is initially created with a transaction state of “created” and will be moved into a “pending” state when the transaction begins processing. By breaking the transaction into a “created” state followed by a “pending” state, the creation of the  transaction can be decoupled from the two-phase commit processing of the transaction. For example, after receiving confirmation that a transaction has been created, an application can spin up a separate thread to start execution of <em>Core step 1 - Update transaction state to &ldquo;pending”,</em> and the current thread can immediately respond to the end user with confirmation that the transaction has been received and created. If desired, the application can then periodically poll Elasticsearch to get an updated transaction state which can be displayed to the end user.</p>
+<p>We request a transfer of 100 from account A to account B by creating a new document in the transactions index. This request should use the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html">_create endpoint</a> with an application-generated transaction identifier (set to “txn1” for this transaction) to ensure idempotency of the transaction creation. This can be done as follows:</p>
+<pre tabindex="0"><code>PUT transactions/_create/txn1?pipeline=initialize_time
+{ 
+  &#34;src_acct&#34;: &#34;A&#34;, 
+  &#34;dest_acct&#34;: &#34;B&#34;, 
+  &#34;amount&#34; : 100, 
+  &#34;transaction_state&#34;: &#34;created&#34;
+}
+</code></pre><p>If we do not receive any response or if it fails, then the above request should be re-submitted, as we are not sure if Elasticsearch received and processed the request for the new transaction. However, because an unacknowledged transaction could theoretically have been received and already changed state due to recovery threads picking it up and moving it forward (this will be covered in detail later in this article), it is important that we are hitting the _create endpoint, so multiple submissions of a given transaction will not overwrite the transaction state of a transaction that was already accepted.</p>
+<p>If the response from Elasticsearch includes “result”: “created”, then the above request has created the document, and we can now begin the two-phase commit of operations for the transaction.</p>
+<p>If the application receives a response that indicates “document already exists”, then the transaction document was previously created. In order to avoid the risk of multiple threads simultaneously working on this transaction, do not being two-phase commit operations, and instead let the recovery procedures handle the processing of this transaction.</p>
+<p>Note that in subsequent steps we will refer the newly submitted transaction as “curr_trans”. If the instructions from this blog are being tested in Kibana dev tools, then the values from the above document will need to be manually copied into subsequent commands wherever we refer to “curr_trans”. If these steps are to be executed in code, then this document could be stored in an object.</p>
+<h1 id="core-two-phase-commit-operations">Core two-phase commit operations<a hidden class="anchor" aria-hidden="true" href="#core-two-phase-commit-operations">#</a></h1>
+<p>In this section we present a two-phase commit which ensures that all steps required to complete a transaction are executed, and that any failed transactions can be detected and executed to completion or alternatively rolled back. This two-phase commit will prevent partial completion of transactions if there is a failure in any of the sequential two-phase commit steps.</p>
+<p>Normal two-phase commit operations will execute in a single thread that will start at <em>Core step 1 - Update transaction state to “pending”,</em> and will end at <em>Core step 7 - Update transaction state to finished.</em> Recovery procedures may start executing at different stages in the two-phase commit, and will also execute sequentially in a single thread for a single transaction.</p>
+<p>If any of the core two-phase commit operations fails or does not receive a response, then it should be retried several times before stopping processing of the current thread. If this happens then the failed transaction will be picked up later by recovery procedures.</p>
+<h2 id="core-step-1---update-transaction-state-to-pending">Core step 1 - Update transaction state to &ldquo;pending&rdquo;<a hidden class="anchor" aria-hidden="true" href="#core-step-1---update-transaction-state-to-pending">#</a></h2>
+<p>This step (<em>Core step 1</em>) can be arrived at immediately after the transaction has been created, however in the event of an error immediately after creating the transaction, this step will be executed after the step called <em>Recovery step1 - transactions that are stuck in the “created” state.</em> The document referred to by “curr_trans” will be determined by whichever step was executed prior to arriving to this current step.</p>
+<p>Update the transaction to indicate that processing has started. This is accomplished by updating the transaction state of the “curr_trans” document to “pending” as follows:</p>
+<pre tabindex="0"><code>// &#34;txn1&#34; is &lt;curr_trans._id&gt;
+POST transactions/_update/txn1?_source
+{
+  &#34;script&#34;: {
+    &#34;id&#34;: &#34;update_transaction_state&#34;,
+    &#34;params&#34;: {
+      &#34;current_state&#34;: &#34;created&#34;,
+      &#34;desired_state&#34;: &#34;pending&#34;
+    }
+  }
+}
+</code></pre><p>Ensure that the the &ldquo;result&rdquo; value in the response is “updated”, and continue to the next step.</p>
+<p>If the result field in the response is “noop” then processing of this transaction should be stopped. The _source returned by the above command should be inspected to ensure that the transaction is in the “pending” state. If necessary, recovery procedures will eventually detect this stopped transaction and then restart the transaction at <em>Core step 2 - Apply the transaction to the source account</em>.</p>
+<p>If the request fails and continues to fail after several retries, the current thread can exit and the transaction can remain in the “created” state to be detected and fixed by recovery procedures.</p>
+<h2 id="core-step-2---apply-the-transaction-to-the-source-account">Core step 2 - Apply the transaction to the source account<a hidden class="anchor" aria-hidden="true" href="#core-step-2---apply-the-transaction-to-the-source-account">#</a></h2>
+<p>This step (<em>Core step 2</em>) will normally execute immediately after <em>Core step 1 - Update transaction state to &ldquo;pending&rdquo;</em>. However, in the event of a previous error that has prevented this step from executing, this step may be triggered by the step called <em>Recover transactions that are in the &ldquo;pending&rdquo; transaction state</em>.</p>
+<p>Update the balance and pending_transactions in the source account in the source account as follows:</p>
+<pre tabindex="0"><code>// &#34;A&#34; is from &lt;curr_trans._source.src_acct&gt;
+POST accounts/_update/A?_source
+{
+  &#34;script&#34;: {
+    &#34;id&#34;: &#34;apply_transaction_to_account&#34;,
+    &#34;params&#34;: {
+      &#34;trans_id&#34;: &#34;txn1&#34;, // from &lt;curr_trans._id&gt;
+      &#34;amount&#34;: -100      // i.e. remove &lt;curr_trans._source.amount&gt;
+    }
+  }
+}
+</code></pre><p>The response to the above command should normally have a result of “updated”.</p>
+<p>If it returns a result of “noop”, then the returned _source should be inspected to ensure that the transaction has already been applied to the source account. As long as the transaction has been applied to the source account, continue to the next step as we must guarantee that the destination account is also updated before continuing on to change the transaction state to “committed”.</p>
+<p>If the request fails and continues to fail after several retries, do not continue to the next step, as the transaction should remain in the “pending” state to be detected and fixed by recovery procedures.</p>
+<h2 id="core-step-3---apply-the-transaction-to-the-destination-account">Core step 3 - Apply the transaction to the destination account<a hidden class="anchor" aria-hidden="true" href="#core-step-3---apply-the-transaction-to-the-destination-account">#</a></h2>
+<p>This step (<em>Core step 3</em>) will execute immediately after <em>Core step 2.</em> Execute the following code to apply the transaction to the destination account:</p>
+<pre tabindex="0"><code>// &#34;B&#34; is from &lt;curr_trans._source.dest_acct&gt;
+POST accounts/_update/B?_source
+{
+  &#34;script&#34;: {
+    &#34;id&#34;: &#34;apply_transaction_to_account&#34;,
+    &#34;params&#34;: {
+      &#34;trans_id&#34;: &#34;txn1&#34;, // from &lt;curr_trans._id&gt;
+      &#34;amount&#34;: 100       // from +&lt;curr_trans._source.amount&gt;
+    }
+  }
+}
+</code></pre><p>The response to the above command should return a result with the value “updated”.</p>
+<p>If it returns a result of “noop”, then the returned _source should be inspected to ensure that the transaction has already been applied to the destination account. As long as the transaction has been applied to the destination account, continue with the next step to update the transaction state to “committed”.</p>
+<p>If the request fails and continues to fail after several retries, do not continue to the next step, as the transaction should remain in the “pending” state to be detected and fixed by recovery procedures.</p>
+<h2 id="core-step-4---update-the-transaction-state-to-committed">Core step 4 - Update the transaction state to &ldquo;committed&rdquo;<a hidden class="anchor" aria-hidden="true" href="#core-step-4---update-the-transaction-state-to-committed">#</a></h2>
+<p>This step (<em>Core step 4</em>) will only be called immediately after a pending transaction has been applied to both the source account and the destination account. This step is not called directly by any recovery procedures. This ensures that a “committed” transaction state means that both the source and destination balances are guaranteed to have have been updated.</p>
+<p>Once a transaction moves into a “committed” transaction state, the order of execution of the two-phase commit steps (or of the recovery procedures) guarantee that no further attempts to modify the source or destination account balances will take place for the current transaction.</p>
+<p>Execute the following command to update the transaction state to “committed”:</p>
+<pre tabindex="0"><code>// &#34;txn1&#34; is &lt;curr_trans._id&gt;
+POST transactions/_update/txn1?_source
+{
+  &#34;script&#34;: {
+    &#34;id&#34;: &#34;update_transaction_state&#34;,
+    &#34;params&#34;: {
+      &#34;current_state&#34;: &#34;pending&#34;,
+      &#34;desired_state&#34;: &#34;committed&#34;
+    }
+  }
+}
+</code></pre><p>Ensure that the the &ldquo;result&rdquo; value in the response is equal to “updated”, and continue to the next step.</p>
+<p>If the result field in the response is “noop” then processing of this transaction should be stopped. The returned _source should be inspected to ensure that the transaction is in the “committed” state. If necessary, recovery procedures will eventually detect this stopped transaction and will then restart the transaction at <em>Core step 5 - Remove the transaction from the source account</em>.</p>
+<p>If the request fails and continues to fail after several retries, the current thread can exit as the transaction can remain in the “pending” state to be detected and fixed by recovery procedures.</p>
+<h2 id="core-step-5---remove-the-transaction-identifier-from-the-source-account">Core step 5 - Remove the transaction identifier from the source account<a hidden class="anchor" aria-hidden="true" href="#core-step-5---remove-the-transaction-identifier-from-the-source-account">#</a></h2>
+<p>This step (<em>Core step 5</em>) will normally execute immediately after <em>Core step 4 - Update transaction state to &ldquo;committed&rdquo;</em>. However, in the event of a previous error that has prevented this step from executing, this will be called after <em>Recover transactions that are in the &ldquo;committed&rdquo; transaction state</em>.</p>
+<p>The transaction id in the pending transactions array on the source account was previously required to ensure that a given transaction would only be applied once to the source account’s balance. Now that the account balances have been committed, this can now be removed as follows:</p>
+<pre tabindex="0"><code>// &#34;A&#34; is from &lt;curr_trans._source.src_acct&gt;
+POST accounts/_update/A?_source
+{
+  &#34;script&#34;: {
+    &#34;id&#34;: &#34;remove_transaction_from_account&#34;,
+    &#34;params&#34;: {
+      &#34;trans_id&#34;: &#34;txn1&#34; // from &lt;curr_trans._id&gt;
+    }
+  }
+}
+</code></pre><p>The response to the above command should normally have a result of “updated”.</p>
+<p>If it returns a result of “noop”, the returned _source should be inspected to ensure that the transaction has been removed from the source account. If so, continue to the next step as we must guarantee that the destination account is also updated before moving to the “finished” state.</p>
+<p>If the request fails and continues to fail after several retries, do not continue to the next step, as the transaction should remain in the “committed” state to be detected and fixed by future recovery procedures.</p>
+<h2 id="core-step-6---remove-the-transaction-identifier-from-the-destination-account">Core step 6 - Remove the transaction identifier from the destination account<a hidden class="anchor" aria-hidden="true" href="#core-step-6---remove-the-transaction-identifier-from-the-destination-account">#</a></h2>
+<p>This step (<em>Core step 6</em>) will execute immediately after <em>Core step 5.</em> We can remove the transaction from the destination account as follows:</p>
+<pre tabindex="0"><code>// &#34;B&#34; is from &lt;curr_trans._source.dest_acct&gt;
+POST accounts/_update/B?_source
+{
+  &#34;script&#34;: {
+    &#34;id&#34;: &#34;remove_transaction_from_account&#34;,
+    &#34;params&#34;: {
+      &#34;trans_id&#34;: &#34;txn1&#34; // from &lt;curr_trans._id&gt;
+    }
+  }
+}
+</code></pre><p>The response to the above command should return a result with the value “updated”.</p>
+<p>If it returns a result of “noop”, the returned _source should be inspected to ensure that the transaction has been removed from the destination account. If so, continue to the next step.</p>
+<p>If the request fails and continues to fail after several retries, do not continue to the next step, as the transaction should remain in the “committed” state to be detected and fixed by recovery procedures.</p>
+<h2 id="core-step-7---update-transaction-state-to-finished">Core step 7 - Update transaction state to &ldquo;finished&rdquo;<a hidden class="anchor" aria-hidden="true" href="#core-step-7---update-transaction-state-to-finished">#</a></h2>
+<p>This step (<em>Core step 7</em>) will only be called immediately after a committed transaction has been removed from both the source account and the destination account. This step is not called directly by any recovery procedures. This sequence ensures that a “finished” transaction state means that the current transaction has been removed from both the source and destination account’s pending transactions arrays.</p>
+<p>Execute the following command to update the transaction state to “finished”:</p>
+<pre tabindex="0"><code>// &#34;txn1&#34; is &lt;curr_trans._id&gt;
+POST transactions/_update/txn1?_source
+{
+  &#34;script&#34;: {
+    &#34;id&#34;: &#34;update_transaction_state&#34;,
+    &#34;params&#34;: {
+      &#34;current_state&#34;: &#34;committed&#34;,
+      &#34;desired_state&#34;: &#34;finished&#34;
+    }
+  }
+}
+</code></pre><p>The response to the above command should normally return a result with the value “updated”.</p>
+<p>If it returns a result of “noop”, then inspect the returned _source to confirm that the transaction state is “finished”.</p>
+<p>If the request fails and continues to fail after several retries, the current thread can exit as the transaction can remain in the “committed” state to be detected and fixed by recovery procedures.</p>
+<h1 id="rolling-back-transactions">Rolling back transactions<a hidden class="anchor" aria-hidden="true" href="#rolling-back-transactions">#</a></h1>
+<p>In some cases it may be necessary to roll back a transaction, which can be done as described below.</p>
+<h2 id="rollback-of-created-transactions">Rollback of “created” transactions<a hidden class="anchor" aria-hidden="true" href="#rollback-of-created-transactions">#</a></h2>
+<p>A transaction that is in a “created” state can be directly set to “rolled-back”. This can be accomplished as follows:</p>
+<pre tabindex="0"><code>// &#34;txn1&#34; is &lt;curr_trans._id&gt;
+POST transactions/_update/txn1?_source
+{
+  &#34;script&#34;: {
+    &#34;id&#34;: &#34;update_transaction_state&#34;,
+    &#34;params&#34;: {
+      &#34;current_state&#34;: &#34;created&#34;,
+      &#34;desired_state&#34;: &#34;rolled-back&#34;
+    }
+  }
+}
+</code></pre><p>If the result field in the response is “updated” then rollback of this transaction has succeeded.</p>
+<p>If the result is “noop” then the transaction may have already moved past the “created” state, and therefore an alternate rollback procedure should be followed, depending on the current state of the transaction. The current transaction state can be viewed in the returned _source.</p>
+<h2 id="rollback-of-pending-transactions">Rollback of “pending” transactions<a hidden class="anchor" aria-hidden="true" href="#rollback-of-pending-transactions">#</a></h2>
+<p>If a transaction is in the &ldquo;pending&rdquo; state, then the transaction can be rolled-back by executing the following steps which will reverse the modifications to the source and destination accounts, as well as change the status of the transaction..</p>
+<h3 id="rollback-step-1---update-the-transaction-state-to-terminating">Rollback step 1 - Update the transaction state to &ldquo;terminating&rdquo;<a hidden class="anchor" aria-hidden="true" href="#rollback-step-1---update-the-transaction-state-to-terminating">#</a></h3>
+<p>Update the transaction state on the current transaction from “pending” to “terminating” as shown below.</p>
+<pre tabindex="0"><code>// &#34;txn1&#34; is &lt;curr_trans._id&gt;
+POST transactions/_update/txn1?_source
+{
+  &#34;script&#34;: {
+    &#34;id&#34;: &#34;update_transaction_state&#34;,
+    &#34;params&#34;: {
+      &#34;current_state&#34;: &#34;pending&#34;,
+      &#34;desired_state&#34;: &#34;terminating&#34;
+    }
+  }
+}
+</code></pre><p>The response to the above command should return a result with the value “updated”.</p>
+<p>If a result of “noop” is returned in the response, then the rollback of the current transaction should be stopped and the returned _source should be inspected to confirm that the transaction is not in the “pending” state, and that it is already in either the “committed” state or “terminating” state.</p>
+<p>If the request fails and continues to fail even after several retries, the current thread should exit as the transaction should remain in the “pending” state to be detected and fixed by normal <em>Recovering from errors in the two-phase commit</em> procedures (which, if successful, would move the transaction to a “finished” state, rather than “rolled-back), or alternatively a new rollback can be retried.</p>
+<h3 id="rollback-step-2---undo-the-transaction-on-the-source-account">Rollback step 2 - Undo the transaction on the source account<a hidden class="anchor" aria-hidden="true" href="#rollback-step-2---undo-the-transaction-on-the-source-account">#</a></h3>
+<p>This step (<em>Rollback step 2</em>) can be arrived at immediately after the transaction has been set to the “terminating” state, however in the event of an error after updating the state, this step will be executed after the step called <em>Recover transactions that are in the &ldquo;terminating&rdquo; transaction state</em>.</p>
+<p>If the source account balance has been modified, then it will have an entry for the current transaction’s _id in its pending transactions array. Therefore the amount that was removed from the source account balance must be added back, and the transaction must be removed from the pending transactions array. This can be accomplished with the following code:</p>
+<pre tabindex="0"><code>// &#34;A&#34; is from &lt;curr_trans._source.src_acct&gt;
+POST accounts/_update/A?_source
+{
+  &#34;script&#34;: {
+    &#34;id&#34;: &#34;undo_transaction_on_account&#34;,
+    &#34;params&#34;: {
+      &#34;trans_id&#34;: &#34;txn1&#34;, // &lt;curr_trans._id&gt;
+      &#34;amount&#34;: -100      // Undo -&lt;curr_trans._source.amount&gt;
+    }
+  }
+}
+</code></pre><p>The response to the above command should normally have a result of “updated”.</p>
+<p>If it returns a result of “noop”, the returned _source should be inspected to confirm that the transaction has already been rolled-back on the source account. In this case, continue to the next step as it is possible that the destination account has not yet been rolled-back.</p>
+<p>If the request fails and continues to fail even after several retries, the current thread should exit as the transaction should remain in the “terminating” state to be detected and fixed by recovery procedures.</p>
+<h3 id="rollback-step-3---undo-the-transaction-from-the-destination-account">Rollback step 3 - Undo the transaction from the destination account<a hidden class="anchor" aria-hidden="true" href="#rollback-step-3---undo-the-transaction-from-the-destination-account">#</a></h3>
+<p>If the destination account balance has been modified, then it will have an entry for the current transaction’s _id in its pending transactions array. Therefore the amount that was added to the destination account balance must be removed, and the transaction must be removed from the pending transactions array. This can be accomplished with the following code:</p>
+<pre tabindex="0"><code>// &#34;B&#34; is from &lt;curr_trans._source.dest_acct&gt;
+POST accounts/_update/B?_source
+{
+  &#34;script&#34;: {
+    &#34;id&#34;: &#34;undo_transaction_on_account&#34;,
+    &#34;params&#34;: {
+      &#34;trans_id&#34;: &#34;txn1&#34;, // &lt;curr_trans._id&gt;
+      &#34;amount&#34;: 100      //  Undo &lt;curr_trans._source.amount&gt;
+    }
+  }
+}
+</code></pre><p>The response to the above command should normally have a result of “updated”.</p>
+<p>If it returns a result of “noop”, the returned _source should be inspected to confirm that the transaction has already been rolled-back on the destination account. In this case, continue to the next step as the transaction state needs to be set to “rolled-back”.</p>
+<p>If the request fails and continues to fail even after several retries, the current thread should exit as the transaction should remain in the “terminating” state to be detected and fixed by recovery procedures.</p>
+<h3 id="rollback-step-4---set-the-transaction-state-to-rolled-back">Rollback step 4 - Set the transaction state to “rolled-back”<a hidden class="anchor" aria-hidden="true" href="#rollback-step-4---set-the-transaction-state-to-rolled-back">#</a></h3>
+<p>The rollback operation is completed by updating the transaction state to “rolled-back”.</p>
+<pre tabindex="0"><code>// &#34;txn1&#34; is &lt;curr_trans._id&gt;
+POST transactions/_update/txn1?_source
+{
+  &#34;script&#34;: {
+    &#34;id&#34;: &#34;update_transaction_state&#34;,
+    &#34;params&#34;: {
+      &#34;current_state&#34;: &#34;terminating&#34;,
+      &#34;desired_state&#34;: &#34;rolled-back&#34;
+    }
+  }
+}
+</code></pre><p>The response to the above command should return a result with the value “updated”.</p>
+<p>If the response result is “noop”, then the returned _source should be inspected to confirm that the transaction state has already been set to “rolled-back”.</p>
+<p>If the request fails and continues to fail even after several retries, the current thread should exit as the transaction should remain in the “terminating” state, which will be detected and fixed by recovery procedures.</p>
+<h2 id="rollback-of-committed-transactions">Rollback of “committed” transactions<a hidden class="anchor" aria-hidden="true" href="#rollback-of-committed-transactions">#</a></h2>
+<p>If a transaction is in the &ldquo;committed&rdquo; state, then it should be allowed to complete (i.e. it should be allowed to move to a transaction state of “finished”). After completion, then another transaction can be executed to reverse the transaction.</p>
+<p>If for some reason a transaction in the “committed” state cannot proceed to the “finished” state on its own, even after the steps in <em>Recover transactions that are in the &ldquo;committed&rdquo; transaction state</em> have been executed, then manual intervention may be required to understand and fix the root cause of the issue.</p>
+<h1 id="recovering-from-errors">Recovering from errors<a hidden class="anchor" aria-hidden="true" href="#recovering-from-errors">#</a></h1>
+<p>Recovery operations can be looped over to detect and recover from a failure in any of the stages in the <em>Core two-phase commit operations</em>. Recovery should only be initiated on a transaction that has not completed within a <em>reasonable</em> amount of time since its last update (i.e. since its modification timestamp). Recovery should not be attempted on transactions that may still be executing, or that may have unacknowledged modifications to their transaction state, as this could introduce race conditions.</p>
+<p>A simple heuristic to ensure that recovery is not attempted on transactions that are currently executing is the following:</p>
+<ol>
+<li>Before recovering a transaction, wait until the time that has passed since its last modification is greater than the maximum processing time of all two-phase commit steps. In other words, wait long enough to ensure that the transaction should have either executed to completion or failed, including retries and timeouts.</li>
+<li>Ensure that the looping of the recovery operation does not happen faster than the maximum processing time of all two-phase commit steps. In other words, do not start the next iteration of the recovery loop until after waiting long enough to ensure that previous recovery operations will have either completed or failed, including retries and timeouts.</li>
+</ol>
+<p>Unacknowledged modifications (a.k.a. <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-replication.html">dirty reads</a>) can be avoided by using the modification_time to compute how much time has passed since the last update to the transaction, and not attempting to recover a transaction until several minutes have passed since its most recent update. This will give elastic sufficient time to detect and fix any unacknowledged writes.</p>
+<p>In the examples below, we wait 2 minutes from the most recent update to a transaction before we attempt recovery, which should meet the above requirements. We could also consider executing the recovery loop once every minute. Both of these values should be validated based on the timeouts and number of retries for a given implementation.</p>
+<p>More sophisticated and precise control over the timing of the launching of recovery procedures could be achieved by maintaining a mapping of transactions and their associated threads. Before launching a recovery procedure, the thread associated with each transaction could be checked to ensure that it is no longer alive. The details of such an implementation will be language dependent, and are beyond the scope of this article.</p>
+<h2 id="get-transactions-that-need-to-be-recovered">Get transactions that need to be recovered<a hidden class="anchor" aria-hidden="true" href="#get-transactions-that-need-to-be-recovered">#</a></h2>
+<p>Transactions that have not been modified in the past 2 minutes, may be “stuck”, and can be detected with the following query:</p>
+<pre tabindex="0"><code>GET transactions/_search
+{
+ &#34;size&#34;: 100,
+ &#34;query&#34;: {
+   &#34;bool&#34;: {
+     &#34;filter&#34;: [
+       {
+         &#34;terms&#34;: {
+           &#34;transaction_state&#34;: [
+             &#34;created&#34;, 
+             &#34;pending&#34;,
+             &#34;terminating&#34;, 
+             &#34;committed&#34;
+             ]
+         }
+       },
+       {
+         &#34;range&#34;: {
+           &#34;modification_time&#34;: {
+             &#34;lte&#34;: &#34;now-2m&#34;
+           }
+         }
+       }
+
+     ]
+   }
+ },
+ &#34;sort&#34;: [
+   {
+     &#34;modification_time&#34;: {
+       &#34;order&#34;: &#34;asc&#34;
+     }
+   }
+ ]
+}
+</code></pre><h2 id="recover-transactions-that-are-stuck-in-the-created-state">Recover transactions that are stuck in the “created” state<a hidden class="anchor" aria-hidden="true" href="#recover-transactions-that-are-stuck-in-the-created-state">#</a></h2>
+<p>For each “created” transaction returned from the above query, create a new thread to resume executing it starting at <em>Core step 1 - Update transaction state to &ldquo;pending&rdquo;</em>.</p>
+<h2 id="recover-transactions-that-are-in-the-pending-state">Recover transactions that are in the &ldquo;pending&rdquo; state<a hidden class="anchor" aria-hidden="true" href="#recover-transactions-that-are-in-the-pending-state">#</a></h2>
+<p>For each “pending” transaction returned from the above query, create a new thread to resume executing it starting at Core step 2 <em>- Apply the transaction to the source account</em>.</p>
+<h2 id="recover-transactions-that-are-in-the-committed-state">Recover transactions that are in the &ldquo;committed&rdquo; state<a hidden class="anchor" aria-hidden="true" href="#recover-transactions-that-are-in-the-committed-state">#</a></h2>
+<p>For each “committed” transaction that is returned, create a new thread to resume executing it starting at <em>Core step 5 - Remove the transaction from the source account</em>.</p>
+<h2 id="recover-transactions-that-are-in-the-terminating-state">Recover transactions that are in the &ldquo;terminating&rdquo; state<a hidden class="anchor" aria-hidden="true" href="#recover-transactions-that-are-in-the-terminating-state">#</a></h2>
+<p>For each “pending” transaction that is returned, create a new thread to resume executing it starting at <em>Rollback step 2 - Undo the transaction on the source account</em>.</p>
+<h2 id="recover-very-long-running-transactions">Recover very long running transactions<a hidden class="anchor" aria-hidden="true" href="#recover-very-long-running-transactions">#</a></h2>
+<p>If any “created”, “pending”, or “committed” transactions are returned that have a modification time that is more than an hour ago, they may need additional investigations and should possibly be rolled back as described in the <em>Rolling back transactions</em> section.</p>
+<p>If a “terminating” transaction is unable to move into the “rolled-back” transaction state, then it should be investigated and manual intervention may be required.</p>
+<h1 id="conclusions">Conclusions<a hidden class="anchor" aria-hidden="true" href="#conclusions">#</a></h1>
+<p>In some cases it may be necessary to modify multiple documents as a single cohesive unit. Elasticsearch does not have built-in <a href="https://www.elastic.co/blog/found-elasticsearch-as-nosql#transactions">support for multi-document transactions</a>, therefore in this blog this blog post we have presented a <a href="https://en.wikipedia.org/wiki/Two-phase_commit_protocol">two-phase commit protocol</a> which can be used to <em>emulate</em> multi-document transactions.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/transactions/">Transactions</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/logstash-and-elasticsearch-painless-scripted-upserts-transform-data/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Using Logstash and Elasticsearch scripted upserts to transform eCommerce purchasing data</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/converting-local-time-to-iso-8601-time-in-elasticsearch/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Converting local time to ISO 8601 time in Elasticsearch</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Alexander Marquardt</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

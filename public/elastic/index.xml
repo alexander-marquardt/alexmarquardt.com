@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Elastic Stack on Alexander Marquardt</title>
+    <link>http://localhost:1313/elastic/</link>
+    <description>Recent content in Elastic Stack on Alexander Marquardt</description>
+    <generator>Hugo -- 0.153.4</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 29 Oct 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/elastic/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Ranking by Profit and Popularity in Elasticsearch</title>
+      <link>http://localhost:1313/elastic/ranking-by-profit-and-popularity-in-elasticsearch/</link>
+      <pubDate>Wed, 29 Oct 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/ranking-by-profit-and-popularity-in-elasticsearch/</guid>
+      <description>&lt;p&gt;Moved to Elastic&amp;rsquo;s blog - &lt;a href=&#34;https://www.elastic.co/search-labs/blog/function-score-query-boosting-profit-popularity-elasticsearch&#34;&gt;https://www.elastic.co/search-labs/blog/function-score-query-boosting-profit-popularity-elasticsearch&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Personalizing e-commerce search results based on purchase history in Elasticsearch (Without a need for Machine Learning Post Processing)</title>
+      <link>http://localhost:1313/elastic/personalizing-search-in-elasticsearch-without-ml-post-processing/</link>
+      <pubDate>Fri, 12 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/personalizing-search-in-elasticsearch-without-ml-post-processing/</guid>
+      <description>&lt;p&gt;Whether you’re looking for a product in an online store, an article in a news archive, or a file in a company knowledge base, the quality of the search experience determines how quickly you find what you need. Behind the scenes, many of these systems are powered by &lt;strong&gt;Elasticsearch&lt;/strong&gt;, a popular open-source search engine designed to handle large volumes of data and return relevant results in milliseconds.&lt;/p&gt;
+&lt;p&gt;At its core, Elasticsearch matches user queries against text fields and ranks results using relevance scoring. But search doesn’t have to stop there. That’s where &lt;strong&gt;personalization&lt;/strong&gt; comes in. By incorporating signals such as past purchases, browsing behavior, or recent activity, search results can be adjusted so the items most relevant to &lt;em&gt;you&lt;/em&gt; appear higher. For example, if two people both search for &lt;em&gt;“chips”&lt;/em&gt;, one might see &lt;em&gt;classic potato chips&lt;/em&gt; at the top, while the other sees &lt;em&gt;crispy thin-cut chips&lt;/em&gt;, depending on their history.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Efficient bitwise matching of documents in Elasticsearch</title>
+      <link>http://localhost:1313/elastic/efficient-bitwise-matching-of-documents-in-elasticsearch/</link>
+      <pubDate>Sat, 15 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/efficient-bitwise-matching-of-documents-in-elasticsearch/</guid>
+      <description>&lt;p&gt;This article has now been published on Elastic&amp;rsquo;s website. Please check it out at: &lt;a href=&#34;https://www.elastic.co/search-labs/blog/efficient-bitwise-matching-in-elasticsearch&#34;&gt;https://www.elastic.co/search-labs/blog/efficient-bitwise-matching-in-elasticsearch&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Using Grok with Elasticsearch to add structure to your data</title>
+      <link>http://localhost:1313/elastic/using-grok-with-elasticsearch-to-add-structure-to-your-data/</link>
+      <pubDate>Mon, 13 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/using-grok-with-elasticsearch-to-add-structure-to-your-data/</guid>
+      <description>&lt;p&gt;This article is available on Elastic&amp;rsquo;s blog as a 3-part series. Please check it out at the following URLs:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/blog/structuring-elasticsearch-data-with-grok-on-ingest-for-faster-analytics&#34;&gt;https://www.elastic.co/blog/structuring-elasticsearch-data-with-grok-on-ingest-for-faster-analytics&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/blog/slow-and-steady-how-to-build-custom-grok-patterns-incrementally&#34;&gt;https://www.elastic.co/blog/slow-and-steady-how-to-build-custom-grok-patterns-incrementally&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/blog/debugging-broken-grok-expressions-in-elasticsearch-ingest-processors&#34;&gt;https://www.elastic.co/blog/debugging-broken-grok-expressions-in-elasticsearch-ingest-processors&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    <item>
+      <title>Using boolean queries to improve search relevancy in Elasticsearch</title>
+      <link>http://localhost:1313/elastic/a-simple-and-powerful-technique-to-improve-search-relevancy-in-elasticsearch/</link>
+      <pubDate>Tue, 12 May 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/a-simple-and-powerful-technique-to-improve-search-relevancy-in-elasticsearch/</guid>
+      <description>&lt;p&gt;Page moved to &lt;a href=&#34;https://alexmarquardt.com/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/&#34;&gt;https://alexmarquardt.com/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Using boolean queries to improve search relevance in Elasticsearch</title>
+      <link>http://localhost:1313/elastic/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/</link>
+      <pubDate>Fri, 01 May 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/</guid>
+      <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/how-to-improve-elasticsearch-search-relevance-with-boolean-queries&#34;&gt;https://www.elastic.co/blog/how-to-improve-elasticsearch-search-relevance-with-boolean-queries&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Using slow logs in Elastic Cloud Enterprise</title>
+      <link>http://localhost:1313/elastic/using-slow-logs-in-elastic-cloud-enterprise/</link>
+      <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/using-slow-logs-in-elastic-cloud-enterprise/</guid>
+      <description>&lt;p&gt;April 26, 2020&lt;/p&gt;
+&lt;h1 id=&#34;authors&#34;&gt;Authors&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Tom Schreiber&lt;/li&gt;
+&lt;li&gt;Alex Marquardt&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;version&#34;&gt;Version&lt;/h1&gt;
+&lt;p&gt;This blog article is based on ECE 2.4.3.&lt;/p&gt;
+&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/guide/en/cloud-enterprise/2.4/Elastic-Cloud-Enterprise-overview.html&#34;&gt;Elastic Cloud Enterprise&lt;/a&gt; (ECE) is a platform designed to ease the management, deployment, and configuration of multiple Elasticsearch clusters through a single administrative user interface. ECE, is the same product that powers the &lt;a href=&#34;https://www.elastic.co/elasticsearch/service&#34;&gt;Elasticsearch Service&lt;/a&gt; hosted offering, and is available for installation on customer-managed servers. ECE can be deployed anywhere - on public or private clouds, virtual machines, or even on bare metal hardware. Once installed, ECE allows Elasticsearch clusters to be created, upgraded, or deleted with the click of a button.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Using Elastic machine learning to detect anomalies in derivative values</title>
+      <link>http://localhost:1313/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/</link>
+      <pubDate>Tue, 21 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/</guid>
+      <description>&lt;p&gt;April 21, 2020&lt;/p&gt;
+&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;In this blog, we use Elastic machine learning (ML) and derivative aggregations to detect sudden unexpected increases or decreases in the &lt;em&gt;rate-of-change&lt;/em&gt; of CPU load on servers that are monitored by &lt;a href=&#34;https://www.elastic.co/guide/en/beats/metricbeat/7.6/metricbeat-overview.html&#34;&gt;Metricbeat&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In order to make this blog easier to follow and the results easy to recreate, we abstract away the requirement for driving data from Metricbeat, and instead generate &amp;ldquo;fake&amp;rdquo; Metricbeat data using a Python script that drives data into Elasticsearch.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Using the Elasticsearch Enrich Processor with CSV data</title>
+      <link>http://localhost:1313/elastic/enriching-elasticsearch-documents-with-data-from-csv-files/</link>
+      <pubDate>Sat, 21 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/enriching-elasticsearch-documents-with-data-from-csv-files/</guid>
+      <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/how-to-enrich-logs-and-metrics-using-an-elasticsearch-ingest-node&#34;&gt;https://www.elastic.co/blog/how-to-enrich-logs-and-metrics-using-an-elasticsearch-ingest-node&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Enriching data with the Logstash translate filter</title>
+      <link>http://localhost:1313/elastic/enriching-data-with-the-logstash-translate-filter/</link>
+      <pubDate>Fri, 06 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/enriching-data-with-the-logstash-translate-filter/</guid>
+      <description>&lt;p&gt;March 6, 2020&lt;/p&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/logstash&#34;&gt;Logstash&lt;/a&gt; is an open source, server-side data processing pipeline that ingests data from a multitude of sources, transforms it, and then sends it to one or more outputs. One use of Logstash is for enriching data before sending it to Elasticsearch.&lt;/p&gt;
+&lt;p&gt;Logstash supports several different &lt;a href=&#34;https://www.elastic.co/guide/en/logstash/current/lookup-enrichment.html#geoip-def&#34;&gt;lookup plugin filters&lt;/a&gt; that can be used for enriching data. Many of these rely on components that are external to the Logstash pipeline for storing enrichment data. On the other hand, the &lt;a href=&#34;https://www.elastic.co/guide/en/logstash/current/plugins-filters-translate.html&#34;&gt;translate filter plugin&lt;/a&gt; can be used for looking up data and enriching documents without dependencies. Therefore, in this blog article I focus on using Logstash with the translate filter plugin for enriching data.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to create maintainable and reusable logstash pipelines</title>
+      <link>http://localhost:1313/elastic/how-to-create-maintainable-and-reusable-logstash-pipelines/</link>
+      <pubDate>Wed, 26 Feb 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/how-to-create-maintainable-and-reusable-logstash-pipelines/</guid>
+      <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/how-to-create-maintainable-and-reusable-logstash-pipelines&#34;&gt;https://www.elastic.co/blog/how-to-create-maintainable-and-reusable-logstash-pipelines&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Es Local Indexer - using Elasticsearch for searching locally stored documents</title>
+      <link>http://localhost:1313/elastic/es-local-indexer-using-elasticsearch-for-searching-locally-stored-documents/</link>
+      <pubDate>Thu, 08 Aug 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/es-local-indexer-using-elasticsearch-for-searching-locally-stored-documents/</guid>
+      <description>&lt;p&gt;Moved to: &lt;a href=&#34;https://alexmarquardt.com/es-local-indexer-desktop-search-built-with-elasticsearch/&#34;&gt;https://alexmarquardt.com/es-local-indexer-desktop-search-built-with-elasticsearch/&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>ES Local Indexer – Desktop search powered by Elasticsearch</title>
+      <link>http://localhost:1313/elastic/es-local-indexer-desktop-search-built-with-elasticsearch/</link>
+      <pubDate>Thu, 08 Aug 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/es-local-indexer-desktop-search-built-with-elasticsearch/</guid>
+      <description>&lt;p&gt;August 7, 2019&lt;/p&gt;
+&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Elasticsearch provides search functionality for some of the most important websites in the world including &lt;a href=&#34;https://blog.wikimedia.org/2014/01/06/wikimedia-moving-to-elasticsearch/&#34;&gt;Wikimedia (i.e. Wikipedia)&lt;/a&gt;, &lt;a href=&#34;https://www.elastic.co/videos/ebay-and-elasticsearch-this-is-not-small-data&#34;&gt;eBay&lt;/a&gt;, &lt;a href=&#34;https://engineeringblog.yelp.com/2017/06/moving-yelps-core-business-search-to-elasticsearch.html&#34;&gt;Yelp&lt;/a&gt;, &lt;a href=&#34;https://www.elastic.co/elasticon/conf/2017/sf/tinder-using-the-elastic-stack-to-make-connections-around-the-world&#34;&gt;Tinder&lt;/a&gt;, and many others. Elasticsearch is super scalable, which means that just as easily as it can be scaled it up for use in huge complex systems, it can also be scaled down for use in smaller projects.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/alexander-marquardt/es_local_indexer&#34;&gt;ES Local Indexer&lt;/a&gt; is a small desktop search application that runs on top of a local Elasticsearch installation. It indexes HTML documents into Elasticsearch and provides an intuitive browser-based interface for searching through the ingested documents. The ES Local Indexer project consists of two main components:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to tune Elasticsearch for aggregation performance</title>
+      <link>http://localhost:1313/elastic/how-to-tune-elasticsearch-for-aggregation-performance/</link>
+      <pubDate>Tue, 02 Oct 2018 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/elastic/how-to-tune-elasticsearch-for-aggregation-performance/</guid>
+      <description>&lt;p&gt;October 2, 2018&lt;/p&gt;
+&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;By default, Elasticsearch is tuned for the best trade-off between write performance and query performance for the majority of use cases. In this blog posting we cover some parameters that can be configured to improve query-time aggregation performance, with &lt;em&gt;some&lt;/em&gt; of these improvements coming at &lt;em&gt;the expense of write performance.&lt;/em&gt; &lt;/p&gt;
+&lt;p&gt;Note that this blog posting does not present anything that is not already documented in other locations. The goal here is to pull together relevant information into a small and digestible posting that provides a few pointers on how to improve slow Elasticsearch aggregations.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

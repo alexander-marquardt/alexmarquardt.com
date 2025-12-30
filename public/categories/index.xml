@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Categories on Alexander Marquardt</title>
+    <link>http://localhost:1313/categories/</link>
+    <description>Recent content in Categories on Alexander Marquardt</description>
+    <generator>Hugo -- 0.153.4</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 06 Nov 2020 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Elasticsearch</title>
+      <link>http://localhost:1313/categories/elasticsearch/</link>
+      <pubDate>Fri, 06 Nov 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/categories/elasticsearch/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Painless</title>
+      <link>http://localhost:1313/categories/painless/</link>
+      <pubDate>Fri, 06 Nov 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/categories/painless/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Filebeat</title>
+      <link>http://localhost:1313/categories/filebeat/</link>
+      <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/categories/filebeat/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Logstash</title>
+      <link>http://localhost:1313/categories/logstash/</link>
+      <pubDate>Tue, 17 Dec 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/categories/logstash/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Kibana</title>
+      <link>http://localhost:1313/categories/kibana/</link>
+      <pubDate>Wed, 16 Oct 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/categories/kibana/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Nutrition</title>
+      <link>http://localhost:1313/categories/nutrition/</link>
+      <pubDate>Tue, 30 Jul 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/categories/nutrition/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Finance</title>
+      <link>http://localhost:1313/categories/finance/</link>
+      <pubDate>Sat, 27 Jul 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/categories/finance/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Investing</title>
+      <link>http://localhost:1313/categories/investing/</link>
+      <pubDate>Sat, 27 Jul 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/categories/investing/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Mongodb</title>
+      <link>http://localhost:1313/categories/mongodb/</link>
+      <pubDate>Thu, 02 Mar 2017 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/categories/mongodb/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

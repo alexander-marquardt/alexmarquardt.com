@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Pages on Alexander Marquardt</title>
+    <link>http://localhost:1313/pages/</link>
+    <description>Recent content in Pages on Alexander Marquardt</description>
+    <generator>Hugo -- 0.153.4</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 26 Dec 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/pages/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title></title>
+      <link>http://localhost:1313/pages/other-areas-of-interest/</link>
+      <pubDate>Fri, 26 Dec 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/other-areas-of-interest/</guid>
+      <description>&lt;h1 id=&#34;other-areas-of-interest&#34;&gt;Other Areas of Interest&lt;/h1&gt;
+&lt;h2 id=&#34;finance&#34;&gt;Finance&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://alexmarquardt.com/2019/07/27/financial-implications-of-exercising-share-options/&#34;&gt;Financial implications of exercising share options&lt;/a&gt; (Jul 27, 2019)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;general-productivitytech-related&#34;&gt;General productivity/tech-related&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/&#34;&gt;Cut and paste a table from Google Sheets into an HTML document – no code required&lt;/a&gt; (Oct 10, 2022)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;nutrition&#34;&gt;Nutrition&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;http://alexmarquardt.com/2019/07/30/how-to-mitigate-hangovers/&#34;&gt;How to mitigate hangovers&lt;/a&gt; (Jul 31, 2019)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://alexmarquardt.com/2021/06/01/a-summary-of-recent-research-on-increasing-lifespan/&#34;&gt;A summary of recent research on increasing lifespan&lt;/a&gt; (June 1, 2021)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;tourism-and-travel&#34;&gt;Tourism and Travel&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/&#34;&gt;Barcelona: A Personal Guide&lt;/a&gt; (April 21, 2024)&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    <item>
+      <title></title>
+      <link>http://localhost:1313/pages/scientific-publications-patents-awards-and-education/</link>
+      <pubDate>Fri, 26 Dec 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/scientific-publications-patents-awards-and-education/</guid>
+      <description>&lt;h1 id=&#34;professional-record-and-publications&#34;&gt;Professional Record and Publications&lt;/h1&gt;
+&lt;p&gt;This page provides supporting material for my professional background, including selected publications, patents, open-source contributions, and formal education.&lt;/p&gt;
+&lt;h2 id=&#34;profiles&#34;&gt;Profiles&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.linkedin.com/in/alexandermarquardt/&#34;&gt;LinkedIn Profile&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/alexander-marquardt/&#34;&gt;Github page&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;recognition&#34;&gt;Recognition&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Author of three papers that were selected to be amongst the &lt;a href=&#34;https://tcfpga.org/books/recommended-reading/page/fpga-20-reading-list&#34;&gt;25 most significant FPGA papers of the past 20 years&lt;/a&gt; at the 20th anniversary of the International Symposium on Field-Programmable Gate Arrays in 2012.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;scientific-publications&#34;&gt;Scientific Publications&lt;/h2&gt;
+&lt;p&gt;The publications listed below have been &lt;strong&gt;cited over 3600 times&lt;/strong&gt; according to &lt;a href=&#34;https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&amp;amp;hl=en&#34;&gt;Google Scholar.&lt;/a&gt; These publications reflect early work in FPGA architecture, placement, and routing algorithms.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ranking by Profit and Popularity in Elasticsearch</title>
+      <link>http://localhost:1313/pages/ranking-by-profit-and-popularity-in-elasticsearch/</link>
+      <pubDate>Wed, 29 Oct 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/ranking-by-profit-and-popularity-in-elasticsearch/</guid>
+      <description>&lt;p&gt;Moved to Elastic&amp;rsquo;s blog - &lt;a href=&#34;https://www.elastic.co/search-labs/blog/function-score-query-boosting-profit-popularity-elasticsearch&#34;&gt;https://www.elastic.co/search-labs/blog/function-score-query-boosting-profit-popularity-elasticsearch&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Personalizing e-commerce search results based on purchase history in Elasticsearch (Without a need for Machine Learning Post Processing)</title>
+      <link>http://localhost:1313/pages/personalizing-search-in-elasticsearch-without-ml-post-processing/</link>
+      <pubDate>Fri, 12 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/personalizing-search-in-elasticsearch-without-ml-post-processing/</guid>
+      <description>&lt;p&gt;Whether you’re looking for a product in an online store, an article in a news archive, or a file in a company knowledge base, the quality of the search experience determines how quickly you find what you need. Behind the scenes, many of these systems are powered by &lt;strong&gt;Elasticsearch&lt;/strong&gt;, a popular open-source search engine designed to handle large volumes of data and return relevant results in milliseconds.&lt;/p&gt;
+&lt;p&gt;At its core, Elasticsearch matches user queries against text fields and ranks results using relevance scoring. But search doesn’t have to stop there. That’s where &lt;strong&gt;personalization&lt;/strong&gt; comes in. By incorporating signals such as past purchases, browsing behavior, or recent activity, search results can be adjusted so the items most relevant to &lt;em&gt;you&lt;/em&gt; appear higher. For example, if two people both search for &lt;em&gt;“chips”&lt;/em&gt;, one might see &lt;em&gt;classic potato chips&lt;/em&gt; at the top, while the other sees &lt;em&gt;crispy thin-cut chips&lt;/em&gt;, depending on their history.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Efficient bitwise matching of documents in Elasticsearch</title>
+      <link>http://localhost:1313/pages/efficient-bitwise-matching-of-documents-in-elasticsearch/</link>
+      <pubDate>Sat, 15 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/efficient-bitwise-matching-of-documents-in-elasticsearch/</guid>
+      <description>&lt;p&gt;This article has now been published on Elastic&amp;rsquo;s website. Please check it out at: &lt;a href=&#34;https://www.elastic.co/search-labs/blog/efficient-bitwise-matching-in-elasticsearch&#34;&gt;https://www.elastic.co/search-labs/blog/efficient-bitwise-matching-in-elasticsearch&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Cut and paste a table from Google Sheets into an HTML document – no code&amp;nbsp;required</title>
+      <link>http://localhost:1313/pages/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/</link>
+      <pubDate>Mon, 10 Oct 2022 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In a &lt;a href=&#34;https://airbyte.com/blog/understanding-data-replication-modes&#34;&gt;recent article&lt;/a&gt; that I wrote for &lt;a href=&#34;http://www.airbyte.com/&#34;&gt;Airbyte&lt;/a&gt; it was necessary for me to copy and paste a table from Google Sheets into &lt;a href=&#34;http://www.webflow.com/&#34;&gt;Webflow&lt;/a&gt;. Unfortunately, Webflow doesn’t currently support copy/paste of tables directly in its editor.&lt;/p&gt;
+&lt;p&gt;In this blog, I present a workaround that can be used to convert a table from Google Sheets into HTML, which can then be written into a Webflow &lt;a href=&#34;https://university.webflow.com/lesson/custom-code-embed&#34;&gt;custom code block&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;acknowledgement&#34;&gt;Acknowledgement&lt;/h2&gt;
+&lt;p&gt;Thank you to &lt;a href=&#34;https://www.swyx.io/&#34;&gt;Shawn Wang&lt;/a&gt; for providing the steps that can be used to copy and paste a table from Google Sheets into HTML so easily.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Using Grok with Elasticsearch to add structure to your data</title>
+      <link>http://localhost:1313/pages/using-grok-with-elasticsearch-to-add-structure-to-your-data/</link>
+      <pubDate>Mon, 13 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/using-grok-with-elasticsearch-to-add-structure-to-your-data/</guid>
+      <description>&lt;p&gt;This article is available on Elastic&amp;rsquo;s blog as a 3-part series. Please check it out at the following URLs:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/blog/structuring-elasticsearch-data-with-grok-on-ingest-for-faster-analytics&#34;&gt;https://www.elastic.co/blog/structuring-elasticsearch-data-with-grok-on-ingest-for-faster-analytics&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/blog/slow-and-steady-how-to-build-custom-grok-patterns-incrementally&#34;&gt;https://www.elastic.co/blog/slow-and-steady-how-to-build-custom-grok-patterns-incrementally&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/blog/debugging-broken-grok-expressions-in-elasticsearch-ingest-processors&#34;&gt;https://www.elastic.co/blog/debugging-broken-grok-expressions-in-elasticsearch-ingest-processors&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    <item>
+      <title>Using boolean queries to improve search relevancy in Elasticsearch</title>
+      <link>http://localhost:1313/pages/a-simple-and-powerful-technique-to-improve-search-relevancy-in-elasticsearch/</link>
+      <pubDate>Tue, 12 May 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/a-simple-and-powerful-technique-to-improve-search-relevancy-in-elasticsearch/</guid>
+      <description>&lt;p&gt;Page moved to &lt;a href=&#34;https://alexmarquardt.com/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/&#34;&gt;https://alexmarquardt.com/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Using boolean queries to improve search relevance in Elasticsearch</title>
+      <link>http://localhost:1313/pages/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/</link>
+      <pubDate>Fri, 01 May 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/using-boolean-queries-to-improve-search-relevancy-in-elasticsearch/</guid>
+      <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/how-to-improve-elasticsearch-search-relevance-with-boolean-queries&#34;&gt;https://www.elastic.co/blog/how-to-improve-elasticsearch-search-relevance-with-boolean-queries&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Using slow logs in Elastic Cloud Enterprise</title>
+      <link>http://localhost:1313/pages/using-slow-logs-in-elastic-cloud-enterprise/</link>
+      <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/using-slow-logs-in-elastic-cloud-enterprise/</guid>
+      <description>&lt;p&gt;April 26, 2020&lt;/p&gt;
+&lt;h1 id=&#34;authors&#34;&gt;Authors&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Tom Schreiber&lt;/li&gt;
+&lt;li&gt;Alex Marquardt&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;version&#34;&gt;Version&lt;/h1&gt;
+&lt;p&gt;This blog article is based on ECE 2.4.3.&lt;/p&gt;
+&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/guide/en/cloud-enterprise/2.4/Elastic-Cloud-Enterprise-overview.html&#34;&gt;Elastic Cloud Enterprise&lt;/a&gt; (ECE) is a platform designed to ease the management, deployment, and configuration of multiple Elasticsearch clusters through a single administrative user interface. ECE, is the same product that powers the &lt;a href=&#34;https://www.elastic.co/elasticsearch/service&#34;&gt;Elasticsearch Service&lt;/a&gt; hosted offering, and is available for installation on customer-managed servers. ECE can be deployed anywhere - on public or private clouds, virtual machines, or even on bare metal hardware. Once installed, ECE allows Elasticsearch clusters to be created, upgraded, or deleted with the click of a button.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Using Elastic machine learning to detect anomalies in derivative values</title>
+      <link>http://localhost:1313/pages/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/</link>
+      <pubDate>Tue, 21 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/</guid>
+      <description>&lt;p&gt;April 21, 2020&lt;/p&gt;
+&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;In this blog, we use Elastic machine learning (ML) and derivative aggregations to detect sudden unexpected increases or decreases in the &lt;em&gt;rate-of-change&lt;/em&gt; of CPU load on servers that are monitored by &lt;a href=&#34;https://www.elastic.co/guide/en/beats/metricbeat/7.6/metricbeat-overview.html&#34;&gt;Metricbeat&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In order to make this blog easier to follow and the results easy to recreate, we abstract away the requirement for driving data from Metricbeat, and instead generate &amp;ldquo;fake&amp;rdquo; Metricbeat data using a Python script that drives data into Elasticsearch.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Using the Elasticsearch Enrich Processor with CSV data</title>
+      <link>http://localhost:1313/pages/enriching-elasticsearch-documents-with-data-from-csv-files/</link>
+      <pubDate>Sat, 21 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/enriching-elasticsearch-documents-with-data-from-csv-files/</guid>
+      <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/how-to-enrich-logs-and-metrics-using-an-elasticsearch-ingest-node&#34;&gt;https://www.elastic.co/blog/how-to-enrich-logs-and-metrics-using-an-elasticsearch-ingest-node&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Enriching data with the Logstash translate filter</title>
+      <link>http://localhost:1313/pages/enriching-data-with-the-logstash-translate-filter/</link>
+      <pubDate>Fri, 06 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/enriching-data-with-the-logstash-translate-filter/</guid>
+      <description>&lt;p&gt;March 6, 2020&lt;/p&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/logstash&#34;&gt;Logstash&lt;/a&gt; is an open source, server-side data processing pipeline that ingests data from a multitude of sources, transforms it, and then sends it to one or more outputs. One use of Logstash is for enriching data before sending it to Elasticsearch.&lt;/p&gt;
+&lt;p&gt;Logstash supports several different &lt;a href=&#34;https://www.elastic.co/guide/en/logstash/current/lookup-enrichment.html#geoip-def&#34;&gt;lookup plugin filters&lt;/a&gt; that can be used for enriching data. Many of these rely on components that are external to the Logstash pipeline for storing enrichment data. On the other hand, the &lt;a href=&#34;https://www.elastic.co/guide/en/logstash/current/plugins-filters-translate.html&#34;&gt;translate filter plugin&lt;/a&gt; can be used for looking up data and enriching documents without dependencies. Therefore, in this blog article I focus on using Logstash with the translate filter plugin for enriching data.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to create maintainable and reusable logstash pipelines</title>
+      <link>http://localhost:1313/pages/how-to-create-maintainable-and-reusable-logstash-pipelines/</link>
+      <pubDate>Wed, 26 Feb 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/how-to-create-maintainable-and-reusable-logstash-pipelines/</guid>
+      <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/how-to-create-maintainable-and-reusable-logstash-pipelines&#34;&gt;https://www.elastic.co/blog/how-to-create-maintainable-and-reusable-logstash-pipelines&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Es Local Indexer - using Elasticsearch for searching locally stored documents</title>
+      <link>http://localhost:1313/pages/es-local-indexer-using-elasticsearch-for-searching-locally-stored-documents/</link>
+      <pubDate>Thu, 08 Aug 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/es-local-indexer-using-elasticsearch-for-searching-locally-stored-documents/</guid>
+      <description>&lt;p&gt;Moved to: &lt;a href=&#34;https://alexmarquardt.com/es-local-indexer-desktop-search-built-with-elasticsearch/&#34;&gt;https://alexmarquardt.com/es-local-indexer-desktop-search-built-with-elasticsearch/&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>ES Local Indexer – Desktop search powered by Elasticsearch</title>
+      <link>http://localhost:1313/pages/es-local-indexer-desktop-search-built-with-elasticsearch/</link>
+      <pubDate>Thu, 08 Aug 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/es-local-indexer-desktop-search-built-with-elasticsearch/</guid>
+      <description>&lt;p&gt;August 7, 2019&lt;/p&gt;
+&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Elasticsearch provides search functionality for some of the most important websites in the world including &lt;a href=&#34;https://blog.wikimedia.org/2014/01/06/wikimedia-moving-to-elasticsearch/&#34;&gt;Wikimedia (i.e. Wikipedia)&lt;/a&gt;, &lt;a href=&#34;https://www.elastic.co/videos/ebay-and-elasticsearch-this-is-not-small-data&#34;&gt;eBay&lt;/a&gt;, &lt;a href=&#34;https://engineeringblog.yelp.com/2017/06/moving-yelps-core-business-search-to-elasticsearch.html&#34;&gt;Yelp&lt;/a&gt;, &lt;a href=&#34;https://www.elastic.co/elasticon/conf/2017/sf/tinder-using-the-elastic-stack-to-make-connections-around-the-world&#34;&gt;Tinder&lt;/a&gt;, and many others. Elasticsearch is super scalable, which means that just as easily as it can be scaled it up for use in huge complex systems, it can also be scaled down for use in smaller projects.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/alexander-marquardt/es_local_indexer&#34;&gt;ES Local Indexer&lt;/a&gt; is a small desktop search application that runs on top of a local Elasticsearch installation. It indexes HTML documents into Elasticsearch and provides an intuitive browser-based interface for searching through the ingested documents. The ES Local Indexer project consists of two main components:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Patents</title>
+      <link>http://localhost:1313/pages/patents/</link>
+      <pubDate>Fri, 29 Mar 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/patents/</guid>
+      <description>&lt;h4 id=&#34;method-and-system-for-estimating-the-reliability-of-blacklists-of-botnet-infected-computers&#34;&gt;Method and system for estimating the reliability of blacklists of botnet-infected computers&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;US patent 8,516,595.&lt;/li&gt;
+&lt;li&gt;Issued Aug 20, 2013&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&amp;amp;Sect2=HITOFF&amp;amp;d=PALL&amp;amp;p=1&amp;amp;u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&amp;amp;r=1&amp;amp;f=G&amp;amp;l=50&amp;amp;s1=8516595.PN.&amp;amp;OS=PN/8516595&amp;amp;RS=PN/8516595&#34;&gt;See patent.&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;versatile-logic-element-and-logic-array-block&#34;&gt;Versatile logic element and logic array block&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;US patent 7,218,133&lt;/li&gt;
+&lt;li&gt;Issued May 15, 2007 &lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&amp;amp;Sect2=HITOFF&amp;amp;d=PALL&amp;amp;p=1&amp;amp;u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&amp;amp;r=1&amp;amp;f=G&amp;amp;l=50&amp;amp;s1=7218133.PN.&amp;amp;OS=PN/7218133&amp;amp;RS=PN/7218133&#34;&gt;See patent.&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;routing-architecture-for-a-programmable-logic-device&#34;&gt;Routing Architecture For A Programmable Logic Device&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;US patent 6,970,014 &lt;/li&gt;
+&lt;li&gt;Issued Nov 29, 2005&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&amp;amp;Sect2=HITOFF&amp;amp;d=PALL&amp;amp;p=1&amp;amp;u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&amp;amp;r=1&amp;amp;f=G&amp;amp;l=50&amp;amp;s1=6970014.PN.&amp;amp;OS=PN/6970014&amp;amp;RS=PN/6970014&#34;&gt;See patent.&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    <item>
+      <title>Publications</title>
+      <link>http://localhost:1313/pages/publications/</link>
+      <pubDate>Fri, 22 Mar 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/publications/</guid>
+      <description>&lt;h2 id=&#34;book&#34;&gt;Book&lt;/h2&gt;
+&lt;h4 id=&#34;architecture-and-cad-for-deep-sub-micron-fpgas&#34;&gt;Architecture and CAD for Deep Sub-Micron FPGAs&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Mar 1999 &amp;ndash; This book covers the software and hardware that is used for architecting and programming/re-configuring FPGAs.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.amazon.com/Architecture-Deep-Submicron-Springer-International-Engineering/dp/0792384601?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3BJQDFjH2rTFyqLTVXSfr%2Bqg%3D%3D&#34;&gt;See book on Amazon.com.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=5046844827750126682&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 1402 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;thesis&#34;&gt;Thesis&lt;/h2&gt;
+&lt;h4 id=&#34;cluster-based-architecture-timing-driven-packing-and-timing-driven-placement-for-fpgas&#34;&gt;Cluster-Based Architecture, Timing-Driven Packing, and Timing-Driven Placement for FPGAs&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Apr 1999 &amp;ndash; M.A.Sc Thesis - National Library of Canada.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.collectionscanada.ca/obj/s4/f2/dsk1/tape8/PQDD_0004/MQ45993.pdf&#34;&gt;See publication.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=5625098770910011035&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 15 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;scientific-papers&#34;&gt;Scientific Papers&lt;/h2&gt;
+&lt;h4 id=&#34;the-stratix-ii-logic-and-routing-architecture&#34;&gt;The Stratix II Logic and Routing Architecture&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Nov 2005  -- ACM/Sigda 13th International Symposium on Field-Programmabel Gate Arrays&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.eecg.toronto.edu/~jayar/pubs/lewis/lewisfpga05.pdf&#34;&gt;See publication.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=5968923824677940858&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 213 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;the-stratix-routing-and-logic-architecture&#34;&gt;The Stratix Routing and Logic Architecture&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Feb 2003  -- ACM/Sigda International Symposium on Field-Programmable Gate Arrays, 2003&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.eecg.utoronto.ca/~vaughn/papers/fpga_2003.pdf&#34;&gt;See publication.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Voted as one of the &lt;a href=&#34;http://tcfpga.org/fpga20/fpga20.html&#34;&gt;25 most significant FPGA papers of the past 20 years&lt;/a&gt; at the 20th anniversary of the International Symposium on Field-Programmable Gate Arrays in 2012. &lt;a href=&#34;http://tcfpga.org/fpga20/p222.pdf&#34;&gt;See endorsement.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=14159395481451854012&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 146 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;speed-and-area-trade-offs-in-cluster-based-fpga-architectures&#34;&gt;Speed and Area Trade-Offs in Cluster-Based FPGA Architectures&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Feb 2000  -- IEEE Transactions on VLSI&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.eecg.toronto.edu/~vaughn/papers/tvlsi2000_arm.pdf&#34;&gt;See publication.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=12206654961109400147&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 72 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;timing-driven-placement-for-fpgas&#34;&gt;Timing-Driven Placement for FPGAs&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Feb 2000 &amp;ndash; Proc. 8th. ACM/SIGDA Intl. Symposium on FPGAs.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.eecg.toronto.edu/~vaughn/papers/fpga2000_arm.pdf?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3BJQDFjH2rTFyqLTVXSfr%2Bqg%3D%3D&#34;&gt;See publication.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Voted as one of the &lt;a href=&#34;http://tcfpga.org/fpga20/fpga20.html&#34;&gt;25 most significant FPGA papers of the past 20 years&lt;/a&gt; at the 20th anniversary of the International Symposium on Field-Programmable Gate Arrays in 2012. &lt;a href=&#34;http://tcfpga.org/fpga20/p174.pdf&#34;&gt;See endorsement.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=9315566072038561579&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 285 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;using-cluster-based-logic-blocks-and-timing-driven-packing-to-improve-fpga-speed-and-density&#34;&gt;Using Cluster Based Logic Blocks and Timing-Driven Packing to Improve FPGA Speed and Density&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Feb 1999  -- Proc. 7th ACM/SIGDA Intl. Symposium on FPGAs&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www2.engr.arizona.edu/~ece506/readings/project-reading/6-cad/fpga99marq.pdf&#34;&gt;See publication.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Voted as one of the &lt;a href=&#34;http://tcfpga.org/fpga20/fpga20.html&#34;&gt;25 most significant FPGA papers of the past 20 years&lt;/a&gt; at the 20th anniversary of the International Symposium on Field-Programmable Gate Arrays in 2012. &lt;a href=&#34;http://tcfpga.org/fpga20/p138.pdf&#34;&gt;See endorsement.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://scholar.google.co.uk/scholar?cites=253764427430804918&amp;amp;as_sdt=2005&amp;amp;sciodt=0,5&amp;amp;hl=en&#34;&gt;Cited by 264 scientific publications&lt;/a&gt; as of October 2017.&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    <item>
+      <title>How to tune Elasticsearch for aggregation performance</title>
+      <link>http://localhost:1313/pages/how-to-tune-elasticsearch-for-aggregation-performance/</link>
+      <pubDate>Tue, 02 Oct 2018 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/how-to-tune-elasticsearch-for-aggregation-performance/</guid>
+      <description>&lt;p&gt;October 2, 2018&lt;/p&gt;
+&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;By default, Elasticsearch is tuned for the best trade-off between write performance and query performance for the majority of use cases. In this blog posting we cover some parameters that can be configured to improve query-time aggregation performance, with &lt;em&gt;some&lt;/em&gt; of these improvements coming at &lt;em&gt;the expense of write performance.&lt;/em&gt; &lt;/p&gt;
+&lt;p&gt;Note that this blog posting does not present anything that is not already documented in other locations. The goal here is to pull together relevant information into a small and digestible posting that provides a few pointers on how to improve slow Elasticsearch aggregations.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title></title>
+      <link>http://localhost:1313/pages/about/</link>
+      <pubDate>Wed, 25 Jan 2017 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/about/</guid>
+      <description>&lt;h1 id=&#34;about-the-author&#34;&gt;About the Author&lt;/h1&gt;
+&lt;h2 id=&#34;senior-principal-architect--genai--search&#34;&gt;Senior Principal Architect | GenAI &amp;amp; Search&lt;/h2&gt;
+&lt;p&gt;I work on complex technical systems where performance, scale, and real-world constraints intersect. My focus is on architectural decision-making in distributed search and AI platforms, identifying structural risks, design trade-offs, and system behaviors that shape reliability and performance at scale.&lt;/p&gt;
+&lt;p&gt;In my current role at Elastic, I operate at enterprise scale across GenAI and Search. I apply systems-level reasoning to high-impact problems, with an emphasis on creating reusable architectural assets, including patterns, middleware, tools, and delivery models. This reduces recurring escalations and improves how teams design, operate, and reason about similar systems over time.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title></title>
+      <link>http://localhost:1313/pages/welcome-to-alexmarquardt-com/</link>
+      <pubDate>Wed, 25 Jan 2017 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/welcome-to-alexmarquardt-com/</guid>
+      <description>&lt;h1 id=&#34;about-this-site&#34;&gt;About this site&lt;/h1&gt;
+&lt;p&gt;This site brings together technical writing focused on search, data pipelines, and distributed systems at enterprise scale. It is informed by real production systems and reflects recurring patterns, trade-offs, and architectural decisions observed across system design, deployment, and long-term operation.&lt;/p&gt;
+&lt;p&gt;The material emphasizes architectural reasoning for large-scale systems. It examines how relevance models, reliability mechanisms, and ingest pipelines behave under real-world constraints, with attention to system-level decisions that shape scalability, maintainability, and long-term operational effort.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Contact</title>
+      <link>http://localhost:1313/pages/contact/</link>
+      <pubDate>Wed, 25 Jan 2017 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/contact/</guid>
+      <description>&lt;p&gt;Alexander Marquardt’s LinkedIn profile can be found at &lt;a href=&#34;https://www.linkedin.com/in/alexandermarquardt/&#34;&gt;https://www.linkedin.com/in/alexandermarquardt/&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title></title>
+      <link>http://localhost:1313/pages/_drafts/id-1088/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/pages/_drafts/id-1088/</guid>
+      <description>&lt;p&gt;Enriching Elasticsearch documents with CSV data&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

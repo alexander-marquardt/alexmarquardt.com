@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Kibana on Alexander Marquardt</title>
+    <link>http://localhost:1313/tags/kibana/</link>
+    <description>Recent content in Kibana on Alexander Marquardt</description>
+    <generator>Hugo -- 0.153.4</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 03 May 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/kibana/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Automating the Import and Export of Kibana Saved Objects</title>
+      <link>http://localhost:1313/posts/automating-the-import-and-export-of-kibana-saved-objects/</link>
+      <pubDate>Fri, 03 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/automating-the-import-and-export-of-kibana-saved-objects/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;&lt;strong&gt;Introduction&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/guide/en/kibana/current/introduction.html&#34;&gt;Kibana&lt;/a&gt; is an open-source data visualization and exploration tool used for log and time-series analytics, application monitoring, and operational intelligence use cases. It offers powerful and easy-to-use features that allow users to visualize data from Elasticsearch in various formats such as charts, tables, and maps.&lt;/p&gt;
+&lt;p&gt;While Kibana offers a robust user interface for managing many tasks, certain operations can become tedious and time-consuming when done manually, especially for operations teams managing large and complex environments. One such operation is the migration of Kibana spaces and objects between environments—a task that can be critical in scenarios where clients cannot utilize the &lt;a href=&#34;https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html&#34;&gt;snapshot/restore functionality&lt;/a&gt; provided by Elasticsearch.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>A step-by-step guide to enabling security, TLS/SSL, and PKI authentication in Elasticsearch</title>
+      <link>http://localhost:1313/posts/security-tls-ssl-pki-authentication-in-elasticsearch/</link>
+      <pubDate>Mon, 05 Nov 2018 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/security-tls-ssl-pki-authentication-in-elasticsearch/</guid>
+      <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/elasticsearch-security-configure-tls-ssl-pki-authentication&#34;&gt;https://www.elastic.co/blog/elasticsearch-security-configure-tls-ssl-pki-authentication&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

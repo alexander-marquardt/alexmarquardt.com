@@ -1,0 +1,19 @@
+baseURL = 'https://alexmarquardt.com/'
+languageCode = 'en-us'
+title = 'Alexander Marquardt'
+[module]
+  [[module.imports]]
+    path = "github.com/adityatelange/hugo-PaperMod"
+
+[params]
+  defaultTheme = "light"
+  disableThemeToggle = false
+
+  ShowReadingTime = true
+  ShowPostNavLinks = true
+  ShowCodeCopyButtons = true
+
+  # Good defaults for a technical site
+  ShowToc = true
+  TocOpen = false
+

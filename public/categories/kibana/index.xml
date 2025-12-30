@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Kibana on Alexander Marquardt</title>
+    <link>http://localhost:1313/categories/kibana/</link>
+    <description>Recent content in Kibana on Alexander Marquardt</description>
+    <generator>Hugo -- 0.153.4</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 16 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/kibana/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Converting local time to ISO 8601 time in Elasticsearch</title>
+      <link>http://localhost:1313/posts/converting-local-time-to-iso-8601-time-in-elasticsearch/</link>
+      <pubDate>Wed, 16 Oct 2019 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/converting-local-time-to-iso-8601-time-in-elasticsearch/</guid>
+      <description>&lt;p&gt;This article is available at: &lt;a href=&#34;https://www.elastic.co/blog/converting-local-time-to-iso-8601-time-in-elasticsearch&#34;&gt;https://www.elastic.co/blog/converting-local-time-to-iso-8601-time-in-elasticsearch&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

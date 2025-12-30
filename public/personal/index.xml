@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Personal on Alexander Marquardt</title>
+    <link>http://localhost:1313/personal/</link>
+    <description>Recent content in Personal on Alexander Marquardt</description>
+    <generator>Hugo -- 0.153.4</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 10 Oct 2022 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/personal/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cut and paste a table from Google Sheets into an HTML document – no code&amp;nbsp;required</title>
+      <link>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/</link>
+      <pubDate>Mon, 10 Oct 2022 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In a &lt;a href=&#34;https://airbyte.com/blog/understanding-data-replication-modes&#34;&gt;recent article&lt;/a&gt; that I wrote for &lt;a href=&#34;http://www.airbyte.com/&#34;&gt;Airbyte&lt;/a&gt; it was necessary for me to copy and paste a table from Google Sheets into &lt;a href=&#34;http://www.webflow.com/&#34;&gt;Webflow&lt;/a&gt;. Unfortunately, Webflow doesn’t currently support copy/paste of tables directly in its editor.&lt;/p&gt;
+&lt;p&gt;In this blog, I present a workaround that can be used to convert a table from Google Sheets into HTML, which can then be written into a Webflow &lt;a href=&#34;https://university.webflow.com/lesson/custom-code-embed&#34;&gt;custom code block&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;acknowledgement&#34;&gt;Acknowledgement&lt;/h2&gt;
+&lt;p&gt;Thank you to &lt;a href=&#34;https://www.swyx.io/&#34;&gt;Shawn Wang&lt;/a&gt; for providing the steps that can be used to copy and paste a table from Google Sheets into HTML so easily.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

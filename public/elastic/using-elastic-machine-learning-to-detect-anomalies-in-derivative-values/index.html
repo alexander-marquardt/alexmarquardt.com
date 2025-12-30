@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="light">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Using Elastic machine learning to detect anomalies in derivative values | Alexander Marquardt</title>
+<meta name="keywords" content="">
+<meta name="description" content="April 21, 2020
+Introduction
+In this blog, we use Elastic machine learning (ML) and derivative aggregations to detect sudden unexpected increases or decreases in the rate-of-change of CPU load on servers that are monitored by Metricbeat.
+In order to make this blog easier to follow and the results easy to recreate, we abstract away the requirement for driving data from Metricbeat, and instead generate &ldquo;fake&rdquo; Metricbeat data using a Python script that drives data into Elasticsearch.">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.343cc480b9ffc8f04ccbe5e968ad674880cab773ec19905e93033065c1e7a804.css" integrity="sha256-NDzEgLn/yPBMy&#43;XpaK1nSIDKt3PsGZBekwMwZcHnqAQ=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Alexander Marquardt (Alt + H)">Alexander Marquardt</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Using Elastic machine learning to detect anomalies in derivative values
+    </h1>
+    <div class="post-meta"><span title='2020-04-21 00:00:00 +0000 UTC'>April 21, 2020</span>&nbsp;·&nbsp;<span>6 min</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#introduction" aria-label="Introduction">Introduction</a></li>
+                <li>
+                    <a href="#a-note-about-derivatives" aria-label="A note about derivatives">A note about derivatives</a></li>
+                <li>
+                    <a href="#driving-fake-metricbeat-cpu-data-into-elasticsearch" aria-label="Driving fake Metricbeat CPU data into Elasticsearch">Driving fake Metricbeat CPU data into Elasticsearch</a></li>
+                <li>
+                    <a href="#visualizing-the-ingested-data" aria-label="Visualizing the ingested data">Visualizing the ingested data</a></li>
+                <li>
+                    <a href="#create-an-ml-job-to-detect-anomalies-in-the-derivative-of-cpu-usage" aria-label="Create an ML job to detect anomalies in the derivative of CPU usage">Create an ML job to detect anomalies in the derivative of CPU usage</a></li>
+                <li>
+                    <a href="#executing-the-ml-job" aria-label="Executing the ML job">Executing the ML job</a></li>
+                <li>
+                    <a href="#a-multi-metric-job-where-one-of-the-detectors-uses-the-derivative-data-feed" aria-label="A multi-metric job where one of the detectors uses the derivative data feed">A multi-metric job where one of the detectors uses the derivative data feed</a></li>
+                <li>
+                    <a href="#advanced-machine-learning-jobs" aria-label="Advanced machine learning jobs">Advanced machine learning jobs</a></li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>April 21, 2020</p>
+<h1 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h1>
+<p>In this blog, we use Elastic machine learning (ML) and derivative aggregations to detect sudden unexpected increases or decreases in the <em>rate-of-change</em> of CPU load on servers that are monitored by <a href="https://www.elastic.co/guide/en/beats/metricbeat/7.6/metricbeat-overview.html">Metricbeat</a>.</p>
+<p>In order to make this blog easier to follow and the results easy to recreate, we abstract away the requirement for driving data from Metricbeat, and instead generate &ldquo;fake&rdquo; Metricbeat data using a Python script that drives data into Elasticsearch.</p>
+<p>The instructions in this blog have been tested using Elasticsearch 7.6.</p>
+<h1 id="a-note-about-derivatives">A note about derivatives<a hidden class="anchor" aria-hidden="true" href="#a-note-about-derivatives">#</a></h1>
+<p>This blog is intended to demonstrate how to use the derivative aggregation in combination with Machine Learning. The derivative can be used for detecting unexpected anomalies in the <em>rate-of-change</em> of a given parameter. Detecting anomalies in the underlying parameter would not require the use of derivatives.</p>
+<h1 id="driving-fake-metricbeat-cpu-data-into-elasticsearch">Driving fake Metricbeat CPU data into Elasticsearch<a hidden class="anchor" aria-hidden="true" href="#driving-fake-metricbeat-cpu-data-into-elasticsearch">#</a></h1>
+<p>The <a href="https://github.com/alexander-marquardt/fake-metribeat-data">fake-metricbeat-data Python script</a> can be used to create Metricbeat-like data that represents CPU usage reported from a server. This will populate an index called &quot; called &ldquo;fake-metricbeat-idx&rdquo;. This index is populated with CPU values that are in a field called &ldquo;system.cpu.total.pct&rdquo;.</p>
+<p>The above script will create documents in Elasticsearch that look as follows:</p>
+<pre tabindex="0"><code>       {
+        &#34;_index&#34; : &#34;fake-metricbeat-idx&#34;,
+        &#34;_type&#34; : &#34;_doc&#34;,
+        &#34;_id&#34; : &#34;afF3nHEBA2RtP7aXDmCC&#34;,
+        &#34;_score&#34; : 1.0,
+        &#34;_source&#34; : {
+          &#34;system.cpu.total.pct&#34; : &#34;1.7793594753311028&#34;,
+          &#34;@timestamp&#34; : &#34;2020-01-12T12:19:54.849959&#34;
+        }
+      }
+</code></pre><h1 id="visualizing-the-ingested-data">Visualizing the ingested data<a hidden class="anchor" aria-hidden="true" href="#visualizing-the-ingested-data">#</a></h1>
+<p>After ingesting the fake Metricbeat data into Elasticsearch, it can be visualized in Kibana. A simple visualization of the &ldquo;system.cpu.total.pct&rdquo; field should look similar to the following, although your peaks and troughs will be different, as they are randomly generated:</p>
+<p><img alt="Fake-metricbeat-area-visualization" loading="lazy" src="/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/images/fake-metricbeat-area-visualization.png"></p>
+<p>We can also view the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.6/search-aggregations-pipeline-derivative-aggregation.html">derivative</a> of the above data in Kibana as follows:</p>
+<p><img alt="Fake-metricbeat-derivative-visualization" loading="lazy" src="/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/images/fake-metricbeat-derivative-visualization.png"></p>
+<h1 id="create-an-ml-job-to-detect-anomalies-in-the-derivative-of-cpu-usage">Create an ML job to detect anomalies in the derivative of CPU usage<a hidden class="anchor" aria-hidden="true" href="#create-an-ml-job-to-detect-anomalies-in-the-derivative-of-cpu-usage">#</a></h1>
+<p>The blog post called <a href="https://www.elastic.co/blog/custom-elasticsearch-aggregations-for-machine-learning-jobs">Custom Elasticsearch Aggregations for Machine Learning</a> gives a good overview of how to detect anomalies in the derivative of a value. The instructions given here were taken from this blog, and have been updated to work with our custom dataset and to work with Elasticsearch 7.6.</p>
+<p>We first define the <a href="https://www.elastic.co/guide/en/machine-learning/7.6/ml-configuration.html">anomaly detector</a> job as follows :</p>
+<pre tabindex="0"><code>PUT _ml/anomaly_detectors/cpu_deriv_job
+{
+  &#34;description&#34;: &#34;Derivative of CPU usage&#34;,
+  &#34;analysis_config&#34;: {
+    &#34;bucket_span&#34;: &#34;1h&#34;,
+    &#34;detectors&#34;: [
+      {
+        &#34;detector_description&#34;: &#34;sum(cpu_deriv)&#34;,
+        &#34;function&#34;: &#34;sum&#34;,
+        &#34;field_name&#34;: &#34;cpu_deriv&#34;
+      }
+    ],
+    &#34;influencers&#34;: [],
+    &#34;summary_count_field_name&#34;: &#34;doc_count&#34;
+  },
+  &#34;model_plot_config&#34;: {
+    &#34;enabled&#34;: &#34;true&#34;
+  },
+  &#34;data_description&#34;: {
+    &#34;time_field&#34;: &#34;@timestamp&#34;
+  }
+}
+</code></pre><p>And we then define the <a href="https://www.elastic.co/guide/en/machine-learning/7.6/ml-dfeeds.html">data feed</a> that feeds into the above job as follows</p>
+<pre tabindex="0"><code>PUT _ml/datafeeds/datafeed-cpu_deriv/
+{
+  &#34;job_id&#34;: &#34;cpu_deriv_job&#34;,
+  &#34;indices&#34;: [
+    &#34;fake-metricbeat-idx&#34;
+  ],
+  &#34;aggregations&#34;: {
+    &#34;buckets&#34;: {
+      &#34;date_histogram&#34;: {
+        &#34;field&#34;: &#34;@timestamp&#34;,
+        &#34;fixed_interval&#34;: &#34;1h&#34;,
+        &#34;time_zone&#34;: &#34;UTC&#34;
+      },
+      &#34;aggregations&#34;: {
+        &#34;@timestamp&#34;: {
+          &#34;max&#34;: {
+            &#34;field&#34;: &#34;@timestamp&#34;
+          }
+        },
+        &#34;avg_cpu&#34;: {
+          &#34;avg&#34;: {
+            &#34;field&#34;: &#34;system.cpu.total.pct&#34;
+          }
+        },
+        &#34;cpu_deriv&#34;: {
+          &#34;derivative&#34;: {
+            &#34;buckets_path&#34;: &#34;avg_cpu&#34;
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre><p>Preview the data feed to make sure it is working correctly as follows:</p>
+<pre tabindex="0"><code>GET _ml/datafeeds/datafeed-cpu_deriv/_preview
+</code></pre><p>Which should return something similar to the following that contains the &ldquo;cpu_deriv&rdquo; value (note that the first entry is missing this derivative value as expected):</p>
+<pre tabindex="0"><code>[
+  {
+    &#34;@timestamp&#34; : 1578833994849,
+    &#34;doc_count&#34; : 162
+  },
+  {
+    &#34;@timestamp&#34; : 1578837594849,
+    &#34;cpu_deriv&#34; : 0.005176388888889161,
+    &#34;doc_count&#34; : 240
+  },
+  etc ...
+</code></pre><p>Now the ML job has created. But we still need to execute the job.</p>
+<h1 id="executing-the-ml-job">Executing the ML job<a hidden class="anchor" aria-hidden="true" href="#executing-the-ml-job">#</a></h1>
+<p>Go to the machine learning in Kibana, and then click on &ldquo;Manage jobs&rdquo; as shown below:</p>
+<p><img alt="Go-to-ML" loading="lazy" src="/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/images/go-to-ml.png"></p>
+<p>You should see a screen that looks like the following. Noice that the &ldquo;Processed records&rdquo; for our job is 0. This indicates that the job has not been executed.</p>
+<p><img alt="Anomaly-detection-jobs-list" loading="lazy" src="/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/images/anomaly-detection-jobs-list.png"></p>
+<p>Start the data feed as follows:</p>
+<p><img alt="Start-datafeed" loading="lazy" src="/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/images/start-datafeed.png"></p>
+<p>Then select the date range that you want the analysis to run on. For this job, select &ldquo;Start at the beginning of data&rdquo; and &ldquo;No end time (Real-time search)&rdquo;, and then click on &ldquo;Start&rdquo; as follows:</p>
+<p><img alt="Select-datafeed-date-range" loading="lazy" src="/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/images/select-datafeed-date-range.png"></p>
+<p>After executing the above,  you will see that the number of processed records has increased, and that the &ldquo;Datafeed state&rdquo; is &ldquo;started&rdquo;. You can then click on the icon to show the job in the single metric viewer as follows:</p>
+<p><img alt="View-single-metric" loading="lazy" src="/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/images/view-single-metric.png"></p>
+<p>After the above, you will see the time series data focused on a small date range. Expand the range by dragging the selection tool (highlighted below) to the left.</p>
+<p><img alt="Expand-range" loading="lazy" src="/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/images/expand-range.png"></p>
+<p>After expanding the range, we can see that the graph is similar to the data that we previously graphed. The expanded graph is shown below:</p>
+<p><img alt="Expanded-ML-graph" loading="lazy" src="/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/images/expanded-ml-graph.png"></p>
+<h1 id="a-multi-metric-job-where-one-of-the-detectors-uses-the-derivative-data-feed">A multi-metric job where one of the detectors uses the derivative data feed<a hidden class="anchor" aria-hidden="true" href="#a-multi-metric-job-where-one-of-the-detectors-uses-the-derivative-data-feed">#</a></h1>
+<p>If we wish to define multiple anomaly detectors on the CPU derivative data feed, then we can simply add more detectors to the anomaly detector. For example, we could add an additional detector on the average CPU. Note that the &ldquo;field_name&rdquo; that is used in the anomaly detector is created by the aggregation in the data feed.</p>
+<pre tabindex="0"><code>PUT _ml/anomaly_detectors/cpu_deriv_job_multi
+{
+  &#34;description&#34;: &#34;Multimetric - Derivative of CPU usage &amp; Sum CPU usage&#34;,
+  &#34;analysis_config&#34;: {
+    &#34;bucket_span&#34;: &#34;1h&#34;,
+    &#34;detectors&#34;: [
+      {
+        &#34;detector_description&#34;: &#34;sum(cpu_deriv)&#34;,
+        &#34;function&#34;: &#34;sum&#34;,
+        &#34;field_name&#34;: &#34;cpu_deriv&#34;,
+        &#34;detector_index&#34;: 0
+      },
+      {
+        &#34;detector_description&#34; : &#34;sum(avg_cpu)&#34;,
+        &#34;function&#34; : &#34;sum&#34;,
+        &#34;field_name&#34; : &#34;avg_cpu&#34;,
+        &#34;detector_index&#34;: 1
+      }
+    ],
+    &#34;influencers&#34;: [],
+    &#34;summary_count_field_name&#34;: &#34;doc_count&#34;
+  },
+  &#34;model_plot_config&#34;: {
+    &#34;enabled&#34;: &#34;true&#34;
+  },
+  &#34;data_description&#34;: {
+    &#34;time_field&#34;: &#34;@timestamp&#34;
+  }
+}
+</code></pre><p>Which could then have the data feed defined in a similar manner to the previous example:</p>
+<pre tabindex="0"><code>PUT _ml/datafeeds/datafeed-cpu_deriv-multi/
+{
+  &#34;job_id&#34;: &#34;cpu_deriv_job_multi&#34;,
+  &#34;indices&#34;: [
+    &#34;fake-metricbeat-idx&#34;
+  ],
+  &#34;aggregations&#34;: {
+    &#34;buckets&#34;: {
+      &#34;date_histogram&#34;: {
+        &#34;field&#34;: &#34;@timestamp&#34;,
+        &#34;fixed_interval&#34;: &#34;1h&#34;,
+        &#34;time_zone&#34;: &#34;UTC&#34;
+      },
+      &#34;aggregations&#34;: {
+        &#34;@timestamp&#34;: {
+          &#34;max&#34;: {
+            &#34;field&#34;: &#34;@timestamp&#34;
+          }
+        },
+        &#34;avg_cpu&#34;: {
+          &#34;avg&#34;: {
+            &#34;field&#34;: &#34;system.cpu.total.pct&#34;
+          }
+        },
+        &#34;cpu_deriv&#34;: {
+          &#34;derivative&#34;: {
+            &#34;buckets_path&#34;: &#34;avg_cpu&#34;
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre><p>We can take a quick look at the data feed with the following command</p>
+<pre tabindex="0"><code>GET  _ml/datafeeds/datafeed-cpu_deriv-multi/_preview
+</code></pre><p>Which will return something like the response given below, in which we can see that both the &ldquo;avg_cpu&rdquo; and the &ldquo;cpu_deriv&rdquo; are returned (except in the first entry, which is missing the derivative as expected).</p>
+<pre tabindex="0"><code>[
+  {
+    &#34;@timestamp&#34; : 1578833994849,
+    &#34;avg_cpu&#34; : 1.9854444444444443,
+    &#34;doc_count&#34; : 162
+  },
+  {
+    &#34;@timestamp&#34; : 1578837594849,
+    &#34;avg_cpu&#34; : 1.9906208333333335,
+    &#34;cpu_deriv&#34; : 0.005176388888889161,
+    &#34;doc_count&#34; : 240
+  },
+  etc ...
+</code></pre><p>We could then execute the above ML job as we did for the previous job.</p>
+<h1 id="advanced-machine-learning-jobs">Advanced machine learning jobs<a hidden class="anchor" aria-hidden="true" href="#advanced-machine-learning-jobs">#</a></h1>
+<p>The documentation on <a href="https://www.elastic.co/guide/en/machine-learning/7.6/ml-configuring-aggregation.html">Aggregating data for faster performance</a> gives some good examples of how more complex aggregations can be used in data feeds. In particular, the example of how the &ldquo;by_field_name&rdquo; (and presumably &ldquo;partition_field_name&rdquo; as well) can be populated with a terms aggregation is interesting.</p>
+<p>Under the hood, Kibana sends REST calls to Elasticsearch to create anomaly detectors and data feeds. You can see how other anomaly detectors and data feeds look with the following:</p>
+<pre tabindex="0"><code>GET _ml/anomaly_detectors
+GET _ml/datafeeds
+</code></pre><p>Viewing how Kibana creates more advanced jobs should help you to better understand how to create similar jobs through the API. Directly using the ML API may provide additional flexibility and capabilities.</p>
+<h1 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h1>
+<p>In this blog we have demonstrated how to run a machine learning job that uses a derivative aggregation to detect anomalies in the rate of change of CPU usage.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Alexander Marquardt</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

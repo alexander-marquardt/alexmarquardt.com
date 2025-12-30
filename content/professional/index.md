@@ -1,7 +1,7 @@
 ---
 title: Professional Record and Publications
 description: This page provides supporting material for my professional background, including selected publications, patents, open-source contributions, and formal education.
-slug: professional
+url: professional
 aliases:
   - /scientific-publications-patents-awards-and-education/
 ---
@@ -69,4 +69,4 @@ The publications listed below have been **cited over 3600 times** according to [
 
 ## Additional Information
 
-- [About the Author](https://alexmarquardt.com/about/)
+- [About the Author](/about/)

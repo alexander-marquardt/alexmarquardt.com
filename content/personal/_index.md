@@ -1,8 +1,7 @@
 ---
-layout: "single"
 title: "Other Areas of Interest"
 description: "Occasional writing outside of my technical work, including notes on finance, travel, productivity, and other personal interests."
-slug: personal
+url: personal
 aliases:
   - /other-areas-of-interest/
 ---

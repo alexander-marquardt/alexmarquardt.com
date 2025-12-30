@@ -1,5 +1,6 @@
 ---
 title: About the Author
+url: about
 ---
 ## Senior Principal Architect | GenAI & Search
 

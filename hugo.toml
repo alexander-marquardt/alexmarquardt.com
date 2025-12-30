@@ -9,7 +9,7 @@ title = 'Alexander Marquardt'
 [params]
   logo = "alexmarquardt-light.png"
   logoDark = "alexmarquardt-dark.png"
-
+  favicon = "/favicon.ico"
   # Header label configuration
   [params.label]
     text = ""

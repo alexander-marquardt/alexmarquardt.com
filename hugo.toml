@@ -1,4 +1,4 @@
-baseURL = 'https://alexmarquardt.com/'
+baseURL = "https://alexander-marquardt.github.io/alexmarquardt.com/"
 languageCode = 'en-us'
 title = 'Alexander Marquardt'
 [module]
@@ -8,7 +8,7 @@ title = 'Alexander Marquardt'
 [params]
   logo = "/alexmarquardt-light.png"
   logoDark = "/alexmarquardt-dark.png"
-  
+
   # Header label configuration
   [params.label]
     text = ""

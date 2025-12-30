@@ -1,0 +1,22 @@
+<div class="logo">
+  <a href="{{ "" | absLangURL }}" accesskey="h" title="{{ site.Title }} (Alt + H)">
+    <img class="am-logo am-logo-light"
+         src="{{ "alexmarquardt-light.png" | relURL }}"
+         alt="{{ site.Title }}"
+         aria-label="logo">
+    <img class="am-logo am-logo-dark"
+         src="{{ "alexmarquardt-dark.png" | relURL }}"
+         alt="{{ site.Title }}"
+         aria-label="logo">
+    <span class="sr-only">{{ site.Title }}</span>
+  </a>
+
+  <div class="logo-switches">
+    {{- if (not site.Params.disableThemeToggle) }}
+      … keep the theme-toggle button exactly as PaperMod has it …
+    {{- end }}
+    {{- if (not site.Params.disableLangToggle) }}
+      … keep language switch exactly as PaperMod has it …
+    {{- end }}
+  </div>
+</div>

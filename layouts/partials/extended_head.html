@@ -1,0 +1,18 @@
+<!-- AM_EXTEND_HEAD_LOADED -->
+{{/* Force-load custom CSS from /assets via Hugo Pipes */}}
+
+{{- $files := slice
+  "css/extended/header-center.css"
+  "css/extended/extra.css"
+  "css/extended/table.css"
+-}}
+
+{{- range $files }}
+  {{- $r := resources.Get . }}
+  {{- if $r }}
+    {{- $css := $r | minify | fingerprint }}
+    <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}" crossorigin="anonymous">
+  {{- else }}
+    <!-- Missing asset: {{ . }} -->
+  {{- end }}
+{{- end }}

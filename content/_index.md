@@ -95,11 +95,11 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 7. [Converting local time to ISO 8601 time in Elasticsearch | Elastic Blog](https://www.elastic.co/blog/converting-local-time-to-iso-8601-time-in-elasticsearch) (Nov 7, 2019)
 
-9. [Counting unique beats agents sending data into Elasticsearch](/2019/07/18/counting-unique-beats-agents-elasticsearch/) (Jul 18, 2019)
+9. [Counting unique beats agents sending data into Elasticsearch](/elastic/counting-unique-beats-agents-elasticsearch/) (Jul 18, 2019)
 
 ## Correctness, Consistency & Security
 
-1. [Emulating transactional functionality in Elasticsearch with two-phase commits](/2019/12/05/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/) (Dec 5, 2019)
+1. [Emulating transactional functionality in Elasticsearch with two-phase commits](/elastic/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/) (Dec 5, 2019)
 
 3. [Elasticsearch Security: Configure TLS/SSL & PKI Authentication | Elastic Blog](https://www.elastic.co/blog/elasticsearch-security-configure-tls-ssl-pki-authentication) (Dec 12, 2018)
 
@@ -141,11 +141,11 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 # MongoDB
 
-1. [Trade-offs to consider when storing binary data in MongoDB](/2017/03/02/trade-offs-to-consider-when-storing-binary-data-in-mongodb/) (Mar 2, 2017)
+1. [Trade-offs to consider when storing binary data in MongoDB](/mongodb/trade-offs-to-consider-when-storing-binary-data-in-mongodb/) (Mar 2, 2017)
 
-3. [How to generate unique identifiers for use with MongoDB](/2017/01/30/how-to-generate-unique-identifiers-for-use-with-mongodb/) (Jan 30, 2017)
+3. [How to generate unique identifiers for use with MongoDB](/mongodb/how-to-generate-unique-identifiers-for-use-with-mongodb/) (Jan 30, 2017)
 
-5. [How to manually perform a point in time restore in MongoDB](/2017/01/25/mongodb-point-in-time-restore/) (Jan 25, 2017)
+5. [How to manually perform a point in time restore in MongoDB](/mongodb/mongodb-point-in-time-restore/) (Jan 25, 2017)
 
 # Additional Information
 

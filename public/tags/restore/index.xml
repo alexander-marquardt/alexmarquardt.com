@@ -10,10 +10,10 @@
     <atom:link href="http://localhost:1313/tags/restore/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>How to manually perform a point in time restore in MongoDB</title>
-      <link>http://localhost:1313/mongodb/how-to-manually-perform-a-point-in-time-restore-in-mongodb/</link>
+      <link>http://localhost:1313/mongodb/mongodb-point-in-time-restore/</link>
       <pubDate>Wed, 25 Jan 2017 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/mongodb/how-to-manually-perform-a-point-in-time-restore-in-mongodb/</guid>
-      <description>&lt;h2 id=&#34;human-error-in-finance&#34;&gt;&lt;img alt=&#34;human-error-in-finance&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/mongodb/how-to-manually-perform-a-point-in-time-restore-in-mongodb/images/human-error-in-finance.jpg&#34;&gt;&lt;/h2&gt;
+      <guid>http://localhost:1313/mongodb/mongodb-point-in-time-restore/</guid>
+      <description>&lt;h2 id=&#34;human-error-in-finance&#34;&gt;&lt;img alt=&#34;human-error-in-finance&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/mongodb/mongodb-point-in-time-restore/images/human-error-in-finance.jpg&#34;&gt;&lt;/h2&gt;
 &lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;While MongoDB provides high-availability and data durability through &lt;a href=&#34;https://docs.mongodb.com/manual/replication/&#34;&gt;automatic replication&lt;/a&gt; of data to multiple servers, this replication does not protect the database against human or application errors. For example, if an administrator drops a database, the drop operation will be replicated across the MongoDB deployment, and data will be deleted. If such an event occurs through human or application error, then data will have to be retrieved from backups.&lt;/p&gt;</description>
     </item>

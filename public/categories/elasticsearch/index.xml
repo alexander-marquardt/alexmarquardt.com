@@ -63,9 +63,9 @@
     </item>
     <item>
       <title>Counting unique beats agents sending data into Elasticsearch</title>
-      <link>http://localhost:1313/elastic/counting-unique-beats-agents-sending-data-into-elasticsearch/</link>
+      <link>http://localhost:1313/elastic/counting-unique-beats-agents-elasticsearch/</link>
       <pubDate>Thu, 18 Jul 2019 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/elastic/counting-unique-beats-agents-sending-data-into-elasticsearch/</guid>
+      <guid>http://localhost:1313/elastic/counting-unique-beats-agents-elasticsearch/</guid>
       <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;When using Beats with Elasticsearch, it may be useful to keep track of how many unique agents are sending data into an Elasticsearch cluster, and how many documents each agent is submitting. Such information for example could be useful for detecting if beats agents are behaving as expected.&lt;/p&gt;
 &lt;p&gt;In this blog post, I first discuss how to efficiently specify a filter for documents corresponding to a particular time range, followed by several methods for detecting how many beats agents are sending documents to Elasticsearch within the specified time range.&lt;/p&gt;</description>

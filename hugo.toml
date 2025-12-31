@@ -2,6 +2,7 @@ baseURL = "https://alexander-marquardt.github.io/alexmarquardt.com/"
 canonifyURLs = true
 languageCode = 'en-us'
 title = 'Alexander Marquardt'
+author = 'Alexander Marquardt'
 description = "Technical writing on search relevance, data pipelines, and distributed systems at enterprise scale."
 [module]
   [[module.imports]]
@@ -9,7 +10,7 @@ description = "Technical writing on search relevance, data pipelines, and distri
 
 [params]
   logo = "alexmarquardt-light.png"  
-  images = ["social-card.png"]
+  images = ["social-card-square.png"]
   logoDark = "alexmarquardt-dark.png"
   favicon = "/favicon.ico"
   # Header label configuration

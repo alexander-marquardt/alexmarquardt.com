@@ -11,6 +11,7 @@ description = "Technical writing on search relevance, data pipelines, and distri
 [params]
   logo = "alexmarquardt-light.png"  
   images = ["social-card-square.png"]
+  socialImage = "social-card.png"
   logoDark = "alexmarquardt-dark.png"
   favicon = "/favicon.ico"
   # Header label configuration

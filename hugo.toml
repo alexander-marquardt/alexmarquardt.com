@@ -7,7 +7,8 @@ title = 'Alexander Marquardt'
     path = "github.com/adityatelange/hugo-PaperMod"
 
 [params]
-  logo = "alexmarquardt-light.png"
+  logo = "alexmarquardt-light.png"  
+  images = ["alexmarquardt-light.png"]
   logoDark = "alexmarquardt-dark.png"
   favicon = "/favicon.ico"
   # Header label configuration

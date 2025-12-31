@@ -43,7 +43,7 @@
    --------------------------------------------------------- */
 
 .header .logo img.am-logo {
-  height: 200px !important;    /* DESKTOP SIZE */
+  height: 140px !important;    /* DESKTOP SIZE */
   width: auto !important;
   max-height: none !important;
   display: block !important;
@@ -52,7 +52,7 @@
 /* Mobile */
 @media (max-width: 600px) {
   .header .logo img.am-logo {
-    height: 115px !important;
+    height: 120px !important;
   }
 }
 

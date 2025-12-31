@@ -32,8 +32,9 @@ title = 'Alexander Marquardt'
   customCSS = [
     "css/extended/header-center.css",
     "css/extended/extra.css",
-    "css/extended/table.css"
-]
+    "css/extended/table.css",
+    "css/extended/links.css"
+  ]
 
 [markup]
   [markup.goldmark]

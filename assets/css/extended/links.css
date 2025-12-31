@@ -1,0 +1,50 @@
+/* =========================================================
+   Distinguished, accessible link styling
+   ========================================================= */
+
+/* Base link color */
+.post-content a,
+.entry-content a {
+  color: #1a5fb4;                 /* muted, professional blue */
+  text-decoration: none;
+  box-shadow: none;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+/* Hover / focus */
+.post-content a:hover,
+.entry-content a:hover,
+.post-content a:focus,
+.entry-content a:focus {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* Visited links */
+.post-content a:visited,
+.entry-content a:visited {
+  color: #5a6ea8;                 /* slightly desaturated blue */
+}
+
+/* Dark theme */
+html[data-theme="dark"] .post-content a,
+html[data-theme="dark"] .entry-content a {
+  color: #8ab4f8;                 /* readable on dark background */
+}
+
+html[data-theme="dark"] .post-content a:visited,
+html[data-theme="dark"] .entry-content a:visited {
+  color: #9aa7d6;
+}
+
+/* Keep headings, buttons, and nav clean */
+.post-content h1 a,
+.post-content h2 a,
+.post-content h3 a,
+.post-content h4 a,
+.post-content h5 a,
+.post-content h6 a,
+.nav a,
+.footer a {
+  text-decoration: none;
+}

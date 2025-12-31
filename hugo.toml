@@ -2,13 +2,14 @@ baseURL = "https://alexander-marquardt.github.io/alexmarquardt.com/"
 canonifyURLs = true
 languageCode = 'en-us'
 title = 'Alexander Marquardt'
+description = "Technical writing on search relevance, data pipelines, and distributed systems at enterprise scale."
 [module]
   [[module.imports]]
     path = "github.com/adityatelange/hugo-PaperMod"
 
 [params]
   logo = "alexmarquardt-light.png"  
-  images = ["alexmarquardt-light.png"]
+  images = ["social-card.png"]
   logoDark = "alexmarquardt-dark.png"
   favicon = "/favicon.ico"
   # Header label configuration

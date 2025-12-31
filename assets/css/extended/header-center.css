@@ -1,35 +1,32 @@
 /* =========================================================
-   PaperMod header override
-   - Center logo + theme toggle as one group
+   PaperMod header override: centered logo + adjacent toggle
+   - Logo centered
+   - Theme toggle immediately to the right of logo
+   - Menu stays on the right
    - Large logo
-   - Correct light / dark logo swap
+   - Bulletproof light/dark swap: NEVER show both
    ========================================================= */
 
-/* ---------------------------------------------------------
-   Header layout
-   --------------------------------------------------------- */
-
+/* Header layout */
 .header .nav {
   display: flex;
-  justify-content: center;     /* center the group */
+  justify-content: center;     /* center the logo group */
   align-items: center;
-  position: relative;
-  line-height: normal;         /* avoid 60px PaperMod line-box issues */
+  position: relative;          /* anchor for right-positioned menu */
+  line-height: normal;
+  overflow: visible;
 }
 
-/* ---------------------------------------------------------
-   Logo + toggle group
-   --------------------------------------------------------- */
-
+/* Center group: logo + toggle */
 .header .logo {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;                   /* space between logo and toggle */
+  gap: 16px;
   margin: 0 auto;
 }
 
-/* Hide text label cleanly */
+/* Hide text label */
 .header .logo a {
   display: inline-flex;
   align-items: center;
@@ -38,50 +35,21 @@
   line-height: 0;
 }
 
-/* ---------------------------------------------------------
-   Logo sizing (authoritative)
-   --------------------------------------------------------- */
-
+/* Logo sizing */
 .header .logo img.am-logo {
-  height: 140px !important;    /* DESKTOP SIZE */
+  height: 140px !important;
   width: auto !important;
   max-height: none !important;
-  display: block !important;
+  display: block !important; /* size relies on the image existing */
 }
 
-/* Mobile */
 @media (max-width: 600px) {
   .header .logo img.am-logo {
     height: 120px !important;
   }
 }
 
-/* ---------------------------------------------------------
-   Light / Dark logo swap (robust, minimal)
-   --------------------------------------------------------- */
-
-/* Default = light */
-.header img.am-logo-light {
-  display: block !important;
-}
-
-.header img.am-logo-dark {
-  display: none !important;
-}
-
-/* Dark mode */
-html[data-theme="dark"] .header img.am-logo-light {
-  display: none !important;
-}
-
-html[data-theme="dark"] .header img.am-logo-dark {
-  display: block !important;
-}
-
-/* ---------------------------------------------------------
-   Theme toggle alignment
-   --------------------------------------------------------- */
-
+/* Theme toggle stays next to logo (NOT absolute) */
 .header .logo-switches {
   display: inline-flex;
   align-items: center;
@@ -89,42 +57,43 @@ html[data-theme="dark"] .header img.am-logo-dark {
   margin: 0;
 }
 
-/* ---------------------------------------------------------
-   IMPORTANT: neutralize PaperMod positioning hacks
-   --------------------------------------------------------- */
-
-.header #menu,
-.header .menu,
 .header #theme-toggle,
 .header .theme-toggle {
   position: static !important;
   right: auto !important;
 }
 
-/* ---------------------------------------------------------
-   Header vertical spacing
-   --------------------------------------------------------- */
+/* Menu stays on the far right */
+.header #menu,
+.header .menu {
+  position: absolute;
+  right: 1rem;
+}
 
+/* Header padding */
 .header {
   padding-top: 20px !important;
   padding-bottom: 14px !important;
   overflow: visible;
 }
 
-/* ===== FINAL, AUTHORITATIVE LOGO SWAP (keep at END of file) ===== */
+/* =========================================================
+   FINAL: Bulletproof logo swap
+   - First hide BOTH
+   - Then enable exactly ONE
+   ========================================================= */
 
-/* Default to light logo unless explicitly dark */
+/* Hide all logo variants by default */
+.header .logo a > img.am-logo {
+  display: none !important;
+}
+
+/* Light theme (default) */
 html:not([data-theme="dark"]) .header .logo a > img.am-logo-light {
   display: block !important;
 }
-html:not([data-theme="dark"]) .header .logo a > img.am-logo-dark {
-  display: none !important;
-}
 
-/* Dark mode */
-html[data-theme="dark"] .header .logo a > img.am-logo-light {
-  display: none !important;
-}
+/* Dark theme */
 html[data-theme="dark"] .header .logo a > img.am-logo-dark {
   display: block !important;
 }

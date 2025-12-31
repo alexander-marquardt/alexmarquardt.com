@@ -5,7 +5,7 @@ date: 2025-12-30
 
 # About this site
 
-This site brings together technical writing focused on search, data pipelines, and distributed systems at enterprise scale. It is informed by real production systems and reflects recurring patterns, trade-offs, and architectural decisions observed across system design, deployment, and long-term operation.
+This site brings together my technical writing on search, data pipelines, and distributed systems at enterprise scale. The work is informed by real production systems and reflects recurring patterns, trade-offs, and architectural decisions observed across system design, deployment, and long-term operation.
 
 The material emphasizes architectural reasoning for large-scale systems. It examines how relevance models, reliability mechanisms, and ingest pipelines behave under real-world constraints, with attention to system-level decisions that shape scalability, maintainability, and long-term operational effort.
 

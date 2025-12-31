@@ -14,7 +14,10 @@ description = "Technical writing on search relevance, data pipelines, and distri
   socialImage = "social-card.png"
   logoDark = "alexmarquardt-dark.png"
   favicon = "/favicon.ico"
-  # Header label configuration
+
+  # REQUIRED for social cards
+  env = "production"
+
   [params.label]
     text = ""
     icon = "alexmarquardt-light.png"

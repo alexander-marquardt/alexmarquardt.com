@@ -150,3 +150,18 @@ html {
     font-size: 30px !important;
   }
 }
+
+/* =========================================================
+   TOC: transparent, inline with content flow
+   ========================================================= */
+
+.toc {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.toc .inner {
+  background: transparent !important;
+  padding: 0 !important;
+}

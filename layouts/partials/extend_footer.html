@@ -10,6 +10,16 @@
       }
     });
 
+    // Remove raw separator text nodes like " · "
+    footer.childNodes.forEach(node => {
+      if (
+        node.nodeType === Node.TEXT_NODE &&
+        node.textContent.replace(/\s/g, '') === '·'
+      ) {
+        node.remove();
+      }
+    });
+
     // Link author name to /about/
     const authorLink = footer.querySelector("a");
     if (authorLink) {

@@ -149,8 +149,8 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 # Additional Information
 
-- [About the Author](/about/)
+- [About the author](/about/)
 
-- [Professional Record, Publications and Patents](/professional/)
+- [Professional record, publications and patents](/professional/)
 
 - [Finance, productivity, nutrition, and travel](/personal/)

@@ -199,15 +199,28 @@ footer.footer {
   background: transparent;
 }
 
-footer.footer a {
-  color: inherit;
-  text-decoration: none;
-}
-
-footer.footer a:hover {
-  text-decoration: underline;
-}
-
 html[data-theme="dark"] footer.footer {
   color: #aaa;
+}
+
+/* =========================================================
+   Footer link styling — PaperMod-safe
+   ========================================================= */
+
+footer.footer a {
+  color: #1a5fb4;
+  text-decoration: none !important;
+  border-bottom: none !important; /* PaperMod underline fix */
+  box-shadow: none !important;
+}
+
+footer.footer a:hover,
+footer.footer a:focus {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* Dark theme */
+html[data-theme="dark"] footer.footer a {
+  color: #8ab4f8;
 }

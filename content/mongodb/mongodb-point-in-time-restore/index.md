@@ -1,11 +1,6 @@
 ---
 title: "How to manually perform a point in time restore in MongoDB"
 date: 2017-01-25
-categories: 
-  - "mongodb"
-tags: 
-  - "point-in-time"
-  - "restore"
 slug: mongodb-point-in-time-restore
 aliases:
   - /2017/01/25/mongodb-point-in-time-restore/

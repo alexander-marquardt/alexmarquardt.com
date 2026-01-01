@@ -1,9 +1,6 @@
 ---
 title: "Using Elasticsearch Painless scripting to recursively iterate through JSON fields"
 date: 2020-11-06
-categories: 
-  - "elasticsearch"
-  - "painless"
 slug: using-elasticsearch-painless-scripting-to-iterate-through-fields
 aliases:
   - /2020/11/06/using-elasticsearch-painless-scripting-to-iterate-through-fields/

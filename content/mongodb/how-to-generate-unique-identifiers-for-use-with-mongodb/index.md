@@ -1,11 +1,6 @@
 ---
 title: "How to generate unique identifiers for use with MongoDB"
 date: 2017-01-30
-categories: 
-  - "mongodb"
-tags: 
-  - "unique-identifiers"
-  - "uuid"
 slug: how-to-generate-unique-identifiers-for-use-with-mongodb
 aliases:
   - /2017/01/30/how-to-generate-unique-identifiers-for-use-with-mongodb/

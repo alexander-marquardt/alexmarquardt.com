@@ -1,8 +1,6 @@
 ---
 title: "Counting unique beats agents sending data into Elasticsearch"
 date: 2019-07-18
-categories: 
-  - "elasticsearch"
 slug: counting-unique-beats-agents-elasticsearch
 aliases:
   - /2019/07/18/counting-unique-beats-agents-elasticsearch/

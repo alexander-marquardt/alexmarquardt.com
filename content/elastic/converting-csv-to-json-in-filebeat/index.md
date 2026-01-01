@@ -1,14 +1,6 @@
 ---
 title: "Converting CSV to JSON in Filebeat"
 date: 2020-03-17
-categories: 
-  - "elasticsearch"
-  - "filebeat"
-tags: 
-  - "csv"
-  - "ingest"
-  - "javascript"
-  - "json"
 slug: converting-csv-to-json-in-filebeat/
 aliases:
   - /2020/03/17/converting-csv-to-json-in-filebeat/

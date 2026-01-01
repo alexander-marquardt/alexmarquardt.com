@@ -1,8 +1,6 @@
 ---
 title: "Understanding and fixing \"too many script compilations\" errors in Elasticsearch"
 date: 2020-10-21
-categories: 
-  - "elasticsearch"
 slug: elasticsearch-too-many-script-compilations
 aliases:
   - /2020/10/21/elasticsearch-too-many-script-compilations/

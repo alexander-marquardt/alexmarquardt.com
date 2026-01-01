@@ -1,11 +1,6 @@
 ---
 title: "Financial implications of exercising share options"
 date: 2019-07-27
-categories: 
-  - "finance"
-  - "investing"
-tags: 
-  - "share-options"
 slug: financial-implications-of-exercising-share-options
 aliases:
   - /2019/07/27/financial-implications-of-exercising-share-options/

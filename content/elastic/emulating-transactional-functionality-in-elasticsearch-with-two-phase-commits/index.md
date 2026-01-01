@@ -1,10 +1,6 @@
 ---
 title: "Emulating transactional functionality in Elasticsearch with two-phase commits"
 date: 2019-12-05
-categories: 
-  - "elasticsearch"
-tags: 
-  - "transactions"
 slug: emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits
 aliases:
   - /2019/12/05/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/

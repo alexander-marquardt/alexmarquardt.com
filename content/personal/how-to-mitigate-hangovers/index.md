@@ -1,8 +1,6 @@
 ---
 title: "How to mitigate hangovers"
 date: 2019-07-30
-categories: 
-  - "nutrition"
 slug: how-to-mitigate-hangovers
 aliases:
   - /2019/07/30/how-to-mitigate-hangovers/

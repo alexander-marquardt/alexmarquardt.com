@@ -1,10 +1,6 @@
 ---
 title: "Using Logstash and Elasticsearch scripted upserts to transform eCommerce purchasing data"
 date: 2019-12-17
-categories: 
-  - "elasticsearch"
-  - "logstash"
-  - "painless"
 slug: logstash-and-elasticsearch-painless-scripted-upserts-transform-data
 aliases:
   - /2019/12/17/logstash-and-elasticsearch-painless-scripted-upserts-transform-data/

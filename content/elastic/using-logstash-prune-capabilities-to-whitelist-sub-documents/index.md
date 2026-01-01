@@ -1,11 +1,6 @@
 ---
 title: "Using Logstash prune capabilities to whitelist sub-documents"
 date: 2018-08-28
-categories: 
-  - "elasticsearch"
-tags: 
-  - "etl"
-  - "logstash"
 slug: /using-logstash-prune-capabilities-to-whitelist-sub-documents/
 aliases:
   - /2018/08/28/using-logstash-prune-capabilities-to-whitelist-sub-documents/

@@ -1,13 +1,6 @@
 ---
 title: "Barcelona: A Personal Guide"
 date: 2024-04-21
-tags: 
-  - "architecture"
-  - "barcelona"
-  - "europe"
-  - "spain"
-  - "travel"
-
 slug: barcelona-a-personal-guide
 aliases:
   - /2024/04/21/barcelona-a-personal-guide/

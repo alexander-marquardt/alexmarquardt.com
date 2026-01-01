@@ -4,10 +4,6 @@ date: 2024-05-03
 slug: automating-the-import-and-export-of-kibana-saved-objects
 aliases:
   - /2024/05/03/automating-the-import-and-export-of-kibana-saved-objects/
-tags: 
-  - "elasticsearch"
-  - "kibana"
-  - "python"
 ---
 
 ## **Introduction**

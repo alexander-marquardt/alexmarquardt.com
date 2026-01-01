@@ -53,3 +53,6 @@ description = "Technical writing on search relevance, data pipelines, and distri
   mongodb = "/mongodb/:slug/"
   personal = "/personal/:slug/"
 
+[taxonomies]
+  tags = ""
+  categories = ""

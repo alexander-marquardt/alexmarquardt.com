@@ -7,22 +7,6 @@ aliases:
   - /2024/04/21/barcelona-a-personal-guide/
 ---
 
-1. [Motivation](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#motivation)
-2. [Welcome to Barcelona!](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#welcome-to-barcelona)
-3. [Language and Navigation](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#language-and-navigation)
-4. [Choosing Your Base](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#choosing-your-base)
-5. [Getting Around](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#getting-around)
-6. [Must-See Attractions](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#must-see-attractions)
-7. [Dining](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#dining)
-8. [Nightlife in Barcelona](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#nightlife-in-barcelona)
-9. [Safety](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#safety)
-10. [Cultural Insights and Local Etiquette](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#cultural-insights-and-local-etiquette)
-11. [Biking and Hiking Around Barcelona](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#biking-and-hiking-around-barcelona)
-     1. [Biking Adventures:](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#biking-adventures)
-     2. [Hiking Escapes:](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#hiking-escapes)
-12. [Day and Weekend Trips](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#day-and-weekend-trips)
-13. [Conclusion](https://alexmarquardt.com/2024/04/21/barcelona-a-personal-guide/#conclusion)
-
 ## Motivation
 
 Originally from Canada, I have lived in Barcelona on and off since 2003. Over the years, many friends and acquaintances have asked for my recommendations on what to see and do in this beautiful city. To save time and ensure no detail is missed, I’ve compiled this comprehensive guide based on my personal experiences and research I've done over the years.

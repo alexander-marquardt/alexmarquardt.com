@@ -195,17 +195,3 @@ html[data-theme="dark"] .toc a:visited {
   color: #9aa7d6;
 }
 
-/* Remove "Powered by Hugo / PaperMod" credit */
-.footer > span:last-of-type {
-  display: none !important;
-}
-
-/* Remove the separator dot injected between footer spans */
-.footer {
-  font-size: 0;
-}
-
-/* Restore font size for remaining visible content */
-.footer > span:first-of-type {
-  font-size: 0.875rem; /* matches PaperMod default */
-}

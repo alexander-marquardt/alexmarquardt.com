@@ -6,13 +6,13 @@ aliases:
   - /enriching-data-with-the-logstash-translate-filter/
 ---
 
-### Introduction
+## Introduction
 
 [Logstash](https://www.elastic.co/logstash) is an open source, server-side data processing pipeline that ingests data from a multitude of sources, transforms it, and then sends it to one or more outputs. One use of Logstash is for enriching data before sending it to Elasticsearch.
 
 Logstash supports several different [lookup plugin filters](https://www.elastic.co/guide/en/logstash/current/lookup-enrichment.html#geoip-def) that can be used for enriching data. Many of these rely on components that are external to the Logstash pipeline for storing enrichment data. On the other hand, the [translate filter plugin](https://www.elastic.co/guide/en/logstash/current/plugins-filters-translate.html) can be used for looking up data and enriching documents without dependencies. Therefore, in this blog article I focus on using Logstash with the translate filter plugin for enriching data.
 
-### Enriching data with the translate filter plugin
+## Enriching data with the translate filter plugin
 
 An example Logstash pipeline that executes a translate filter lookup is given below. This filter searches in the translate dictionary for the key indicated by the value stored in the event’s “lookup\_id”, and stores the value retrieved from the translate dictionary in the “enrichment\_data” field. If the value from the “lookup\_id” is not found in the translate dictionary, then code will store the “fallback” value of “not\_found” in the “enrichment\_data” field.
 
@@ -80,7 +80,7 @@ In the event of an unsuccessful lookup, the output should look like the followin
 }
 ```
 
-### Using the translate plugin combined with JSON subdocuments
+## Using the translate plugin combined with JSON subdocuments
 
 While the above approach is useful for simple key-value lookups, it may sometimes be necessary to enrich documents with more complex lookups. This can be achieved by embedding JSON subdocuments directly in the translate filter. Such a pipeline could look as follows:
 
@@ -159,7 +159,7 @@ And in the event of an unsuccessful lookup, the output should look like the foll
 }
 ```
 
-### Using a JSON dictionary file with the translate filter plugin
+## Using a JSON dictionary file with the translate filter plugin
 
 The translate filter plugin supports large dictionaries, and has been tested with up to 100,000 key/values. For large dictionaries it may be convenient to store the [lookup values in an external file](https://www.elastic.co/guide/en/logstash/current/plugins-filters-translate.html#plugins-filters-translate-dictionary_path) rather than directly in the Logstash pipeline.
 
@@ -213,7 +213,7 @@ output {
 
 Note that in the above pipeline, because a “fallback” value can only contain a string, additional processing is done to ensure that failed lookups store an object in “enrichment\_data”.   The output from this example pipeline should be the same as the previous example.
 
-### Converting CSV to JSON
+## Converting CSV to JSON
 
 In some cases, data that is to be used for enriching documents is available in CSV files such as those that may be produced by Microsoft Excel. However, the translate filter plugin expects exactly two columns when used with CSV data. Therefore, in order to support multi-value lookups, multi-column CSV must be converted into a different format that supports more complex enrichments. One such format is JSON. Therefore, in this section we present a Python 3 script that can convert a CSV table into a JSON document that is suitable for the translate filter.
 
@@ -302,10 +302,10 @@ if __name__ == "__main__":
     convert_array_of_ordered_dict_to_json(array_of_ordered_dict)
 ```
 
-### Alternative approach to enrich documents
+## Alternative approach to enrich documents
 
 Enrichment can also be achieved with the [enrich processor](https://www.elastic.co/guide/en/elasticsearch/reference/master/ingest-enriching-data.html) which runs in an Elasticsearch [ingest node](https://www.elastic.co/guide/en/elasticsearch/reference/master/ingest.html). The blog titled [Should I use Logstash or Elasticsearch ingest nodes](https://www.elastic.co/blog/should-i-use-logstash-or-elasticsearch-ingest-nodes) may help decide which is the appropriate choice.
 
-### Conclusion
+## Conclusion
 
 In this blog post I have showed how Logstash can use the translate filter plugin to lookup data for enriching documents. I then showed several different methods of how to populate the translate filter lookup dictionaries. Finally, I presented a script that can be used to convert CSV data into a format that can be used directly by the translate filter plugin.

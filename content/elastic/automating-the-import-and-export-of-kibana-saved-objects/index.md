@@ -7,13 +7,13 @@ aliases:
   - /2024/05/03/automating-the-import-and-export-of-kibana-saved-objects/
 ---
 
-## **Introduction**
+## Introduction
 
 [Kibana](https://www.elastic.co/guide/en/kibana/current/introduction.html) is an open-source data visualization and exploration tool used for log and time-series analytics, application monitoring, and operational intelligence use cases. It offers powerful and easy-to-use features that allow users to visualize data from Elasticsearch in various formats such as charts, tables, and maps.
 
 While Kibana offers a robust user interface for managing many tasks, certain operations can become tedious and time-consuming when done manually, especially for operations teams managing large and complex environments. One such operation is the migration of Kibana spaces and objects between environments—a task that can be critical in scenarios where clients cannot utilize the [snapshot/restore functionality](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html) provided by Elasticsearch.
 
-## **Options for Migrat**ing Kibana from one Environment to Another
+## Options for Migrating Kibana from one Environment to Another
 
 Traditionally, moving [Kibana objects](https://www.elastic.co/guide/en/kibana/current/managing-saved-objects.html) (dashboards, visualizations, saved searches, etc.) and spaces between different environments or instances requires either using the [snapshot and restore features](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html) of Elasticsearch or manually [exporting](https://www.elastic.co/guide/en/kibana/current/managing-saved-objects.html#_export) and [importing](https://www.elastic.co/guide/en/kibana/current/managing-saved-objects.html#_import) JSON files through the Kibana UI.
 
@@ -41,7 +41,7 @@ After downloading the scripts from [https://github.com/alexander-marquardt/kiban
 
 - import\_kibana.py -h
 
-## **Disclaimer and Usage Notes**
+## Disclaimer and Usage Notes
 
 - **Use at Your Own Risk**: These scripts are provided as is, without warranty of any kind. Users should use the scripts at their own risk.
 
@@ -49,6 +49,6 @@ After downloading the scripts from [https://github.com/alexander-marquardt/kiban
 
 - **Intended Use**: These scripts are generally intended for setting up a new system to which you are migrating, and which is empty. The default setting in the import script is to overwrite existing Kibana objects in the destination. If the destination system is not empty and you wish to preserve existing objects, you should modify the command line parameters.
 
-## **Conclusion**
+## Conclusion
 
 For Kibana users unable to leverage snapshot/restore, these scripts for exporting and importing spaces are a feasible alternative.

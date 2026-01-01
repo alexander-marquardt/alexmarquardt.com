@@ -30,30 +30,30 @@ While everything in a computer is technically stored as binary data, in the cont
 
 ## Methods for storing binary data with MongoDB
 
-#### Embed binary data in MongoDB documents using the BSON BinData type
+### Embed binary data in MongoDB documents using the BSON BinData type
 
 MongoDB enforces a [limit of 16MB per document](https://docs.mongodb.com/manual/reference/limits/#BSON-Document-Size), and so if binary data plus other fields in a document are guaranteed to be less than 16MB, then binary data can be embedded into documents by using the BinData [BSON](https://docs.mongodb.com/v3.2/reference/bson-types/) type. For more information using the BinData type, see the documentation for the appropriate [driver](https://docs.mongodb.com/manual/applications/drivers/).
 
-#### Store binary data in MongoDB using GridFS
+### Store binary data in MongoDB using GridFS
 
 [GridFS](https://docs.mongodb.com/manual/core/gridfs/#when-to-use-gridfs) is a [specification](https://github.com/mongodb/specifications/blob/master/source/gridfs/gridfs-spec.rst) for storing and retrieving files that exceed the BSON document size limit of 16MB. Instead of storing a file in a single document, GridFS divides the file into chunks, and stores each chunk as a separate document. GridFS uses two collections to store files, where one collection stores the file chunks, and the other stores file metadata as well as optional application-specific fields.
 
 An excellent two-part blog post ([part 1](https://www.mongodb.com/blog/post/building-mongodb-applications-binary-files-using-gridfs-part-1) and [part 2](https://www.mongodb.com/blog/post/building-mongodb-applications-binary-files-using-gridfs-part-2)) gives a good overview of how GridFS works, and examples of when GridFS would be an appropriate storage choice.
 
-#### Store binary data in an external system, and use MongoDB to store the location of the binary data
+### Store binary data in an external system, and use MongoDB to store the location of the binary data
 
 Data may be stored outside of the database, for example in a file system. The document in the database could then contain all the required information to know where to look for the associated binary data (a key, a file name, etc.), and it could also store metadata associated with the binary data.
 
 ## General trade-offs to consider when storing binary data in MongoDB
 
-#### Benefits of storing binary data in MongoDB
+### Benefits of storing binary data in MongoDB
 
 - MongoDB provides high availability and replication of data.
 - A single system for all types of data results in a simpler application architecture.
 - When using [geographically distributed replica sets](https://docs.mongodb.com/manual/core/replica-set-architecture-geographically-distributed/), MongoDB will automatically distribute data to geographically distinct data centres.
 - Storing data in the database takes advantage of MongoDB authentication and security mechanisms.
 
-#### Drawbacks of storing binary data in MongoDB
+### Drawbacks of storing binary data in MongoDB
 
 - In a [replica set](https://docs.mongodb.com/manual/replication/) deployment, data that is stored in the database will be replicated  to multiple servers, which uses more storage space and bandwidth than a single copy of the data would require.
 - If the binary data is large, then loading the binary data into memory may cause frequently accessed text (structured data) documents to be pushed out of memory, or more generally, the [working set](https://docs.mongodb.com/v3.2/faq/diagnostics/#what-is-a-working-set) might not fit into RAM. This can negatively impact the performance of the database.
@@ -66,14 +66,14 @@ Data may be stored outside of the database, for example in a file system. The do
 
 MongoDB has a [limit of 16MB per document.](https://docs.mongodb.com/manual/reference/limits/#BSON-Document-Size) If the binary data falls within this limit, then it may be possible to embed it directly inside a document.
 
-#### Benefits of embedding binary data in MongoDB documents
+### Benefits of embedding binary data in MongoDB documents
 
 - All of the benefits listed in the General trade-offs section.
 - If binary data that is stored in a document is always used at the same time as the other fields in that document, then all relevant information can be retrieved from the database in a single call, which should provide good performance.
 - By embedding binary data in a document, it is guaranteed that the binary data along with the rest of the document is written [atomically](https://docs.mongodb.com/manual/core/write-operations-atomicity/#atomicity-and-transactions).
 - It is simple to embed binary data into documents.
 
-#### Drawbacks of embedding binary data in MongoDB documents
+### Drawbacks of embedding binary data in MongoDB documents
 
 - All of the drawbacks listed in the General trade-offs section.
 - There is a [limit of 16MB per document](https://docs.mongodb.com/manual/reference/limits/#BSON-Document-Size). Embedding large binary objects in documents may risk the documents growing beyond this size limit.
@@ -83,7 +83,7 @@ MongoDB has a [limit of 16MB per document.](https://docs.mongodb.com/manual/refe
 
 If the binary data is bigger than 16MB, then it cannot be stored in a single document. In this case GridFS can be used to get around this limitation.
 
-#### Benefits of storing binary data in GridFS
+### Benefits of storing binary data in GridFS
 
 - All of the benefits listed in the General trade-offs section.
 - If the binary data is large and/or arbitrary in size, then GridFS may be used to overcome the [16MB limit](https://docs.mongodb.com/manual/reference/limits/#BSON-Document-Size).
@@ -91,7 +91,7 @@ If the binary data is bigger than 16MB, then it cannot be stored in a single doc
 - GridFS can be used to recall sections of large files without reading the entire file into memory.
 - GridFS can [efficiently stream binary data](https://mongodb.github.io/node-mongodb-native/api-articles/nodekoarticle2.html#advanced-gridfs-or-how-not-to-run-out-of-memory) by loading only a portion of a given binary file into memory at any point in time.
 
-#### Drawbacks of storing binary data in GridFS
+### Drawbacks of storing binary data in GridFS
 
 - All of the drawbacks listed in the General trade-offs section.
 - Versus embedding binary data directly into documents, GridFS will have some additional overhead for splitting, tracking, and stitching together the binary data.
@@ -101,13 +101,13 @@ If the binary data is bigger than 16MB, then it cannot be stored in a single doc
 
 In some cases it may be preferable to not store binary data inside MongoDB at all, and instead to store it in an external system.
 
-#### Benefits of storing binary data outside of MongoDB
+### Benefits of storing binary data outside of MongoDB
 
 - Storing data outside of MongoDB may reduce storage costs by eliminating MongoDB’s replication of data.
 - Binary data outside of MongoDB can be backed up at a different frequency than the database.
 - If binary data is stored in a separate system, then binary data will not be loaded into the same RAM as the database. This removes the risk of binary data pushing the working set out of RAM, and ensures that performance will not be negatively impacted.
 
-#### Drawbacks of storing binary data outside of MongoDB
+### Drawbacks of storing binary data outside of MongoDB
 
 - Adding an additional system for the storage of binary data will add significant operational overhead and system complexity versus using MongoDB for this purpose.
 - Alternative binary data storage systems will not take advantage of MongoDB’s high availability and replication of data.
@@ -117,13 +117,13 @@ In some cases it may be preferable to not store binary data inside MongoDB at al
 
 ## Mitigating some of the drawbacks of storing binary data in MongoDB
 
-#### Separating metadata and embedded binary data into different collections
+### Separating metadata and embedded binary data into different collections
 
 Instead of embedding binary data and metadata together, it may make sense for binary data to be stored in a collection that is separate from the metadata. This would be useful if metadata is accessed frequently but the associated binary data is infrequently required.
 
 With this approach, instead of embedding the binary data in the metadata collection, the metadata collection would instead contain pointers to the relevant document in a separate binary data collection, and the desired binary data documents would be loaded on-demand. This would allow the documents from the metadata collection to be frequently accessed without wasting memory for the rarely used binary data.
 
-#### Separating metadata and binary data into different MongoDB deployments
+### Separating metadata and binary data into different MongoDB deployments
 
 With this approach as in the previous approach, metadata and binary data are separated into two collections, but additionally these collections are stored on separate MongoDB deployments.
 

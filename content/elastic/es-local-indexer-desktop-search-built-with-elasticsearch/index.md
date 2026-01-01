@@ -51,7 +51,7 @@ python3 indexing_app.py -p ~/Documents/built-docs/ -i built_es_docs_idx
 
 Once the ingestion process has started, move on to the next step (although search results will be more meaningful ingestion has completed).
 
-## [](https://github.com/alexander-marquardt/es_local_indexer/blob/master/README.md#searching-local-documents)Launch the search application
+## Launch the search application
 
 Once documents have been ingested into Elasticsearch, the code to launch the search interface web app can be executed as follows:
 

@@ -77,7 +77,7 @@ GET kibana_sample_data_flights/_search
 }
 ```
 
-### View the slow logs in the Logging and Metrics cluster
+## View the slow logs in the Logging and Metrics cluster
 
 We can confirm that the above query generated an event by logging into the Kibana instance associated with the Logging and Metrics cluster. Once in Kibana for the Logging and Metrics cluster, go to Discover and select the _cluster-logs-\*_ index pattern, and enter in the following query in the search input:
 
@@ -95,7 +95,7 @@ We are interested in the _message_ field in the returned document, which contain
 
 Notice how the information about the slow query is stored in a single string. In order to properly analyse this information, the data needs to be extracted and structured. The remainder of this blog shows how this can be done.
 
-### Extract fields from the message string
+## Extract fields from the message string
 
 We must parse the message field that contains the slow log information, and extract useful data in order to be able to do meaningful analysis. The following ingest pipeline will extract the fields from the slowlog message string using a [grok processor](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/grok-processor.html).
 
@@ -133,11 +133,11 @@ PUT _ingest/pipeline/sl-pipeline
 
 As we wish to use the [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/current/index.html) for as many fields as possible, we store the duration of the query in _event.duration_, which is [defined as the event duration in nanoseconds](https://www.elastic.co/guide/en/ecs/current/ecs-event.html). Therefore, we calculate _event.duration_ by multiplying the _took\_millis_ value by 1000000. This does not actually result in nanosecond resolution. If more resolution is required, then _event.duration_ should be calculated based on _took_ rather than _took\_millis_. However, because _took_ contains a string with both a number and units, this would require additional processing which is out of scope of this blog.
 
-### Grok
+## Grok
 
 The above grok expression was tested with ECE 2.4.3, and has ingested logs from an Elasticsearch cluster running version 7.5.0. However, because small changes to the format can break the above expression, it is worth noting that Kibana has a [grok debugger](https://www.elastic.co/guide/en/kibana/7.6/xpack-grokdebugger.html) that can be helpful when trying to debug a grok expression that does not work as expected.
 
-### Test the pipeline
+## Test the pipeline
 
 The above pipeline can be tested with the [simulate pipeline API](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/simulate-pipeline-api.html) as follows:
 
@@ -206,7 +206,7 @@ Which should respond with the following that shows us how documents will look af
 
 Note that the _slowlog.source_ field contains the query that was executed. Additionally, the duration of the query is now available in the _event.duration_ field and can be used for analysis and in dashboards.
 
-### Reindex data from the Logging and Metrics cluster into the analysis cluster
+## Reindex data from the Logging and Metrics cluster into the analysis cluster
 
 Before executing a “reindex from remote” command, it is necessary to [whitelist the remote cluster](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/reindex-upgrade-remote.html) that data will be pulled from. Also, to keep this blog simple we turn off SSL certificate verification which removes protection against man in the middle attacks and certificate forgery. This is only done for demonstration purposes as security configuration is not the focus of this blog. Such a liberal security configuration should not generally be used for production systems. These settings will be modified in the _elasticsearch.yml_ file.
 
@@ -262,7 +262,7 @@ curl -XPOST "https://<analysis cluster URL>:9243/_reindex" -u elastic:<analysis 
 
 Be sure to remove the comments starting with the “#” symbol from the above command before attempting to execute it, or it will not work correctly. 
 
-### Result of the reindex operation
+## Result of the reindex operation
 
 Once the above reindex operation has been executed, the analysis cluster should have documents that look like the following. These will be located in an index called _slowlog-<YYYY-MM-dd>_ which we declared in the pipeline called _sl-pipeline_. 
 
@@ -302,7 +302,7 @@ Once the above reindex operation has been executed, the analysis cluster should 
 
 As opposed to the documents that are stored in the Logging and Metrics cluster, these documents have a structure that includes fields that can be used for monitoring and alerting or driving dashboards. For example, the _event.duration_ field could be monitored for queries that take longer than a critical threshold, and dashboards could be created that show which queries are commonly slow. Monitoring and alerting solutions as well as example dashboards that are based on this data will be presented in a future blog post.
 
-### Automate the execution of the reindex operation
+## Automate the execution of the reindex operation
 
 The above reindex command can be stored in a shell script, and called from cron. For example, assuming that you have stored the above curl command in a file called _pull\_logs.sh_, the following would execute the above reindex operation once per minute:
 
@@ -315,6 +315,6 @@ Note that because this would automate the reindex script to execute every minute
 
 In order to avoid writing the same documents twice when executing the reindex command, we specify that only new documents should be inserted into the _slowlogs-\*_ index, by specifying _"op\_type": "create"_.
 
-### Conclusion
+## Conclusion
 
 In this blog, we showed how to extract slow logs from the Logging and Metrics cluster into a separate analysis cluster, which can be used for detecting performance issues and driving Kibana dashboards. In an upcoming blog, we will show how to create dashboards and alerts that use the data that has been ingested into the analysis cluster.

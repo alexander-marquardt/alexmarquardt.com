@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "Financial implications of exercising share options"
 date: 2019-07-27
 slug: financial-implications-of-exercising-share-options

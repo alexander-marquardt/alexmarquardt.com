@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "Automating the Import and Export of Kibana Saved Objects"
 date: 2024-05-03
 slug: automating-the-import-and-export-of-kibana-saved-objects

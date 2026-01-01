@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "Using Logstash and Elasticsearch scripted upserts to transform eCommerce purchasing data"
 date: 2019-12-17
 slug: logstash-and-elasticsearch-painless-scripted-upserts-transform-data

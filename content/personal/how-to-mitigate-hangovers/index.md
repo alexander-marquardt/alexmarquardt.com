@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "How to mitigate hangovers"
 date: 2019-07-30
 slug: how-to-mitigate-hangovers

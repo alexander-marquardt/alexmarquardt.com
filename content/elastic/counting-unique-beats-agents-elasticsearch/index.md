@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "Counting unique beats agents sending data into Elasticsearch"
 date: 2019-07-18
 slug: counting-unique-beats-agents-elasticsearch

@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "Using Logstash to scan inside event contents to replace sensitive data with a consistent hash"
 date: 2022-01-20
 slug: using-logstash-to-hash-sensitive-text

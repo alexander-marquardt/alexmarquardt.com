@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "Cut and paste a table from Google Sheets into an HTML document – no code required"
 date: 2022-10-10
 slug: cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required

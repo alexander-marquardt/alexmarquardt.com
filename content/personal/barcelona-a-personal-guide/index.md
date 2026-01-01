@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "Barcelona: A Personal Guide"
 date: 2024-04-21
 slug: barcelona-a-personal-guide

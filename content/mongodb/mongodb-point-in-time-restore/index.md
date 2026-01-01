@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "How to manually perform a point in time restore in MongoDB"
 date: 2017-01-25
 slug: mongodb-point-in-time-restore

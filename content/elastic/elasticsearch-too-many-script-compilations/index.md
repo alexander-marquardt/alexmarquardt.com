@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "Understanding and fixing \"too many script compilations\" errors in Elasticsearch"
 date: 2020-10-21
 slug: elasticsearch-too-many-script-compilations

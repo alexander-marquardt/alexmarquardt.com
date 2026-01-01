@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "ES Local Indexer – Desktop search powered by Elasticsearch"
 date: 2019-08-08
 slug: es-local-indexer-desktop-search-built-with-elasticsearch

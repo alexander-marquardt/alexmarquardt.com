@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "How to tune Elasticsearch for aggregation performance"
 date: 2018-10-02
 slug: how-to-tune-elasticsearch-for-aggregation-performance

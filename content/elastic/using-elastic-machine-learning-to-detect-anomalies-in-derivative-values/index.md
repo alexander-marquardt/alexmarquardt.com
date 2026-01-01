@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "Using Elastic machine learning to detect anomalies in derivative values"
 date: 2020-04-21
 slug: using-elastic-machine-learning-to-detect-anomalies-in-derivative-values

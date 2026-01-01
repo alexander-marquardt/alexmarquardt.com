@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "Trade-offs to consider when storing binary data in MongoDB"
 date: 2017-03-02
 slug: trade-offs-to-consider-when-storing-binary-data-in-mongodb/

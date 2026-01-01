@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "A summary of recent research on increasing lifespan"
 date: 2021-06-01
 slug: a-summary-of-recent-research-on-increasing-lifespan

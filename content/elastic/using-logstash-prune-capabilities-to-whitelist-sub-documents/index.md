@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "Using Logstash prune capabilities to whitelist sub-documents"
 date: 2018-08-28
 slug: /using-logstash-prune-capabilities-to-whitelist-sub-documents/

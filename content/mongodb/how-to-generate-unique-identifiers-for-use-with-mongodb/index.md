@@ -1,4 +1,5 @@
 ---
+showtoc: true
 title: "How to generate unique identifiers for use with MongoDB"
 date: 2017-01-30
 slug: how-to-generate-unique-identifiers-for-use-with-mongodb

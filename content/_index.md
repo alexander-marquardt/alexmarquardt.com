@@ -11,7 +11,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 # Elastic Stack
 
-## **Search & Relevance**
+## Search & Relevance
 
 1. [Influencing BM25 ranking with multiplicative boosting in Elasticsearch | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/bm25-ranking-multiplicative-boosting-elasticsearch) (Dec 22, 2025)
 
@@ -27,7 +27,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 13. [Improving search relevance with boolean queries | Elastic Blog](https://www.elastic.co/blog/how-to-improve-elasticsearch-search-relevance-with-boolean-queries) (May 26, 2020)
 
-## **Performance, Reliability & Failure Analysis**
+## Performance, Reliability & Failure Analysis
 
 1. [How excessive replica counts can degrade performance, and what to do about it | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/elasticsearch-replica-counts-right-sizing) (Dec 8, 2025)
 

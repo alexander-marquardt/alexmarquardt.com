@@ -1,5 +1,4 @@
 ---
-showtoc: true
 title: Professional Record and Publications
 description: This page provides supporting material for my professional background, including selected publications, patents, open-source contributions, and formal education.
 url: professional

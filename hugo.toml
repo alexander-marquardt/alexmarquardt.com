@@ -1,4 +1,4 @@
-baseURL = "https://alexander-marquardt.github.io/alexmarquardt.com/"
+baseURL = "https://alexmarquardt.com/"
 canonifyURLs = true
 languageCode = 'en-us'
 title = 'Alexander Marquardt'

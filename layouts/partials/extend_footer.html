@@ -1,0 +1,19 @@
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const footer = document.querySelector("footer.footer");
+    if (!footer) return;
+
+    // Remove "Powered by Hugo / PaperMod"
+    footer.querySelectorAll("span").forEach(span => {
+      if (span.textContent.includes("Powered by")) {
+        span.remove();
+      }
+    });
+
+    // Link author name to /about/
+    const authorLink = footer.querySelector("a");
+    if (authorLink) {
+      authorLink.href = "{{ "about/" | relURL }}";
+    }
+  });
+</script>

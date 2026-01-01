@@ -123,25 +123,19 @@ html {
    Responsive page titles (ALL page types)
    ========================================================= */
 
-/* Tablets */
 @media (max-width: 768px) {
-
-  /* Single posts */
   .post-title {
     font-size: 34px !important;
     line-height: 1.15;
   }
 
-  /* Pages, section indexes, layout=page */
   .page-header h1 {
     font-size: 34px !important;
     line-height: 1.15;
   }
 }
 
-/* Phones */
 @media (max-width: 480px) {
-
   .post-title {
     font-size: 30px !important;
   }
@@ -171,7 +165,7 @@ html {
    ========================================================= */
 
 .toc a {
-  color: #1a5fb4; /* same as .post-content a */
+  color: #1a5fb4;
   text-decoration: none;
 }
 
@@ -181,7 +175,6 @@ html {
   text-underline-offset: 0.15em;
 }
 
-/* Visited state */
 .toc a:visited {
   color: #5a6ea8;
 }
@@ -195,3 +188,34 @@ html[data-theme="dark"] .toc a:visited {
   color: #9aa7d6;
 }
 
+/* =========================================================
+   Footer (PaperMod-safe)
+   ========================================================= */
+
+footer.footer {
+  display: block;
+  padding: 18px 24px;
+  font-size: 14px;
+  color: #555;
+  background: transparent;
+}
+
+/* Footer links */
+footer.footer a {
+  color: inherit;
+  text-decoration: none;
+}
+
+footer.footer a:hover {
+  text-decoration: underline;
+}
+
+/* Dark theme footer */
+html[data-theme="dark"] footer.footer {
+  color: #aaa;
+}
+
+/* Remove "Powered by Hugo / PaperMod" */
+footer.footer span:last-of-type {
+  display: none;
+}

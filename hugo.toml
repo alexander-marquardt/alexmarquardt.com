@@ -16,6 +16,10 @@ description = "Technical writing on search relevance, data pipelines, and distri
 
   # REQUIRED for social cards
   env = "production"
+  
+  [params.author]
+    name = "Alexander Marquardt"
+    link = "/about/"
 
   [params.label]
     text = ""

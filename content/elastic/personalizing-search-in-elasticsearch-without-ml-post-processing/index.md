@@ -7,6 +7,8 @@ aliases:
   - /personalizing-search-in-elasticsearch-without-ml-post-processing/
 ---
 
+## Introduction
+
 Whether you’re looking for a product in an online store, an article in a news archive, or a file in a company knowledge base, the quality of the search experience determines how quickly you find what you need. Behind the scenes, many of these systems are powered by **Elasticsearch**, a popular open-source search engine designed to handle large volumes of data and return relevant results in milliseconds.
 
 At its core, Elasticsearch matches user queries against text fields and ranks results using relevance scoring. But search doesn’t have to stop there. That’s where **personalization** comes in. By incorporating signals such as past purchases, browsing behavior, or recent activity, search results can be adjusted so the items most relevant to _you_ appear higher. For example, if two people both search for _“chips”_, one might see _classic potato chips_ at the top, while the other sees _crispy thin-cut chips_, depending on their history.

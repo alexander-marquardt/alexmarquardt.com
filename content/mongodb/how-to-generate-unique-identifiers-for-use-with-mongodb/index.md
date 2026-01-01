@@ -7,9 +7,8 @@ aliases:
   - /2017/01/30/how-to-generate-unique-identifiers-for-use-with-mongodb/
 ---
 
-## ![standard_barcodes](images/standard_barcodes.jpg)
-
-This blog article has been re-published with my permission by MongoDB at [https://www.mongodb.com/blog/post/generating-globally-unique-identifiers-for-use-with-mongodb](https://www.mongodb.com/blog/post/generating-globally-unique-identifiers-for-use-with-mongodb)
+## Now on MongoDB's website
+This blog article has been published by MongoDB at [https://www.mongodb.com/blog/post/generating-globally-unique-identifiers-for-use-with-mongodb](https://www.mongodb.com/blog/post/generating-globally-unique-identifiers-for-use-with-mongodb)
 
 ## Motivation
 

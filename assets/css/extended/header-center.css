@@ -97,3 +97,14 @@ html:not([data-theme="dark"]) .header .logo a > img.am-logo-light {
 html[data-theme="dark"] .header .logo a > img.am-logo-dark {
   display: block !important;
 }
+
+/* =========================================================
+   iOS safe-area fix — align logo with nav text
+   ========================================================= */
+
+@supports (padding: max(0px)) {
+  .header .logo {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+}

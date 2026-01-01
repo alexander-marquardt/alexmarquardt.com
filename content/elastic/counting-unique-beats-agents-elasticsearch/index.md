@@ -6,7 +6,7 @@ aliases:
   - /2019/07/18/counting-unique-beats-agents-elasticsearch/
 ---
 
-# Introduction
+## Introduction
 
 When using Beats with Elasticsearch, it may be useful to keep track of how many unique agents are sending data into an Elasticsearch cluster, and how many documents each agent is submitting. Such information for example could be useful for detecting if beats agents are behaving as expected.
 
@@ -14,7 +14,7 @@ In this blog post, I first discuss how to efficiently specify a filter for docum
 
 Note that the techniques discussed in this blog have limitations (discussed below) when the number of agents becomes very large. As an alternative to the techniques discussed in this blog post, the data coming from beats could transformed into an additional (new) index to make counting the number of beats agents more efficient and accurate, at the expense of additional up-front work being done at ingest time. This approach will be discussed in a future blog post (link will be placed here once written).
 
-# How to filter for documents in a specific time range
+## How to filter for documents in a specific time range
 
 This section describes how to efficiently filter for documents from a particular time range. In the following example, we filter for documents that were received yesterday:
 
@@ -90,7 +90,7 @@ GET filebeat-*/_search
 
 Now that we have covered how to efficiently query for a documents in a particular time range, we are ready to demonstrate how to count the number of unique beats agents that are submitting documents to Elasticsearch.
 
-# A basic query to get a count of unique agents
+## A basic query to get a count of unique agents
 
 To get an approximate count of unique beats agents we can use a [cardinality aggregation](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-cardinality-aggregation.html) as shown below.
 
@@ -123,7 +123,7 @@ POST filebeat-*/_search
 
 Note that we first filter documents by time (in this case documents from yesterday), and then execute the  cardinality aggregation on the filtered set of documents . Also notice that the size is set to 0 – this tells ES that we are not interested in seeing the actual documents that match the range query, we just want to see the results of the cardinality aggregation done _across_ those documents.
 
-# Get an example document from each agent using field collapsing
+## Get an example document from each agent using field collapsing
 
 The example below demonstrates how to use [field collapsing](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-collapse.html) to return the \_source of a single document corresponding to each beats agent that submitted a document yesterday. Be aware that by default a search will only return 10 hits. In order to see all documents that match a given query the size should be increased, or if a large number of results are expected then pagination techniques should be used. In the example below we have set the size to 100, which will return up to 100 unique agents.
 
@@ -154,7 +154,7 @@ GET filebeat-*/_search
 }
 ```
 
-# Get an example document from each agent using a terms aggregation and top hits
+## Get an example document from each agent using a terms aggregation and top hits
 
 We can use a [terms aggregation](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html) and [top hits aggregation](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-top-hits-aggregation.html) to get each unique agent as well as a count of the number of documents submitted from each unique agent. Be aware that this code is likely less efficient than the above and may not be practical if a very large number of agents are reporting into Elasticsearch.
 
@@ -205,6 +205,6 @@ There are three "size" settings in the code above:
 2. A terms aggregation by default will only return the top 10 hits. In the example above we have increased the size of the terms aggregation to 500. Be careful, as setting this to a very large value to handle a very large number of agents may be slow. For a very large number of agents, terms aggregations may become infeasible.
 3. Inside the top hits aggregations, we have specified a size of 1, meaning that a single document will be returned for each term.
 
-# Conclusion
+## Conclusion
 
 In this blog, we have demonstrated how to ensure the best performance when filtering for documents, followed by several methods for detecting how many unique beats agents are submitting documents into an Elasticsearch cluster.

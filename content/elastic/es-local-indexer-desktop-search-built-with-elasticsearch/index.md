@@ -7,8 +7,6 @@ aliases:
   - /es-local-indexer-using-elasticsearch-for-searching-locally-stored-documents/
 ---
 
-August 7, 2019
-
 # Introduction
 
 Elasticsearch provides search functionality for some of the most important websites in the world including [Wikimedia (i.e. Wikipedia)](https://blog.wikimedia.org/2014/01/06/wikimedia-moving-to-elasticsearch/), [eBay](https://www.elastic.co/videos/ebay-and-elasticsearch-this-is-not-small-data), [Yelp](https://engineeringblog.yelp.com/2017/06/moving-yelps-core-business-search-to-elasticsearch.html), [Tinder](https://www.elastic.co/elasticon/conf/2017/sf/tinder-using-the-elastic-stack-to-make-connections-around-the-world), and many others. Elasticsearch is super scalable, which means that just as easily as it can be scaled it up for use in huge complex systems, it can also be scaled down for use in smaller projects.

@@ -6,8 +6,6 @@ aliases:
   - /2020/09/16/using-logstash-and-elasticsearch-scripted-upserts-to-calculate-transaction-duration-from-out-of-order-events/
 ---
 
-September 16, 2020
-
 # Introduction
 
 Elasticsearch  allows you to unify your observability data in a powerful datastore so you can search and apply interactive analytics in real time to a huge number of use cases.

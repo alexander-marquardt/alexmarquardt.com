@@ -6,8 +6,6 @@ aliases:
   - /enriching-data-with-the-logstash-translate-filter/
 ---
 
-March 6, 2020
-
 ## Introduction
 
 [Logstash](https://www.elastic.co/logstash) is an open source, server-side data processing pipeline that ingests data from a multitude of sources, transforms it, and then sends it to one or more outputs. One use of Logstash is for enriching data before sending it to Elasticsearch.

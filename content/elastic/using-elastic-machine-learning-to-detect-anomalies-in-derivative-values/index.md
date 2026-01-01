@@ -6,8 +6,6 @@ aliases:
   - /using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/
 ---
 
-April 21, 2020
-
 # Introduction
 
 In this blog, we use Elastic machine learning (ML) and derivative aggregations to detect sudden unexpected increases or decreases in the _rate-of-change_ of CPU load on servers that are monitored by [Metricbeat](https://www.elastic.co/guide/en/beats/metricbeat/7.6/metricbeat-overview.html).

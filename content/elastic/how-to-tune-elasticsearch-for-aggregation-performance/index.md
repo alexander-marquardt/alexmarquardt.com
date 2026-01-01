@@ -6,8 +6,6 @@ aliases:
   - /how-to-tune-elasticsearch-for-aggregation-performance
 ---
 
-October 2, 2018
-
 # Introduction
 
 By default, Elasticsearch is tuned for the best trade-off between write performance and query performance for the majority of use cases. In this blog posting we cover some parameters that can be configured to improve query-time aggregation performance, with _some_ of these improvements coming at _the expense of write performance._ 

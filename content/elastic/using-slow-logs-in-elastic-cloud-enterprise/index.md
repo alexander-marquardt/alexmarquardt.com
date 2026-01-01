@@ -6,8 +6,6 @@ aliases:
   - /using-slow-logs-in-elastic-cloud-enterprise/
 ---
 
-April 26, 2020
-
 # Authors
 
 - Tom Schreiber

@@ -120,15 +120,6 @@ html {
 }
 
 /* =========================================================
-   iOS safe-area alignment (Chrome/Safari on iPhone)
-   ========================================================= */
-
-.header {
-  padding-left: calc(var(--gap, 1rem) + env(safe-area-inset-left));
-  padding-right: calc(var(--gap, 1rem) + env(safe-area-inset-right));
-}
-
-/* =========================================================
    Responsive page titles (ALL page types)
    ========================================================= */
 

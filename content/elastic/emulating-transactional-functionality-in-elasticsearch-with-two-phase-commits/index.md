@@ -6,11 +6,11 @@ aliases:
   - /2019/12/05/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/
 ---
 
-# Introduction
+## Introduction
 
 Elasticsearch supports atomic create, update, and delete operations at the individual document level, but does not have built-in [support for multi-document transactions](https://www.elastic.co/blog/found-elasticsearch-as-nosql#transactions). Although Elasticsearch does not position itself as a system of record for storing data, in some cases it may be necessary to modify multiple documents as a single cohesive unit. Therefore, in this blog post we present a [two-phase commit protocol](https://en.wikipedia.org/wiki/Two-phase_commit_protocol) which can be used to _emulate_ multi-document transactions.
 
-# Overview
+## Overview
 
 Create, update, and delete operations in Elasticsearch are atomic at the document level, which means that creating, modifying, or deleting a single document either fully succeeds or fails. However, there is no guarantee that an operation that has multiple steps and that impacts multiple documents will either succeed or fail as a cohesive unit.
 
@@ -18,13 +18,13 @@ In some cases [inner objects and nested types](https://www.elastic.co/blog/manag
 
 Given the lack of built-in multi-document transactions in Elasticsearch, multi-document transactional functionality that is built on top of Elasticsearch must be implemented in application code. Such functionality can be achieved with the two-phase commit protocol.
 
-# What is the two-phase commit protocol
+## What is the two-phase commit protocol
 
 The [two-phase commit protocol](https://en.wikipedia.org/wiki/Two-phase_commit_protocol) is a type of [atomic commitment protocol](https://en.wikipedia.org/wiki/Atomic_commit) that coordinates processes that participate in a [distributed atomic transaction](https://en.wikipedia.org/wiki/Distributed_transaction). The protocol ultimately determines whether to [commit](https://en.wikipedia.org/wiki/Commit_\(data_management\)) or rollback a transaction. The protocol achieves this goal even in the event of most temporary system failures.
 
 To permit recovery from a failure, the two-phase commit protocol logs the state of a given transaction as the sequential steps to perform the transaction are executed. In the event of a failure at any stage in a transaction these transaction logs will be used by recovery procedures to either complete the transaction or to roll it back.
 
-# A high-level overview of a two-phase commit implementation
+## A high-level overview of a two-phase commit implementation
 
 In this article, we present an example of a two-phase commit transaction that is used for tracking the movement of “units” between two accounts, as described in the following sections:
 
@@ -44,11 +44,11 @@ In this article, we present an example of a two-phase commit transaction that is
 7. **Rolling back transactions**: In rare cases some transactions may not be able to complete, and should be rolled-back. This section describes how to undo a two-phase commit that previously started.
 8. **Recovering from errors**: This section describes the operations that are periodically executed to detect transactions that have become stuck in one of the two-phase commit or rollback stages. Stalled operation will then be restarted based on the most recent transaction state.
 
-# Create mappings
+## Create mappings
 
 [Mapping](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html) is the process of defining how a document, and the fields it contains, are stored and indexed. This example defines an accounts index and a transactions index, for which the mappings are defined below.
 
-## Define the mappings for the accounts index
+### Define the mappings for the accounts index
 
 For our example, we define the following fields on the accounts index:
 
@@ -73,7 +73,7 @@ PUT accounts
 }
 ```
 
-## Define the mappings for the transactions index
+### Define the mappings for the transactions index
 
 The transactions index will be used for tracking the state of each multi-document transaction, and will have the following fields defined:
 
@@ -114,7 +114,7 @@ PUT transactions
 }
 ```
 
-# Initialize accounts
+## Initialize accounts
 
 We can initialize documents for accounts A and B, each with a balance of 500 as follows:
 
@@ -132,7 +132,7 @@ PUT accounts/_doc/B
 }
 ```
 
-# Define an ingest pipeline for inserting the ingest time
+## Define an ingest pipeline for inserting the ingest time
 
 The following pipeline will be used to add “creation\_time” and “modification\_time” to the transaction documents. The modification\_time will be required at later stages in the two-phase commit process for detecting transactions that have failed to complete within a reasonable amount of time. The creation time is stored for additional context.
 
@@ -158,11 +158,11 @@ PUT _ingest/pipeline/initialize_time
 
 ```
 
-# Scripts that are used by the two-phase commit
+## Scripts that are used by the two-phase commit
 
 In this section we define several [painless scripts](https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-scripting-painless.html) which will be executed by update operations that are performed in the two-phase commit steps. Given that updates are atomic, all of the operations inside each of these scripts will either succeed or fail as a unit.
 
-## Script to update the transaction state
+### Script to update the transaction state
 
 This script will be used to update the transaction state from the current state to the desired state. The transaction state can be one of “created”, “pending”, “committed”, “finished”, “terminating”, or “rolled-back”.
 
@@ -193,7 +193,7 @@ POST _scripts/update_transaction_state
 }
 ```
 
-## Script to apply a transaction to an account
+### Script to apply a transaction to an account
 
 This script is used to add the current transaction amount to an account, and to push the the transaction identifier onto a list of pending transactions. Given the atomic nature of document updates, both of these operations will succeed or fail as an atomic unit. This script will be used for updating accounts once a transaction has entered into the “pending” state.
 
@@ -229,7 +229,7 @@ POST _scripts/apply_transaction_to_account
 }
 ```
 
-## Script to remove a transaction from an account
+### Script to remove a transaction from an account
 
 This script is used for removing a transaction from the pending\_transactions array on an account. This will be done once a transaction is no longer in the “pending” transaction state, and immediately after it has entered into the “committed” transaction state.
 
@@ -262,7 +262,7 @@ POST _scripts/remove_transaction_from_account
 }
 ```
 
-## Script to undo a transaction on an account
+### Script to undo a transaction on an account
 
 This script will be used in the event that a transaction is being rolled back. It reverses the previous change that was made to the account balance, and removes the transaction from the account’s pending\_transactions array. Given the atomic nature of document updates, both of these operations will succeed or fail as an atomic unit.
 
@@ -295,7 +295,7 @@ POST _scripts/undo_transaction_on_account
 }
 ```
 
-# Create a transaction
+## Create a transaction
 
 We create a new transaction, and once this transaction has been received by elasticsearch the subsequent steps covered in the remainder of this article will ensure that this transaction will eventually run to completion or will alternatively be rolled-back. This is true even if there is an intermediate failure in any of the individual two-phase commit steps.
 
@@ -322,7 +322,7 @@ If the application receives a response that indicates “document already exists
 
 Note that in subsequent steps we will refer the newly submitted transaction as “curr\_trans”. If the instructions from this blog are being tested in Kibana dev tools, then the values from the above document will need to be manually copied into subsequent commands wherever we refer to “curr\_trans”. If these steps are to be executed in code, then this document could be stored in an object.
 
-# Core two-phase commit operations
+## Core two-phase commit operations
 
 In this section we present a two-phase commit which ensures that all steps required to complete a transaction are executed, and that any failed transactions can be detected and executed to completion or alternatively rolled back. This two-phase commit will prevent partial completion of transactions if there is a failure in any of the sequential two-phase commit steps.
 
@@ -330,7 +330,7 @@ Normal two-phase commit operations will execute in a single thread that will sta
 
 If any of the core two-phase commit operations fails or does not receive a response, then it should be retried several times before stopping processing of the current thread. If this happens then the failed transaction will be picked up later by recovery procedures.
 
-## Core step 1 - Update transaction state to "pending"
+### Core step 1 - Update transaction state to "pending"
 
 This step (_Core step 1_) can be arrived at immediately after the transaction has been created, however in the event of an error immediately after creating the transaction, this step will be executed after the step called _Recovery step1 - transactions that are stuck in the “created” state._ The document referred to by “curr\_trans” will be determined by whichever step was executed prior to arriving to this current step.
 
@@ -357,7 +357,7 @@ If the result field in the response is “noop” then processing of this transa
 
 If the request fails and continues to fail after several retries, the current thread can exit and the transaction can remain in the “created” state to be detected and fixed by recovery procedures.
 
-## Core step 2 - Apply the transaction to the source account
+### Core step 2 - Apply the transaction to the source account
 
 This step (_Core step 2_) will normally execute immediately after _Core step 1 - Update transaction state to "pending"_. However, in the event of a previous error that has prevented this step from executing, this step may be triggered by the step called _Recover transactions that are in the "pending" transaction state_.
 
@@ -383,7 +383,7 @@ If it returns a result of “noop”, then the returned \_source should be inspe
 
 If the request fails and continues to fail after several retries, do not continue to the next step, as the transaction should remain in the “pending” state to be detected and fixed by recovery procedures.
 
-## Core step 3 - Apply the transaction to the destination account
+### Core step 3 - Apply the transaction to the destination account
 
 This step (_Core step 3_) will execute immediately after _Core step 2._ Execute the following code to apply the transaction to the destination account:
 
@@ -407,7 +407,7 @@ If it returns a result of “noop”, then the returned \_source should be inspe
 
 If the request fails and continues to fail after several retries, do not continue to the next step, as the transaction should remain in the “pending” state to be detected and fixed by recovery procedures.
 
-## Core step 4 - Update the transaction state to "committed"
+### Core step 4 - Update the transaction state to "committed"
 
 This step (_Core step 4_) will only be called immediately after a pending transaction has been applied to both the source account and the destination account. This step is not called directly by any recovery procedures. This ensures that a “committed” transaction state means that both the source and destination balances are guaranteed to have have been updated.
 
@@ -436,7 +436,7 @@ If the result field in the response is “noop” then processing of this transa
 
 If the request fails and continues to fail after several retries, the current thread can exit as the transaction can remain in the “pending” state to be detected and fixed by recovery procedures.
 
-## Core step 5 - Remove the transaction identifier from the source account
+### Core step 5 - Remove the transaction identifier from the source account
 
 This step (_Core step 5_) will normally execute immediately after _Core step 4 - Update transaction state to "committed"_. However, in the event of a previous error that has prevented this step from executing, this will be called after _Recover transactions that are in the "committed" transaction state_.
 
@@ -462,7 +462,7 @@ If it returns a result of “noop”, the returned \_source should be inspected 
 
 If the request fails and continues to fail after several retries, do not continue to the next step, as the transaction should remain in the “committed” state to be detected and fixed by future recovery procedures.
 
-## Core step 6 - Remove the transaction identifier from the destination account
+### Core step 6 - Remove the transaction identifier from the destination account
 
 This step (_Core step 6_) will execute immediately after _Core step 5._ We can remove the transaction from the destination account as follows:
 
@@ -485,7 +485,7 @@ If it returns a result of “noop”, the returned \_source should be inspected 
 
 If the request fails and continues to fail after several retries, do not continue to the next step, as the transaction should remain in the “committed” state to be detected and fixed by recovery procedures.
 
-## Core step 7 - Update transaction state to "finished"
+### Core step 7 - Update transaction state to "finished"
 
 This step (_Core step 7_) will only be called immediately after a committed transaction has been removed from both the source account and the destination account. This step is not called directly by any recovery procedures. This sequence ensures that a “finished” transaction state means that the current transaction has been removed from both the source and destination account’s pending transactions arrays.
 
@@ -512,11 +512,11 @@ If it returns a result of “noop”, then inspect the returned \_source to conf
 
 If the request fails and continues to fail after several retries, the current thread can exit as the transaction can remain in the “committed” state to be detected and fixed by recovery procedures.
 
-# Rolling back transactions
+## Rolling back transactions
 
 In some cases it may be necessary to roll back a transaction, which can be done as described below.
 
-## Rollback of “created” transactions
+### Rollback of “created” transactions
 
 A transaction that is in a “created” state can be directly set to “rolled-back”. This can be accomplished as follows:
 
@@ -539,11 +539,11 @@ If the result field in the response is “updated” then rollback of this trans
 
 If the result is “noop” then the transaction may have already moved past the “created” state, and therefore an alternate rollback procedure should be followed, depending on the current state of the transaction. The current transaction state can be viewed in the returned \_source.
 
-## Rollback of “pending” transactions
+### Rollback of “pending” transactions
 
 If a transaction is in the "pending" state, then the transaction can be rolled-back by executing the following steps which will reverse the modifications to the source and destination accounts, as well as change the status of the transaction..
 
-### Rollback step 1 - Update the transaction state to "terminating"
+#### Rollback step 1 - Update the transaction state to "terminating"
 
 Update the transaction state on the current transaction from “pending” to “terminating” as shown below.
 
@@ -568,7 +568,7 @@ If a result of “noop” is returned in the response, then the rollback of the 
 
 If the request fails and continues to fail even after several retries, the current thread should exit as the transaction should remain in the “pending” state to be detected and fixed by normal _Recovering from errors in the two-phase commit_ procedures (which, if successful, would move the transaction to a “finished” state, rather than “rolled-back), or alternatively a new rollback can be retried.
 
-### Rollback step 2 - Undo the transaction on the source account
+#### Rollback step 2 - Undo the transaction on the source account
 
 This step (_Rollback step 2_) can be arrived at immediately after the transaction has been set to the “terminating” state, however in the event of an error after updating the state, this step will be executed after the step called _Recover transactions that are in the "terminating" transaction state_.
 
@@ -595,7 +595,7 @@ If it returns a result of “noop”, the returned \_source should be inspected 
 
 If the request fails and continues to fail even after several retries, the current thread should exit as the transaction should remain in the “terminating” state to be detected and fixed by recovery procedures.
 
-### Rollback step 3 - Undo the transaction from the destination account
+#### Rollback step 3 - Undo the transaction from the destination account
 
 If the destination account balance has been modified, then it will have an entry for the current transaction’s \_id in its pending transactions array. Therefore the amount that was added to the destination account balance must be removed, and the transaction must be removed from the pending transactions array. This can be accomplished with the following code:
 
@@ -620,7 +620,7 @@ If it returns a result of “noop”, the returned \_source should be inspected 
 
 If the request fails and continues to fail even after several retries, the current thread should exit as the transaction should remain in the “terminating” state to be detected and fixed by recovery procedures.
 
-### Rollback step 4 - Set the transaction state to “rolled-back”
+#### Rollback step 4 - Set the transaction state to “rolled-back”
 
 The rollback operation is completed by updating the transaction state to “rolled-back”.
 
@@ -645,13 +645,13 @@ If the response result is “noop”, then the returned \_source should be inspe
 
 If the request fails and continues to fail even after several retries, the current thread should exit as the transaction should remain in the “terminating” state, which will be detected and fixed by recovery procedures.
 
-## Rollback of “committed” transactions
+### Rollback of “committed” transactions
 
 If a transaction is in the "committed" state, then it should be allowed to complete (i.e. it should be allowed to move to a transaction state of “finished”). After completion, then another transaction can be executed to reverse the transaction.
 
 If for some reason a transaction in the “committed” state cannot proceed to the “finished” state on its own, even after the steps in _Recover transactions that are in the "committed" transaction state_ have been executed, then manual intervention may be required to understand and fix the root cause of the issue.
 
-# Recovering from errors
+## Recovering from errors
 
 Recovery operations can be looped over to detect and recover from a failure in any of the stages in the _Core two-phase commit operations_. Recovery should only be initiated on a transaction that has not completed within a _reasonable_ amount of time since its last update (i.e. since its modification timestamp). Recovery should not be attempted on transactions that may still be executing, or that may have unacknowledged modifications to their transaction state, as this could introduce race conditions.
 
@@ -666,7 +666,7 @@ In the examples below, we wait 2 minutes from the most recent update to a transa
 
 More sophisticated and precise control over the timing of the launching of recovery procedures could be achieved by maintaining a mapping of transactions and their associated threads. Before launching a recovery procedure, the thread associated with each transaction could be checked to ensure that it is no longer alive. The details of such an implementation will be language dependent, and are beyond the scope of this article.
 
-## Get transactions that need to be recovered
+### Get transactions that need to be recovered
 
 Transactions that have not been modified in the past 2 minutes, may be “stuck”, and can be detected with the following query:
 
@@ -708,28 +708,28 @@ GET transactions/_search
 }
 ```
 
-## Recover transactions that are stuck in the “created” state
+### Recover transactions that are stuck in the “created” state
 
 For each “created” transaction returned from the above query, create a new thread to resume executing it starting at _Core step 1 - Update transaction state to "pending"_.
 
-## Recover transactions that are in the "pending" state
+### Recover transactions that are in the "pending" state
 
 For each “pending” transaction returned from the above query, create a new thread to resume executing it starting at Core step 2 _- Apply the transaction to the source account_.
 
-## Recover transactions that are in the "committed" state
+### Recover transactions that are in the "committed" state
 
 For each “committed” transaction that is returned, create a new thread to resume executing it starting at _Core step 5 - Remove the transaction from the source account_.
 
-## Recover transactions that are in the "terminating" state
+### Recover transactions that are in the "terminating" state
 
 For each “pending” transaction that is returned, create a new thread to resume executing it starting at _Rollback step 2 - Undo the transaction on the source account_.
 
-## Recover very long running transactions
+### Recover very long running transactions
 
 If any “created”, “pending”, or “committed” transactions are returned that have a modification time that is more than an hour ago, they may need additional investigations and should possibly be rolled back as described in the _Rolling back transactions_ section.
 
 If a “terminating” transaction is unable to move into the “rolled-back” transaction state, then it should be investigated and manual intervention may be required.
 
-# Conclusions
+## Conclusions
 
 In some cases it may be necessary to modify multiple documents as a single cohesive unit. Elasticsearch does not have built-in [support for multi-document transactions](https://www.elastic.co/blog/found-elasticsearch-as-nosql#transactions), therefore in this blog this blog post we have presented a [two-phase commit protocol](https://en.wikipedia.org/wiki/Two-phase_commit_protocol) which can be used to _emulate_ multi-document transactions.

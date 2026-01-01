@@ -7,7 +7,7 @@ aliases:
   - /es-local-indexer-using-elasticsearch-for-searching-locally-stored-documents/
 ---
 
-# Introduction
+## Introduction
 
 Elasticsearch provides search functionality for some of the most important websites in the world including [Wikimedia (i.e. Wikipedia)](https://blog.wikimedia.org/2014/01/06/wikimedia-moving-to-elasticsearch/), [eBay](https://www.elastic.co/videos/ebay-and-elasticsearch-this-is-not-small-data), [Yelp](https://engineeringblog.yelp.com/2017/06/moving-yelps-core-business-search-to-elasticsearch.html), [Tinder](https://www.elastic.co/elasticon/conf/2017/sf/tinder-using-the-elastic-stack-to-make-connections-around-the-world), and many others. Elasticsearch is super scalable, which means that just as easily as it can be scaled it up for use in huge complex systems, it can also be scaled down for use in smaller projects.
 
@@ -18,7 +18,7 @@ Elasticsearch provides search functionality for some of the most important websi
 
 ES Local Indexer is simple to use. In order to ingest HTML documents into Elasticsearch and then search them, just start a local instance of Elasticsearch, ingest data into Elasticsearch with the indexing app, and then start the searching app. After starting the searching app, use a browser to view the search results.
 
-# Purpose
+## Purpose
 
 The ES Local Indexer project is intended for the following scenarios:
 
@@ -27,11 +27,11 @@ The ES Local Indexer project is intended for the following scenarios:
 
 ES Local Indexer is not fully-featured or production-ready and is designed to be used locally (i.e. not exposed to the internet). In order to keep the code simple I have not used any Javascript or CSS on the front end. A production application based on this code would likely add both CSS and Javascript to improve the user experience.
 
-# Requirements and Installation
+## Requirements and Installation
 
 See the [ES Local Indexer gitub page](https://github.com/alexander-marquardt/es_local_indexer) for installation instructions.
 
-# Ingesting local documents data into Elasticsearch
+## Ingesting local documents data into Elasticsearch
 
 To test ES Local Indexer with real documents, download offline Elasticsearch documentation in HTML form from [https://github.com/elastic/built-docs](https://github.com/elastic/built-docs). Once downloaded, the HTML documents are ready for ingestion into Elasticsearch.
 
@@ -50,7 +50,7 @@ python3 indexing_app.py -p ~/Documents/built-docs/ -i built_es_docs_idx
 
 Once the ingestion process has started, move on to the next step (although search results will be more meaningful ingestion has completed).
 
-# [](https://github.com/alexander-marquardt/es_local_indexer/blob/master/README.md#searching-local-documents)Launch the search application
+## [](https://github.com/alexander-marquardt/es_local_indexer/blob/master/README.md#searching-local-documents)Launch the search application
 
 Once documents have been ingested into Elasticsearch, the code to launch the search interface web app can be executed as follows:
 
@@ -67,7 +67,7 @@ The PATH\_TO\_DOCS and INDEX\_NAME should be the same as the values specified wh
 
 Point a browser to [http://127.0.0.1:5000/](http://127.0.0.1:5000/), and begin searching the documents that were previously downloaded and indexed into Elasticsearch.
 
-# Using the search application
+## Using the search application
 
 The search interface is designed to mimic popular search applications such as Google or Bing.  The main search page appears as follows:
 
@@ -89,6 +89,6 @@ Now the first three documents are different and they all correspond to documenta
 
 However, we have not implemented the above domain-specific enhancements because ES Local Indexer is designed to be a _generic_ implementation.
 
-# Conclusion
+## Conclusion
 
 In this blog we have presented ES Local Indexer. This is a desktop search application that provides capabilities to ingest HTML documents from a local source into Elasticsearch, and that displays a web-based interface for searching these documents. ES Local Indexer can be used for searching downloaded HTML content, or it can be used as a base for larger projects that require search functionality.

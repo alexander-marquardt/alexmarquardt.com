@@ -2,15 +2,15 @@
 date: 2017-01-25
 ---
 
-# About this site
+## About this site
 
 This site brings together technical writing focused on search, data pipelines, and distributed systems at enterprise scale. It is informed by real production systems and reflects recurring patterns, trade-offs, and architectural decisions observed across system design, deployment, and long-term operation.
 
 The material emphasizes architectural reasoning for large-scale systems. It examines how relevance models, reliability mechanisms, and ingest pipelines behave under real-world constraints, with attention to system-level decisions that shape scalability, maintainability, and long-term operational effort.
 
-# Elastic Stack
+## Elastic Stack
 
-## **Search & Relevance**
+### **Search & Relevance**
 
 1. [Influencing BM25 ranking with multiplicative boosting in Elasticsearch | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/bm25-ranking-multiplicative-boosting-elasticsearch) (Dec 22, 2025)
 
@@ -26,7 +26,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 13. [Improving search relevance with boolean queries | Elastic Blog](https://www.elastic.co/blog/how-to-improve-elasticsearch-search-relevance-with-boolean-queries) (May 26, 2020)
 
-## **Performance, Reliability & Failure Analysis**
+### **Performance, Reliability & Failure Analysis**
 
 1. [How excessive replica counts can degrade performance, and what to do about it | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/elasticsearch-replica-counts-right-sizing) (Dec 8, 2025)
 
@@ -40,7 +40,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 11. [How to tune Elasticsearch for aggregation performance](http://alexmarquardt.com/how-to-tune-elasticsearch-for-aggregation-performance/) (Oct 2, 2018)
 
-## Ingest Architecture
+### Ingest Architecture
 
 1. [Re-directing Elasticsearch documents with out-of-range timestamps that (would) fail to get written into Time Series Data Streams](https://alexmarquardt.com/2024/04/16/catching-elasticsearch-documents-with-incorrect-timestamps-that-fail-to-get-written-into-time-series-data-streams/) (Apr 16, 2024)
 
@@ -50,7 +50,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 7. [Using Logstash to Split Data and Send it to Multiple Outputs | Elastic Blog](https://www.elastic.co/blog/using-logstash-to-split-data-and-send-it-to-multiple-outputs) (Jan 15, 2019)
 
-## Data Parsing & Structuring
+### Data Parsing & Structuring
 
 1. [Using Kibana’s Painless Lab (Beta) to test an ingest processor script](http://alexmarquardt.com/2020/11/09/using-kibanas-painless-lab-beta-to-test-an-ingest-processor-script/) (Nov 9, 2020)
 
@@ -66,7 +66,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 13. [Using Logstash prune capabilities to whitelist sub-documents](http://alexmarquardt.com/2018/08/28/using-logstash-prune-capabilities-to-whitelist-sub-documents/) (Aug 28, 2018)
 
-## Data Derivation & Enrichment
+### Data Derivation & Enrichment
 
 1. [Using Logstash to scan inside event contents and to replace sensitive data with a consistent hash](https://alexmarquardt.com/2022/01/20/using-logstash-to-hash-sensitive-text/) (Jan 20, 2022)
 
@@ -78,13 +78,13 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 9. [Using Logstash and Elasticsearch scripted upserts to transform eCommerce purchasing data](http://alexmarquardt.com/2019/12/17/logstash-and-elasticsearch-painless-scripted-upserts-transform-data/) (Dec 17, 2019)
 
-## End-to-End Systems & Reference Implementations
+### End-to-End Systems & Reference Implementations
 
 1. [ES Local Indexer – Desktop search powered by Elasticsearch](http://alexmarquardt.com/es-local-indexer-desktop-search-built-with-elasticsearch/) (Aug 7, 2019)
 
 3. [How to keep Elasticsearch synchronized with a relational database using Logstash | Elastic Blog](https://www.elastic.co/blog/how-to-keep-elasticsearch-synchronized-with-a-relational-database-using-logstash) (Jun 20, 2019)
 
-## Operational Foundations
+### Operational Foundations
 
 1. [Safely sample production data into pre-production environments with Logstash | Elastic Blog](https://www.elastic.co/blog/production-data-pre-production-environments-logstash) (Oct 1, 2024)
 
@@ -96,7 +96,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 9. [Counting unique beats agents sending data into Elasticsearch](http://alexmarquardt.com/2019/07/18/counting-unique-beats-agents-elasticsearch/) (Jul 18, 2019)
 
-## Correctness, Consistency & Security
+### Correctness, Consistency & Security
 
 1. [Emulating transactional functionality in Elasticsearch with two-phase commits](http://alexmarquardt.com/2019/12/05/emulating-transactional-functionality-in-elasticsearch-with-two-phase-commits/) (Dec 5, 2019)
 
@@ -104,13 +104,13 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 5. [How to Find and Remove Duplicate Documents in Elasticsearch | Elastic Blog](https://www.elastic.co/blog/how-to-find-and-remove-duplicate-documents-in-elasticsearch) (Dec 11, 2018)
 
-## System Behavior & Advanced Techniques
+### System Behavior & Advanced Techniques
 
 1. [Using Elastic machine learning to detect anomalies in derivative values](http://alexmarquardt.com/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/) (Apr 21, 2020)
 
 3. [How to Debug Elasticsearch Source Code in IntelliJ IDEA | Elastic Blog](https://www.elastic.co/blog/how-to-debug-elasticsearch-source-code-in-intellij-idea) (Feb 14, 2019)
 
-# Airbyte
+## Airbyte
 
 1. [Using the new Airbyte API to orchestrate Airbyte Cloud with Airflow](https://airbyte.com/blog/orchestrating-airbyte-api-airbyte-cloud-airflow) (Mar 2, 2023)
 
@@ -138,7 +138,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 25. [Data Integration Guide: Techniques, Technologies, and Tools](https://airbyte.com/blog/data-integration) (May 19, 2022)
 
-# MongoDB
+## MongoDB
 
 1. [Trade-offs to consider when storing binary data in MongoDB](http://alexmarquardt.com/2017/03/02/trade-offs-to-consider-when-storing-binary-data-in-mongodb/) (Mar 2, 2017)
 
@@ -146,7 +146,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 5. [How to manually perform a point in time restore in MongoDB](http://alexmarquardt.com/2017/01/25/mongodb-point-in-time-restore/) (Jan 25, 2017)
 
-# Additional Information
+## Additional Information
 
 - [About the Author](https://alexmarquardt.com/about/)
 

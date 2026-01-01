@@ -6,7 +6,7 @@ aliases:
   - /using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/
 ---
 
-# Introduction
+## Introduction
 
 In this blog, we use Elastic machine learning (ML) and derivative aggregations to detect sudden unexpected increases or decreases in the _rate-of-change_ of CPU load on servers that are monitored by [Metricbeat](https://www.elastic.co/guide/en/beats/metricbeat/7.6/metricbeat-overview.html).
 
@@ -14,11 +14,11 @@ In order to make this blog easier to follow and the results easy to recreate, we
 
 The instructions in this blog have been tested using Elasticsearch 7.6.
 
-# A note about derivatives
+## A note about derivatives
 
 This blog is intended to demonstrate how to use the derivative aggregation in combination with Machine Learning. The derivative can be used for detecting unexpected anomalies in the _rate-of-change_ of a given parameter. Detecting anomalies in the underlying parameter would not require the use of derivatives.
 
-# Driving fake Metricbeat CPU data into Elasticsearch
+## Driving fake Metricbeat CPU data into Elasticsearch
 
 The [fake-metricbeat-data Python script](https://github.com/alexander-marquardt/fake-metribeat-data) can be used to create Metricbeat-like data that represents CPU usage reported from a server. This will populate an index called " called "fake-metricbeat-idx". This index is populated with CPU values that are in a field called "system.cpu.total.pct".
 
@@ -37,7 +37,7 @@ The above script will create documents in Elasticsearch that look as follows:
       }
 ```
 
-# Visualizing the ingested data
+## Visualizing the ingested data
 
 After ingesting the fake Metricbeat data into Elasticsearch, it can be visualized in Kibana. A simple visualization of the "system.cpu.total.pct" field should look similar to the following, although your peaks and troughs will be different, as they are randomly generated:
 
@@ -47,7 +47,7 @@ We can also view the [derivative](https://www.elastic.co/guide/en/elasticsearch/
 
 ![Fake-metricbeat-derivative-visualization](images/fake-metricbeat-derivative-visualization.png)
 
-# Create an ML job to detect anomalies in the derivative of CPU usage
+## Create an ML job to detect anomalies in the derivative of CPU usage
 
 The blog post called [Custom Elasticsearch Aggregations for Machine Learning](https://www.elastic.co/blog/custom-elasticsearch-aggregations-for-machine-learning-jobs) gives a good overview of how to detect anomalies in the derivative of a value. The instructions given here were taken from this blog, and have been updated to work with our custom dataset and to work with Elasticsearch 7.6.
 
@@ -140,7 +140,7 @@ Which should return something similar to the following that contains the "cpu\_d
 
 Now the ML job has created. But we still need to execute the job.
 
-# Executing the ML job
+## Executing the ML job
 
 Go to the machine learning in Kibana, and then click on "Manage jobs" as shown below:
 
@@ -170,7 +170,7 @@ After expanding the range, we can see that the graph is similar to the data that
 
 ![Expanded-ML-graph](images/expanded-ml-graph.png)
 
-# A multi-metric job where one of the detectors uses the derivative data feed
+## A multi-metric job where one of the detectors uses the derivative data feed
 
 If we wish to define multiple anomaly detectors on the CPU derivative data feed, then we can simply add more detectors to the anomaly detector. For example, we could add an additional detector on the average CPU. Note that the "field\_name" that is used in the anomaly detector is created by the aggregation in the data feed.
 
@@ -270,7 +270,7 @@ Which will return something like the response given below, in which we can see t
 
 We could then execute the above ML job as we did for the previous job.
 
-# Advanced machine learning jobs
+## Advanced machine learning jobs
 
 The documentation on [Aggregating data for faster performance](https://www.elastic.co/guide/en/machine-learning/7.6/ml-configuring-aggregation.html) gives some good examples of how more complex aggregations can be used in data feeds. In particular, the example of how the "by\_field\_name" (and presumably "partition\_field\_name" as well) can be populated with a terms aggregation is interesting.
 
@@ -283,6 +283,6 @@ GET _ml/datafeeds
 
 Viewing how Kibana creates more advanced jobs should help you to better understand how to create similar jobs through the API. Directly using the ML API may provide additional flexibility and capabilities.
 
-# Conclusion
+## Conclusion
 
 In this blog we have demonstrated how to run a machine learning job that uses a derivative aggregation to detect anomalies in the rate of change of CPU usage.

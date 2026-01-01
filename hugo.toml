@@ -47,6 +47,11 @@ description = "Technical writing on search relevance, data pipelines, and distri
     [markup.goldmark.renderer]
       unsafe = true
 
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 4
+    ordered = false
+
 [permalinks]
   elastic = "/elastic/:slug/"
   airbyte = "/airbyte/:slug/"

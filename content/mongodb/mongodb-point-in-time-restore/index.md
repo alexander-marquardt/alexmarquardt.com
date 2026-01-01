@@ -6,23 +6,23 @@ aliases:
   - /2017/01/25/mongodb-point-in-time-restore/
 ---
 
-## ![human-error-in-finance](images/human-error-in-finance.jpg)
+### ![human-error-in-finance](images/human-error-in-finance.jpg)
 
-# Introduction
+## Introduction
 
 While MongoDB provides high-availability and data durability through [automatic replication](https://docs.mongodb.com/manual/replication/) of data to multiple servers, this replication does not protect the database against human or application errors. For example, if an administrator drops a database, the drop operation will be replicated across the MongoDB deployment, and data will be deleted. If such an event occurs through human or application error, then data will have to be retrieved from backups.
 
-# Recommended background
+## Recommended background
 
 It is recommended that you review and understand the standard [MongoDB Backup Methods](https://docs.mongodb.com/manual/core/backups/) before attempting a manual point-in-time backup and restore.
 
-# Purpose
+## Purpose
 
 In this blog, we describe a procedure that allows you to manually perform a point-in-time restore of MongoDB data. Point-in-time restore refers to the ability to restore the database to a precise moment in time. The instructions presented here require that you have regular backups of your data, and that your data is stored in a replica set.
 
 **\*\*\* WARNING \*\*\* :** This manual point-in-time backup and restore procedure should not be used on sharded clusters.   
 
-# Alternatives to manual point-in-time restores
+## Alternatives to manual point-in-time restores
 
 While the purpose of this blog is to demonstrate a manual point-in-time restore procedure, the reader should be aware that MongoDB has software available that automates backups and provides point-in-time restores, and that is designed to work with  any kind of database configuration, including sharded clusters.
 
@@ -30,20 +30,20 @@ For more information about MongoDB's recommended solutions, read about [Ops Man
 
 Note that these recommended solutions will likely not be not help you automate the point-in-time restore procedure unless the same tool was used for creating the original backups.
 
-# Requirements
+## Requirements
 
 In order to perform a manual point-in-time restore, you need two things:
 
 1. You need a backup of the database - this can be either from a mongodump or from a file system copy.
 2. You need access to an [oplog](https://docs.mongodb.com/manual/core/replica-set-oplog/) that contains data that goes back to when the backup was made. For example if you made a backup 24 hours ago, then you need an oplog that goes back at least 24 hours. This oplog will be extracted from one of the replica set members in the live database.
 
-# How does it work
+## How does it work
 
 A manual point-in-time restore is achieved by copying a database backup to a spare server and starting the database on that spare server with the backup data. We then "roll forward" the data on the spare server to the desired point-in-time, which is achieved by dumping the oplog from the live/production database, copying the oplog over to the spare server, and then applying the oplog onto the database that we are now running on the spare server.
 
 After we have verified that the restored data is correct, we then copy it from our spare server over to our production servers.
 
-# **Example scenario**
+## **Example scenario**
 
 A concrete example of how a point-in-time restore can be performed is as follows. For this example we assume the following.
 
@@ -59,7 +59,7 @@ For this scenario, the following steps will result in a point-in-time restore:
 4. Replay 23 hours of the oplog onto the backup to "roll it forward" to just before the undesirable incident that happened (in this example, one hour ago). 
 5. Verify the database on the spare server, and if it looks good, copy it over to the production servers.
 
-# **Restoration instructions:**
+## **Restoration instructions:**
 
 1. On one of the members of your live replica set, dump the oplog collection using mongodump:
     
@@ -115,7 +115,7 @@ For this scenario, the following steps will result in a point-in-time restore:
     - (a) Using the standard mongorestore procedure as documented in [Backup and Restore with MongoDB Tools](https://docs.mongodb.com/manual/tutorial/backup-and-restore-tools/).
     - (b) Or by copying the appropriate data files as documented in [Restore a Replica Set from MongoDB Backups](https://docs.mongodb.com/manual/tutorial/restore-replica-set-from-backup/).
 
-# Related issues
+## Related issues
 
 If you encounter issues restoring data with the above procedure, you should view the following MongoDB Jira tickets to see if they are related:
 

@@ -6,11 +6,11 @@ aliases:
   - /2018/08/28/using-logstash-prune-capabilities-to-whitelist-sub-documents/
 ---
 
-# Overview
+## Overview
 
 Logstash's [prune filter plugin](https://www.elastic.co/guide/en/logstash/current/plugins-filters-prune.html) can make use of whitelists to ensure that only specific desired fields are output from Logstash, and that all other fields are dropped. In this blog post we demonstrate the use of Logstash to whitelist desired fields and desired sub-documents before indexing into Elasticsearch.
 
-# Example input file
+## Example input file
 
 As an input to Logstash, we use a CSV file that contains stock market trades. A few example CSV stock market trades are given below. 
 
@@ -23,7 +23,7 @@ As an input to Logstash, we use a CSV file that contains stock market trades. A 
 
 The comma separated values represent  "time", "DAX", "SMI", "CAC", "FTSE" . You may wish to copy and paste the above lines into a CSV file called stocks.csv in order to execute the example command line given later in this blogpost. 
 
-# Example Logstash pipeline
+## Example Logstash pipeline
 
 Below is a Logstash pipeline which can be stored in a file called 'stocks.conf', that does the following:
 
@@ -76,7 +76,7 @@ output {
 }
 ```
 
-# Testing the logstash pipeline
+## Testing the logstash pipeline
 
 To test this pipeline with the example CSV data, you could execute something similar to the following command, modifying it to ensure that you use paths that are correct for your system:
 
@@ -110,6 +110,6 @@ Which should display documents with the following structure:
 
 Notice that only "my\_nest" and "SMI" have been indexed as indicated by the contents of the document's "\_source". Also note that the "FTSE" and "time" fields have been removed as they were not in the prune filter's whitelist.
 
-# Conclusion
+## Conclusion
 
 In this blog post, we have demonstrated how Logstash’s [prune filter plugin](https://www.elastic.co/guide/en/logstash/current/plugins-filters-prune.html) can make use of whitelists to ensure that only specific desired fields are output from Logstash.

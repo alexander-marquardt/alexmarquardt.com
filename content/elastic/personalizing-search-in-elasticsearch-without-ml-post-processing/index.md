@@ -24,7 +24,7 @@ In this post, I’ll show you how to build **personalization directly leveraging
 
 \* Note: In this article we assume you pre-process or pre-aggregate the purchase history to get it into an efficient format for for fast lookup, similar to the user's purchase history index presented in this article.
 
-## Why this approach is useful
+### Why this approach is useful
 
 - **No extra infrastructure**: All the logic lives in Elasticsearch queries. No ML jobs.
 
@@ -34,7 +34,7 @@ In this post, I’ll show you how to build **personalization directly leveraging
 
 This design pushes personalization into the query itself.
 
-## How it works (high-level overview)
+### How it works (high-level overview)
 
 At query time we execute **two phases**:
 
@@ -42,7 +42,7 @@ At query time we execute **two phases**:
 
 3. **Search phase** — Build a query that includes a function\_score query that incorporates the personalised product boosts that we just calculated, so that **items previously purchased by this user are pushed to the top** of the results. Run the user’s query against the product catalog.
 
-## The forumula
+### The forumula
 
 We have an index that contains the purchase history for each user. Each product that a client has purchased has the following fields defined:
 
@@ -54,7 +54,7 @@ A formula that can be used to convert these values into a personalised boost is:
 
 ![](images/image-1.png)
 
-### Constants
+#### Constants
 
 We choose the following constant values, which work for our example but should be re-evaluated depending on your desired outcome:
 
@@ -70,9 +70,9 @@ A SCALE of 3.5 (which is added to the BASE\_BOOST of 1) ensures that the boost (
   
 Likewise, the impact of recent vs. old purchases can be controlled by the HALF\_LIFE\_DAYS value.
 
-### Explanation of the Formula
+#### Explanation of the Formula
 
-#### 1\. Log frequency term
+##### 1\. Log frequency term
 
 ln(1 + purchase\_count) dampens the effect of repeat purchases. For example:
 
@@ -84,7 +84,7 @@ ln(1 + purchase\_count) dampens the effect of repeat purchases. For example:
 
 This ensures _diminishing returns_: frequent purchases matter more, but not linearly.
 
-#### 2\. Recency term
+##### 2\. Recency term
 
 exp( -ln(2) × age\_days / HALF\_LIFE\_DAYS )
 
@@ -96,7 +96,7 @@ applies exponential decay, halving the weight every 60 days.
 
 - 120 days → factor = 0.25
 
-#### 3\. Normalization (max\_raw)
+##### 3\. Normalization (max\_raw)
 
 Dividing by max\_raw ensures that the strongest historical signal normalizes to **1.0**, and other items scale proportionally.
 
@@ -114,7 +114,7 @@ By dividing by **max\_raw** (the maximum raw weight observed in this user’s hi
 
 - Every user’s boosts are mapped into the same range, regardless of shopping habits.
 
-## Example implementation
+### Example implementation
 
 The code available at [alexander-marquardt/elasticsearch-personalization](https://github.com/alexander-marquardt/elasticsearch-personalization), makes use of the following two indices:
 
@@ -122,7 +122,7 @@ The code available at [alexander-marquardt/elasticsearch-personalization](https:
 
 - **user\_purchases** — purchase history (user\_id, product\_id, purchase\_count, last\_purchase\_ts) - example at: [user\_purchases\_bulk.ndjs](https://github.com/alexander-marquardt/elasticsearch-personalization/blob/main/data/user_purchases_bulk.ndjs)
 
-## Sample output
+### Sample output
 
 Here’s what the script produces when different users search for **“chips”**.
 
@@ -150,7 +150,7 @@ Notice how the above ordering of products has been impacted by the purchase hist
 
 ![](images/image-9.png)
 
-## How to try it yourself
+### How to try it yourself
 
 Clone the repo, make sure you have Elasticsearch running locally and without authentication. Load some sample user purchase histories, and some sample products, by using the BULK POSTs that are given in:
 
@@ -176,7 +176,7 @@ python personalized-search.py
 
 This will print personalized results like those shown above.
 
-## Conclusion
+### Conclusion
 
 Personalization doesn’t need complex ML jobs. With just two indices and a bit of query logic, you can personalize search results.
 
@@ -186,6 +186,6 @@ Personalization doesn’t need complex ML jobs. With just two indices and a bit 
 
 Full code and data: [alexander-marquardt/elasticsearch-personalization](https://github.com/alexander-marquardt/elasticsearch-personalization?utm_source=chatgpt.com)
 
-## Acknowledgement
+### Acknowledgement
 
 Thanks to Honza Kral for the idea and inspiration for this approach.

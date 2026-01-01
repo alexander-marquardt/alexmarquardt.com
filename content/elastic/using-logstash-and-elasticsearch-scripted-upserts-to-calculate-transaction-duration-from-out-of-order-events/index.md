@@ -6,7 +6,7 @@ aliases:
   - /2020/09/16/using-logstash-and-elasticsearch-scripted-upserts-to-calculate-transaction-duration-from-out-of-order-events/
 ---
 
-# Introduction
+## Introduction
 
 Elasticsearch  allows you to unify your observability data in a powerful datastore so you can search and apply interactive analytics in real time to a huge number of use cases.
 
@@ -16,13 +16,13 @@ In this blog I discuss how Elasticsearch in combination with Logstash may be use
 
 The approach discussed here will work even if the events corresponding to a given transaction arrive to Logstash out-of-order, and it could be easily extended to compute delays between any microservices that process a given transaction.
 
-# A note about event ordering
+## A note about event ordering
 
 If the events corresponding to a given transaction are guaranteed to arrive in order, then it may be possible to use [Logstash's Elapsed filter plugin](https://www.elastic.co/guide/en/logstash/current/plugins-filters-elapsed.html).
 
 Alternatively, the approach _described in this article_ should work regardless of the order which events arrive in.
 
-# Using scripted upserts to transform data
+## Using scripted upserts to transform data
 
 In a previous blog post, I described [how to use Logstash and Elasticsearch scripted upserts to transform data](https://alexmarquardt.com/2019/12/17/logstash-and-elasticsearch-painless-scripted-upserts-transform-data/). The approach in this blog is very similar, but has the explicit goal of calculating the duration between the "start" and "end" events for a given transaction.
 
@@ -225,6 +225,6 @@ Which will respond with the following two documents which correspond to each tra
 
 We have now verified that the script to calculate event duration is functioning correctly when we call it from Logstash!
 
-# Conclusion
+## Conclusion
 
 In this blog post, I first discussed how a given transaction may result in multiple events being sent into Elasticsearch. I then showed how you can use Logstash to execute scripted upserts which calculate the duration of a given transaction by comparing the timestamps of the related events.

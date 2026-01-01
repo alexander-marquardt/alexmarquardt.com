@@ -118,3 +118,35 @@ html {
     font-size: 16px !important;
   }
 }
+
+/* =========================================================
+   Responsive page titles (ALL page types)
+   ========================================================= */
+
+/* Tablets */
+@media (max-width: 768px) {
+
+  /* Single posts */
+  .post-title {
+    font-size: 34px !important;
+    line-height: 1.15;
+  }
+
+  /* Pages, section indexes, layout=page */
+  .page-header h1 {
+    font-size: 34px !important;
+    line-height: 1.15;
+  }
+}
+
+/* Phones */
+@media (max-width: 480px) {
+
+  .post-title {
+    font-size: 30px !important;
+  }
+
+  .page-header h1 {
+    font-size: 30px !important;
+  }
+}

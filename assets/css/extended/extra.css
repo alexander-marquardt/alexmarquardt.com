@@ -165,3 +165,32 @@ html {
   background: transparent !important;
   padding: 0 !important;
 }
+
+/* =========================================================
+   TOC links: match normal content link styling
+   ========================================================= */
+
+.toc a {
+  color: #1a5fb4; /* same as .post-content a */
+  text-decoration: none;
+}
+
+.toc a:hover,
+.toc a:focus {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* Visited state */
+.toc a:visited {
+  color: #5a6ea8;
+}
+
+/* Dark theme */
+html[data-theme="dark"] .toc a {
+  color: #8ab4f8;
+}
+
+html[data-theme="dark"] .toc a:visited {
+  color: #9aa7d6;
+}

@@ -28,7 +28,6 @@ body,
   box-sizing: border-box;
 }
 
-/* PaperMod list pages sometimes override padding — force consistency */
 body.list .main {
   max-width: var(--main-width, 1120px);
   padding-left: 24px;
@@ -88,7 +87,7 @@ body.list .main {
 }
 
 /* =========================================================
-   Home page (list) — align theme bar with content
+   Home page (list) alignment + spacing
    ========================================================= */
 
 body.list .theme-bar-inner {
@@ -96,10 +95,6 @@ body.list .theme-bar-inner {
   padding-right: 24px;
   box-sizing: border-box;
 }
-
-/* =========================================================
-   Home page spacing
-   ========================================================= */
 
 body.list .main {
   padding-top: 8px;
@@ -145,10 +140,9 @@ body.list .post-content > h1:first-of-type {
 }
 
 /* =========================================================
-   Typography scale — titles + headings (FINAL)
+   Typography scale — titles + headings
    ========================================================= */
 
-/* Page titles (article title OR page header) */
 .post-title,
 .page-header h1 {
   font-size: 38px;
@@ -157,7 +151,6 @@ body.list .post-content > h1:first-of-type {
   margin-bottom: 0.6em;
 }
 
-/* Content headings */
 .post-content h1 {
   font-size: 38px;
   line-height: 1.2;
@@ -239,13 +232,12 @@ body.list .post-content > h1:first-of-type {
 }
 
 /* =========================================================
-   Footer — final, PaperMod-safe styling
+   Footer — PaperMod-safe styling
    ========================================================= */
 
 footer.footer a,
 footer.footer a:link,
 footer.footer a:visited {
-  color: #1a5fb4 !important;
   text-decoration: none !important;
   border-bottom: none !important;
   box-shadow: none !important;
@@ -256,11 +248,6 @@ footer.footer a:hover,
 footer.footer a:focus {
   text-decoration: underline !important;
   text-underline-offset: 0.15em;
-}
-
-html[data-theme="dark"] footer.footer a,
-html[data-theme="dark"] footer.footer a:visited {
-  color: #8ab4f8 !important;
 }
 
 /* =========================================================
@@ -278,11 +265,14 @@ html[data-theme="dark"] footer.footer a:visited {
 }
 
 #hamburger-toggle {
-  font-size: 22px;
+  font-size: 40px;
   background: none;
   border: none;
   cursor: pointer;
   padding: 4px 0;
+  line-height: 1;
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
 }
 
 #hamburger-panel {
@@ -298,69 +288,45 @@ html[data-theme="dark"] footer.footer a:visited {
   z-index: 1000;
 }
 
-#hamburger-panel ul {
-  list-style: none;
-  margin: 0;
-  padding: 8px 0;
-}
-
-#hamburger-panel li a {
-  display: block;
-  padding: 8px 16px;
-  color: inherit;
-  text-decoration: none;
-}
-
-#hamburger-panel li a:hover {
-  background: rgba(0,0,0,0.05);
-}
-
-
 /* =========================================================
-   Header utility icons (hamburger + theme toggle)
+   Theme toggle (SVG) — outlined, inherited color
    ========================================================= */
 
-/* Hamburger button */
-#hamburger-toggle {
-  font-size: 40px;
-  opacity: 0.5;
-  transition: opacity 0.15s ease;
-}
-
-/* Theme toggle button */
-#theme-toggle {
-  opacity: 0.5;
-  transition: opacity 0.15s ease;
-}
-
-/* SVG inherits opacity */
 #theme-toggle svg {
   width: 26px;
   height: 26px;
-  transform: translateY(10px);
-}
+  display: block;
 
-/* Desktop hover */
-#hamburger-toggle:hover,
-#theme-toggle:hover {
-  opacity: 1;
-}
+  /* Slightly raised (less than before) */
+  transform: translateY(6px);
 
-/* Prevent iOS sticky focus */
-#hamburger-toggle:focus,
-#theme-toggle:focus {
+  /* Outline only */
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+
   opacity: 0.5;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
 }
 
-/* =========================================================
-   iOS Safari fix — prevent sticky hover after tap
-   ========================================================= */
+/* Desktop hover only */
+@media (hover: hover) {
+  #hamburger-toggle:hover {
+    opacity: 1;
+  }
 
-/* Touch devices only */
+  #theme-toggle:hover svg {
+    opacity: 1;
+  }
+}
+
+/* Touch devices — prevent sticky focus */
 @media (hover: none) {
   #hamburger-toggle:active,
   #hamburger-toggle:focus {
     opacity: 0.5;
+    outline: none;
   }
 
   #theme-toggle:active svg,
@@ -373,14 +339,12 @@ html[data-theme="dark"] footer.footer a:visited {
    FIX: Normalize list pages to respect .main padding
    ========================================================= */
 
-/* List pages (home, section indexes like /personal) */
 body.list .main > * {
   box-sizing: border-box;
   padding-left: 0;
   padding-right: 0;
 }
 
-/* Ensure visible list content aligns with .main */
 body.list .post-content,
 body.list .page-header {
   max-width: 100%;

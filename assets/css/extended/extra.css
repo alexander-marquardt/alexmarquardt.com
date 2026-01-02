@@ -316,6 +316,32 @@ html[data-theme="dark"] footer.footer a:visited {
 }
 
 /* =========================================================
+   Header utility icons (hamburger + theme toggle)
+   ========================================================= */
+
+/* Hamburger button (text icon) */
+#hamburger-toggle {
+  font-size: 40px;
+  opacity: 0.5;
+}
+
+/* Theme toggle button (SVG icon) */
+#theme-toggle svg {
+  width: 26px;
+  height: 26px;
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+  transform: translateY(10px);
+
+}
+
+/* Clear affordance on interaction */
+#hamburger-toggle:hover,
+#theme-toggle:hover svg {
+  opacity: 1;
+}
+
+/* =========================================================
    FIX: Normalize list pages to respect .main padding
    ========================================================= */
 

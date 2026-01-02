@@ -324,6 +324,31 @@ html[data-theme="dark"] #hamburger-panel li a:focus {
   background-color: rgba(255, 255, 255, 0.08);
 }
 
+#hamburger-panel,
+#hamburger-panel * {
+  -webkit-tap-highlight-color: transparent;
+}
+
+#hamburger-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+}
+
+#hamburger-panel li {
+  list-style: none;
+}
+
+
+#hamburger-panel a {
+  text-decoration: none !important;
+  -webkit-text-decoration-skip: none;
+}
+
+#hamburger-panel {
+  transform: translateZ(0);
+}
+
 /* =========================================================
    Theme toggle (SVG) — outlined, inherited color
    ========================================================= */

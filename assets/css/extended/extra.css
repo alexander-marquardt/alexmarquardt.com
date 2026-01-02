@@ -30,7 +30,16 @@ body.list .post-content > h1:first-of-type {
   margin-top: 0px;
 }
 
-
 body.list .main {
   padding-top: 8px;   /* was 24px */
+}
+
+/* =========================================================
+   TOC: background identical to page theme
+   ========================================================= */
+
+.toc,
+.toc .inner {
+  background: var(--theme) !important;
+  border: none !important;
 }

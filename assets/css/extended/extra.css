@@ -10,7 +10,7 @@
 .theme-bar-inner {
   max-width: var(--main-width, 1120px);
   margin: 0 auto;
-  padding: 8px 16px;
+  padding: 0px 16px;
   display: flex;
   justify-content: flex-end;
 }
@@ -19,5 +19,5 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: 0px;
 }

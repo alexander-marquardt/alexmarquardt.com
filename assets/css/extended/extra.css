@@ -69,21 +69,11 @@ body,
    ========================================================= */
 
 body.list .main {
-  padding-top: 8px; /* tighter than default */
+  padding-top: 8px;
 }
 
 body.list .post-content > h1:first-of-type {
   margin-top: 0;
-}
-
-/* =========================================================
-   Homepage background = content page background
-   ========================================================= */
-
-body.list,
-body.list .main,
-body.list .post-single {
-  background: var(--theme) !important;
 }
 
 /* =========================================================
@@ -124,7 +114,7 @@ body.list .post-single {
 }
 
 /* =========================================================
-   Page titles — refined scale (desktop / tablet / mobile)
+   Page titles — refined scale
    ========================================================= */
 
 /* Desktop */
@@ -138,10 +128,14 @@ body.list .post-single {
 
 /* Tablets */
 @media (max-width: 768px) {
-  .post-title,
-  .page-header h1 {
+  .post-title {
     font-size: 30px;
-    line-height: 1.15;
+    line-height: 1.25;
+  }
+
+  .page-header h1 {
+    font-size: 28px;
+    line-height: 1.25;
   }
 }
 
@@ -163,11 +157,29 @@ body.list .post-single {
 }
 
 /* =========================================================
-   Content headings — mobile editorial tuning
+   Content headings — editorial tuning
    ========================================================= */
 
-@media (max-width: 480px) {
+/* Tablets */
+@media (max-width: 768px) {
+  .post-content h1 {
+    font-size: 30px;
+    line-height: 1.25;
+  }
 
+  .post-content h2 {
+    font-size: 24px;
+    line-height: 1.3;
+  }
+
+  .post-content h3 {
+    font-size: 20px;
+    line-height: 1.35;
+  }
+}
+
+/* Phones */
+@media (max-width: 480px) {
   .post-content h1 {
     font-size: 26px;
     line-height: 1.2;
@@ -188,12 +200,26 @@ body.list .post-single {
 }
 
 /* =========================================================
-   Footer — final, PaperMod-safe styling
+   Responsive body text scaling
    ========================================================= */
 
-footer.footer {
-  background: transparent;
+/* Tablets / narrow screens */
+@media (max-width: 768px) {
+  body {
+    font-size: 17px;
+  }
 }
+
+/* Phones */
+@media (max-width: 480px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+/* =========================================================
+   Footer — final, PaperMod-safe styling
+   ========================================================= */
 
 /* Remove fake underline + enforce link color */
 footer.footer a,
@@ -217,54 +243,4 @@ footer.footer a:focus {
 html[data-theme="dark"] footer.footer a,
 html[data-theme="dark"] footer.footer a:visited {
   color: #8ab4f8 !important;
-}
-
-/* =========================================================
-   Responsive headings — tablet / narrow desktop
-   ========================================================= */
-
-@media (max-width: 768px) {
-
-  .post-content h1 {
-    font-size: 30px;
-    line-height: 1.25;
-  }
-
-  .post-content h2 {
-    font-size: 24px;
-    line-height: 1.3;
-  }
-
-  .post-content h3 {
-    font-size: 20px;
-    line-height: 1.35;
-  }
-
-  .post-title {
-    font-size: 30px;
-    line-height: 1.25;
-  }
-
-  .page-header h1 {
-    font-size: 28px;
-    line-height: 1.25;
-  }
-}
-
-/* =========================================================
-   Responsive body text scaling
-   ========================================================= */
-
-/* Tablet / narrow screens */
-@media (max-width: 768px) {
-  body {
-    font-size: 17px;
-  }
-}
-
-/* Phones */
-@media (max-width: 480px) {
-  body {
-    font-size: 16px;
-  }
 }

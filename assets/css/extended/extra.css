@@ -101,3 +101,30 @@ body.list .post-single {
     margin-bottom: 0.5em;
   }
 }
+
+/* =========================================================
+   Footer link styling — FINAL, PaperMod override
+   ========================================================= */
+
+footer.footer a,
+footer.footer a:link,
+footer.footer a:visited {
+  color: #1a5fb4 !important;     /* match content links */
+  text-decoration: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;   /* removes the fake "line" */
+  background-image: none !important;
+}
+
+/* Hover / focus only */
+footer.footer a:hover,
+footer.footer a:focus {
+  text-decoration: underline !important;
+  text-underline-offset: 0.15em;
+}
+
+/* Dark theme */
+html[data-theme="dark"] footer.footer a,
+html[data-theme="dark"] footer.footer a:visited {
+  color: #8ab4f8 !important;
+}

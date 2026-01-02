@@ -319,6 +319,11 @@ html[data-theme="dark"] footer.footer a:visited {
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   }
 }
+
+#hamburger-panel {
+  background-clip: padding-box;
+}
+
 /* =========================================================
    Hamburger dropdown — clean, iOS-safe
    ========================================================= */

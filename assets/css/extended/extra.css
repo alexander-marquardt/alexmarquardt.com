@@ -289,6 +289,42 @@ footer.footer a:focus {
 }
 
 /* =========================================================
+   Hamburger dropdown — list normalization + hover affordance
+   ========================================================= */
+
+/* Remove bullets and default spacing */
+#hamburger-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+}
+
+#hamburger-panel li {
+  margin: 0;
+  padding: 0;
+}
+
+/* Menu links */
+#hamburger-panel li a {
+  display: block;
+  padding: 8px 16px;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Hover / focus indicator */
+#hamburger-panel li a:hover,
+#hamburger-panel li a:focus {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Dark theme hover */
+html[data-theme="dark"] #hamburger-panel li a:hover,
+html[data-theme="dark"] #hamburger-panel li a:focus {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* =========================================================
    Theme toggle (SVG) — outlined, inherited color
    ========================================================= */
 

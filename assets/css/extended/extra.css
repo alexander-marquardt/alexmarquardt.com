@@ -93,7 +93,6 @@ body.list .main {
 body.list .theme-bar-inner {
   padding-left: 24px;
   padding-right: 24px;
-  box-sizing: border-box;
 }
 
 body.list .main {
@@ -232,49 +231,27 @@ body.list .post-content > h1:first-of-type {
 }
 
 /* =========================================================
-   Footer — PaperMod-safe styling
+   Footer + TOC links — inherit-safe
    ========================================================= */
 
-footer.footer a,
-footer.footer a:link,
-footer.footer a:visited {
-  text-decoration: none !important;
-  border-bottom: none !important;
-  box-shadow: none !important;
-  background-image: none !important;
-}
-
-footer.footer a:hover,
-footer.footer a:focus {
-  text-decoration: underline !important;
-  text-underline-offset: 0.15em;
-}
-
-/* =========================================================
-   Restore link color for TOC and Footer (inherit-safe)
-   ========================================================= */
-
-/* TOC links */
 .toc a,
-.toc a:visited {
+footer.footer a {
   color: var(--link-color, #1a5fb4);
+  text-decoration: none;
 }
 
 html[data-theme="dark"] .toc a,
-html[data-theme="dark"] .toc a:visited {
+html[data-theme="dark"] footer.footer a {
   color: var(--link-color-dark, #8ab4f8);
 }
 
-/* Footer links */
-footer.footer a,
-footer.footer a:visited {
-  color: var(--link-color, #1a5fb4);
+footer.footer a:hover,
+.toc a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
 }
 
-html[data-theme="dark"] footer.footer a,
-html[data-theme="dark"] footer.footer a:visited {
-  color: var(--link-color-dark, #8ab4f8);
-}
+
 
 /* =========================================================
    Hamburger menu
@@ -301,47 +278,47 @@ html[data-theme="dark"] footer.footer a:visited {
   transition: opacity 0.15s ease;
 }
 
+/* =========================================================
+   Hamburger dropdown (clean + aligned)
+   ========================================================= */
+
 #hamburger-panel {
   position: absolute;
   top: 100%;
-  left: 0;
+
+  /* Move slightly left to avoid logo bleed */
+  left: -8px;
+
   margin-top: 8px;
   background: var(--theme);
   border: 1px solid rgba(0,0,0,0.10);
   border-radius: 6px;
   min-width: 200px;
   z-index: 1000;
+
+  /* Key fix: clip underlying content cleanly */
+  overflow: hidden;
 }
 
-/* Desktop shadow only (avoids iOS GPU artifacts) */
-@media (hover: hover) {
-  #hamburger-panel {
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  }
-}
-
+/* Shadow (safe everywhere now that clipping is correct) */
 #hamburger-panel {
-  background-clip: padding-box;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
 
 /* =========================================================
-   Hamburger dropdown — clean, iOS-safe
+   Hamburger dropdown — list + hover
    ========================================================= */
 
-/* Containment fix — prevents iOS Safari phantom dots */
-#hamburger-panel {
-  isolation: isolate;
-}
-
-/* Remove bullets and default spacing (all browsers) */
-#hamburger-panel ul,
-#hamburger-panel li {
-  list-style: none !important;
+#hamburger-panel ul {
+  list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 6px 0;
 }
 
-/* Menu links */
+#hamburger-panel li {
+  margin: 0;
+}
+
 #hamburger-panel li a {
   display: block;
   padding: 8px 16px;
@@ -349,37 +326,26 @@ html[data-theme="dark"] footer.footer a:visited {
   text-decoration: none;
 }
 
-/* Hover / focus indicator */
 #hamburger-panel li a:hover,
 #hamburger-panel li a:focus {
   background-color: rgba(0, 0, 0, 0.06);
 }
 
-/* Dark theme hover */
 html[data-theme="dark"] #hamburger-panel li a:hover,
 html[data-theme="dark"] #hamburger-panel li a:focus {
   background-color: rgba(255, 255, 255, 0.08);
 }
 
-/* iOS tap cleanup */
-#hamburger-panel,
-#hamburger-panel * {
-  -webkit-tap-highlight-color: transparent;
-}
-
 /* =========================================================
-   Theme toggle (SVG) — outlined, inherited color
+   Theme toggle (SVG) — outline only, inherited color
    ========================================================= */
 
 #theme-toggle svg {
   width: 26px;
   height: 26px;
   display: block;
-
-  /* Slightly raised (less than before) */
   transform: translateY(6px);
 
-  /* Outline only */
   fill: none;
   stroke: currentColor;
   stroke-width: 1.75;
@@ -389,33 +355,16 @@ html[data-theme="dark"] #hamburger-panel li a:focus {
   pointer-events: none;
 }
 
-/* Desktop hover only */
+/* Hover affordance (desktop only) */
 @media (hover: hover) {
-  #hamburger-toggle:hover {
-    opacity: 1;
-  }
-
+  #hamburger-toggle:hover,
   #theme-toggle:hover svg {
     opacity: 1;
   }
 }
 
-/* Touch devices — prevent sticky focus */
-@media (hover: none) {
-  #hamburger-toggle:active,
-  #hamburger-toggle:focus {
-    opacity: 0.5;
-    outline: none;
-  }
-
-  #theme-toggle:active svg,
-  #theme-toggle:focus svg {
-    opacity: 0.5;
-  }
-}
-
 /* =========================================================
-   FIX: Normalize list pages to respect .main padding
+   Normalize list pages to respect .main padding
    ========================================================= */
 
 body.list .main > * {

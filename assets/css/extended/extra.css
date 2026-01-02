@@ -251,7 +251,39 @@ footer.footer a:hover,
   text-underline-offset: 0.15em;
 }
 
+/* =========================================================
+   Footer links — hard reset of PaperMod underline
+   ========================================================= */
 
+footer.footer a,
+footer.footer a:link,
+footer.footer a:visited {
+  color: var(--link-color, #1a5fb4) !important;
+
+  /* Kill PaperMod underline implementation */
+  background-image: none !important;
+  background-size: 0 0 !important;
+  background-repeat: no-repeat !important;
+  background-position: 0 100% !important;
+
+  box-shadow: none !important;
+  border: none !important;
+
+  text-decoration: none !important;
+}
+
+/* Dark theme */
+html[data-theme="dark"] footer.footer a,
+html[data-theme="dark"] footer.footer a:visited {
+  color: var(--link-color-dark, #8ab4f8) !important;
+}
+
+/* Real underline on interaction — same as body links */
+footer.footer a:hover,
+footer.footer a:focus {
+  text-decoration: underline !important;
+  text-underline-offset: 0.15em;
+}
 
 /* =========================================================
    Hamburger menu

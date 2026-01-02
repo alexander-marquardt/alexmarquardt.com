@@ -43,3 +43,13 @@ body.list .main {
   background: var(--theme) !important;
   border: none !important;
 }
+
+/* =========================================================
+   Homepage background = content page background
+   ========================================================= */
+
+body.list,
+body.list .main,
+body.list .post-single {
+  background: var(--theme) !important;
+}

@@ -327,19 +327,29 @@ html[data-theme="dark"] footer.footer a:visited {
   transition: opacity 0.15s ease;
 }
 
-/* Theme toggle button (SVG icon) */
+/* Theme toggle button */
+#theme-toggle {
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+}
+
+/* SVG inherits opacity */
 #theme-toggle svg {
   width: 26px;
   height: 26px;
-  opacity: 0.5;
-  transition: opacity 0.15s ease;
   transform: translateY(10px);
 }
 
 /* Desktop hover */
 #hamburger-toggle:hover,
-#theme-toggle:hover svg {
+#theme-toggle:hover {
   opacity: 1;
+}
+
+/* Prevent iOS sticky focus */
+#hamburger-toggle:focus,
+#theme-toggle:focus {
+  opacity: 0.5;
 }
 
 /* =========================================================

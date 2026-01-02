@@ -1,5 +1,5 @@
 ---
-title: "Personalizing e-commerce search results based on purchase history in Elasticsearch (Without a need for Machine Learning Post Processing)"
+title: "Personalizing e-commerce search results based on purchase history in Elasticsearch"
 date: 2025-09-12
 showtoc: true
 slug: personalizing-search-in-elasticsearch-without-ml-post-processing

@@ -19,7 +19,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 5. [How to improve e-commerce search relevance with personalized cohort-aware ranking | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-relevance-cohort-aware-ranking-elasticsearch) (Dec 10, 2025)
 
-7. [Personalizing e-commerce search results based on purchase history in Elasticsearch (Without a need for Machine Learning Post Processing)](/elastic/personalizing-search-in-elasticsearch-without-ml-post-processing/) (Sep 12, 2025)
+7. [Personalizing e-commerce search results based on purchase history in Elasticsearch](/elastic/personalizing-search-in-elasticsearch-without-ml-post-processing/) (Sep 12, 2025)
 
 9. [Efficient bitwise matching of documents in Elasticsearch | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/efficient-bitwise-matching-in-elasticsearch) (Oct 21, 2024)
 

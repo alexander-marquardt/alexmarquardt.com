@@ -1,106 +1,100 @@
 /* =========================================================
-   PaperMod header override: centered logo + adjacent toggle
-   - Logo centered
-   - Theme toggle immediately to the right of logo
-   - Menu stays on the right
-   - Large logo
-   - Bulletproof light/dark swap: NEVER show both
+   PaperMod header-center.css
+   Purpose:
+   - Center logo
+   - Theme toggle handled elsewhere (theme-bar)
+   - Correct light/dark logo visibility
    ========================================================= */
 
-/* Header layout */
-.header .nav {
-  display: flex;
-  justify-content: center;     /* center the logo group */
-  align-items: center;
-  position: relative;          /* anchor for right-positioned menu */
-  line-height: normal;
+/* -------------------------
+   Header layout
+   ------------------------- */
+
+.header {
+  padding-top: 20px;
+  padding-bottom: 14px;
   overflow: visible;
 }
 
-/* Center group: logo + toggle */
-.header .logo {
-  display: inline-flex;
+.header .nav {
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  position: relative;
+}
+
+/* -------------------------
+   Logo container
+   ------------------------- */
+
+.header .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 0 auto;
 }
 
-/* Hide text label */
+/* Logo link */
 .header .logo a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  margin: 0;
   font-size: 0;
   line-height: 0;
 }
 
-/* Logo sizing */
+/* -------------------------
+   Logo sizing
+   ------------------------- */
+
 .header .logo img.am-logo {
-  height: 140px !important;
-  width: auto !important;
-  max-height: none !important;
-  display: block !important; /* size relies on the image existing */
+  height: 140px;
+  width: auto;
+  max-height: none;
+  display: block;
 }
 
 @media (max-width: 600px) {
   .header .logo img.am-logo {
-    height: 120px !important;
+    height: 120px;
   }
 }
 
-/* Theme toggle stays next to logo (NOT absolute) */
-.header .logo-switches {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-}
+/* -------------------------
+   Menu stays right
+   ------------------------- */
 
-.header #theme-toggle,
-.header .theme-toggle {
-  position: static !important;
-  right: auto !important;
-}
-
-/* Menu stays on the far right */
-.header #menu,
-.header .menu {
+.header #menu {
   position: absolute;
   right: 1rem;
 }
 
-/* Header padding */
-.header {
-  padding-top: 20px !important;
-  padding-bottom: 14px !important;
-  overflow: visible;
-}
-
 /* =========================================================
-   FINAL: Bulletproof logo swap
-   - First hide BOTH
-   - Then enable exactly ONE
+   Bulletproof logo swap (FIXED)
    ========================================================= */
 
-/* Hide all logo variants by default */
+/* Hide all logos by default */
 .header .logo a > img.am-logo {
-  display: none !important;
+  display: none;
 }
 
-/* Light theme (default) */
-html:not([data-theme="dark"]) .header .logo a > img.am-logo-light {
-  display: block !important;
+/* Light theme */
+html:not([data-theme="dark"])
+.header .logo a > img.am-logo-light {
+  display: block;
 }
 
 /* Dark theme */
-html[data-theme="dark"] .header .logo a > img.am-logo-dark {
-  display: block !important;
+html[data-theme="dark"]
+.header .logo a > img.am-logo-dark {
+  display: block;
 }
 
-/* =========================================================
-   iOS safe-area fix — align logo with nav text
-   ========================================================= */
+/* -------------------------
+   iOS safe-area padding
+   ------------------------- */
 
 @supports (padding: max(0px)) {
   .header .logo {

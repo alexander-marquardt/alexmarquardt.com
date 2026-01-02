@@ -315,14 +315,16 @@ html[data-theme="dark"] footer.footer a:visited {
   background: rgba(0,0,0,0.05);
 }
 
+
 /* =========================================================
    Header utility icons (hamburger + theme toggle)
    ========================================================= */
 
-/* Hamburger button (text icon) */
+/* Hamburger button */
 #hamburger-toggle {
   font-size: 40px;
   opacity: 0.5;
+  transition: opacity 0.15s ease;
 }
 
 /* Theme toggle button (SVG icon) */
@@ -332,13 +334,29 @@ html[data-theme="dark"] footer.footer a:visited {
   opacity: 0.5;
   transition: opacity 0.15s ease;
   transform: translateY(10px);
-
 }
 
-/* Clear affordance on interaction */
+/* Desktop hover */
 #hamburger-toggle:hover,
 #theme-toggle:hover svg {
   opacity: 1;
+}
+
+/* =========================================================
+   iOS Safari fix — prevent sticky hover after tap
+   ========================================================= */
+
+/* Touch devices only */
+@media (hover: none) {
+  #hamburger-toggle:active,
+  #hamburger-toggle:focus {
+    opacity: 0.5;
+  }
+
+  #theme-toggle:active svg,
+  #theme-toggle:focus svg {
+    opacity: 0.5;
+  }
 }
 
 /* =========================================================

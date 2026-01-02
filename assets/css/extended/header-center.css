@@ -50,7 +50,7 @@
    ------------------------- */
 
 .header .logo img.am-logo {
-  height: 140px;
+  height: 170px;
   width: auto;
   max-height: none;
   display: block;
@@ -58,7 +58,7 @@
 
 @media (max-width: 600px) {
   .header .logo img.am-logo {
-    height: 120px;
+    height: 130px;
   }
 }
 

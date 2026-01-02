@@ -16,6 +16,26 @@ body,
 }
 
 /* =========================================================
+   Normalize main container across ALL page types
+   ========================================================= */
+
+.main {
+  max-width: var(--main-width, 1120px);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+  box-sizing: border-box;
+}
+
+/* PaperMod list pages sometimes override padding — force consistency */
+body.list .main {
+  max-width: var(--main-width, 1120px);
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/* =========================================================
    Wide desktop content expansion (PaperMod-safe)
    ========================================================= */
 
@@ -41,7 +61,7 @@ body,
 }
 
 /* =========================================================
-   Theme bar above header (content-aligned)
+   Theme bar — aligned to content
    ========================================================= */
 
 .theme-bar {
@@ -50,14 +70,14 @@ body,
 }
 
 .theme-bar-inner {
-  max-width: var(--main-width);
+  max-width: var(--main-width, 1120px);
   margin-left: auto;
   margin-right: auto;
-  padding: 0;
+  padding-left: 24px;
+  padding-right: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-sizing: border-box;
 }
 
 .theme-bar #theme-toggle {
@@ -68,7 +88,17 @@ body,
 }
 
 /* =========================================================
-   Home page (list): tighten spacing below header
+   Home page (list) — align theme bar with content
+   ========================================================= */
+
+body.list .theme-bar-inner {
+  padding-left: 24px;
+  padding-right: 24px;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   Home page spacing
    ========================================================= */
 
 body.list .main {
@@ -79,24 +109,16 @@ body.list .post-content > h1:first-of-type {
   margin-top: 0;
 }
 
-body.list .main {
-  padding-top: 8px;
-  padding-left: 24px;
-  padding-right: 24px;
-}
-
 /* =========================================================
    Typography — paragraph alignment
    ========================================================= */
 
-/* Justified body text */
 .post-content p {
   text-align: justify;
   hyphens: auto;
   -webkit-hyphens: auto;
 }
 
-/* Structural elements remain left-aligned */
 .post-content h1,
 .post-content h2,
 .post-content h3,
@@ -123,58 +145,10 @@ body.list .main {
 }
 
 /* =========================================================
-   Page titles — refined scale
-   ========================================================= */
-
-/* Desktop */
-.post-title,
-.page-header h1 {
-  font-size: 34px;
-  line-height: 1.2;
-  margin-top: 0.8em;
-  margin-bottom: 0.6em;
-}
-
-/* Tablets */
-@media (max-width: 768px) {
-  .post-title {
-    font-size: 30px;
-    line-height: 1.25;
-  }
-
-  .page-header h1 {
-    font-size: 28px;
-    line-height: 1.25;
-  }
-}
-
-/* Phones */
-@media (max-width: 480px) {
-  .post-title {
-    font-size: 26px;
-    line-height: 1.2;
-    margin-top: 0.8em;
-    margin-bottom: 0.6em;
-  }
-
-  .page-header h1 {
-    font-size: 24px;
-    line-height: 1.2;
-    margin-top: 0.6em;
-    margin-bottom: 0.5em;
-  }
-}
-
-
-/* =========================================================
    Typography scale — titles + headings (FINAL)
    ========================================================= */
 
-/* -------------------------
-   Desktop (default)
-   ------------------------- */
-
-/* Page titles (article title OR page header, never together) */
+/* Page titles (article title OR page header) */
 .post-title,
 .page-header h1 {
   font-size: 38px;
@@ -220,12 +194,8 @@ body.list .main {
   margin-top: 1.1em;
 }
 
-/* -------------------------
-   Tablets
-   ------------------------- */
-
+/* Tablets */
 @media (max-width: 768px) {
-
   .post-title,
   .page-header h1,
   .post-content h1 {
@@ -233,33 +203,15 @@ body.list .main {
     line-height: 1.25;
   }
 
-  .post-content h2 {
-    font-size: 26px;
-  }
-
-  .post-content h3 {
-    font-size: 21px;
-  }
-
-  .post-content h4 {
-    font-size: 18px;
-  }
-
-  .post-content h5 {
-    font-size: 17px;
-  }
-
-  .post-content h6 {
-    font-size: 16px;
-  }
+  .post-content h2 { font-size: 26px; }
+  .post-content h3 { font-size: 21px; }
+  .post-content h4 { font-size: 18px; }
+  .post-content h5 { font-size: 17px; }
+  .post-content h6 { font-size: 16px; }
 }
 
-/* -------------------------
-   Phones
-   ------------------------- */
-
+/* Phones */
 @media (max-width: 480px) {
-
   .post-title,
   .page-header h1,
   .post-content h1 {
@@ -267,47 +219,29 @@ body.list .main {
     line-height: 1.25;
   }
 
-  .post-content h2 {
-    font-size: 23px;
-  }
-
-  .post-content h3 {
-    font-size: 19px;
-  }
-
-  .post-content h4 {
-    font-size: 17px;
-  }
-
+  .post-content h2 { font-size: 23px; }
+  .post-content h3 { font-size: 19px; }
+  .post-content h4 { font-size: 17px; }
   .post-content h5,
-  .post-content h6 {
-    font-size: 16px;
-  }
+  .post-content h6 { font-size: 16px; }
 }
 
 /* =========================================================
    Responsive body text scaling
    ========================================================= */
 
-/* Tablets / narrow screens */
 @media (max-width: 768px) {
-  body {
-    font-size: 17px;
-  }
+  body { font-size: 17px; }
 }
 
-/* Phones */
 @media (max-width: 480px) {
-  body {
-    font-size: 16px;
-  }
+  body { font-size: 16px; }
 }
 
 /* =========================================================
    Footer — final, PaperMod-safe styling
    ========================================================= */
 
-/* Remove fake underline + enforce link color */
 footer.footer a,
 footer.footer a:link,
 footer.footer a:visited {
@@ -318,33 +252,27 @@ footer.footer a:visited {
   background-image: none !important;
 }
 
-/* Hover / focus only */
 footer.footer a:hover,
 footer.footer a:focus {
   text-decoration: underline !important;
   text-underline-offset: 0.15em;
 }
 
-/* Dark theme */
 html[data-theme="dark"] footer.footer a,
 html[data-theme="dark"] footer.footer a:visited {
   color: #8ab4f8 !important;
 }
 
-/* Hide default PaperMod inline menu */
+/* =========================================================
+   Hamburger menu
+   ========================================================= */
+
 .header #menu {
   display: none !important;
 }
 
-/* =========================
-   Hamburger menu
-   ========================= */
-
 .hamburger {
   position: relative;
-}
-
-.hamburger {
   display: flex;
   align-items: center;
 }
@@ -354,10 +282,9 @@ html[data-theme="dark"] footer.footer a:visited {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px 0px;
+  padding: 4px 0;
 }
 
-/* Dropdown panel */
 #hamburger-panel {
   position: absolute;
   top: 100%;
@@ -371,7 +298,6 @@ html[data-theme="dark"] footer.footer a:visited {
   z-index: 1000;
 }
 
-/* Menu list */
 #hamburger-panel ul {
   list-style: none;
   margin: 0;
@@ -390,23 +316,20 @@ html[data-theme="dark"] footer.footer a:visited {
 }
 
 /* =========================================================
-   Theme bar width alignment (FINAL)
+   FIX: Normalize list pages to respect .main padding
    ========================================================= */
 
-.theme-bar-inner {
-  max-width: var(--main-width);
-  margin: 0 auto;
+/* List pages (home, section indexes like /personal) */
+body.list .main > * {
   box-sizing: border-box;
-}
-
-/* Home page needs explicit padding */
-body.list .theme-bar-inner {
-  padding-left: 24px;
-  padding-right: 24px;
-}
-
-/* Content pages: NO padding (inherits alignment naturally) */
-body:not(.list) .theme-bar-inner {
   padding-left: 0;
   padding-right: 0;
+}
+
+/* Ensure visible list content aligns with .main */
+body.list .post-content,
+body.list .page-header {
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
 }

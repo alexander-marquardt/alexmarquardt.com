@@ -1,18 +1,10 @@
 /* =========================================================
    PaperMod header-center.css
-   Purpose:
-   - Center logo
-   - Theme toggle handled elsewhere (theme-bar)
-   - Correct light/dark logo visibility
    ========================================================= */
 
-/* -------------------------
-   Header layout
-   ------------------------- */
-
 .header {
-  padding-top: 0px;
-  padding-bottom: 0px;
+  padding-top: 0;
+  padding-bottom: 0;
   overflow: visible;
 }
 
@@ -23,10 +15,7 @@
   position: relative;
 }
 
-/* -------------------------
-   Logo container
-   ------------------------- */
-
+/* Logo container */
 .header .logo {
   display: flex;
   align-items: center;
@@ -34,7 +23,6 @@
   margin: 0 auto;
 }
 
-/* Logo link */
 .header .logo a {
   display: inline-flex;
   align-items: center;
@@ -45,10 +33,7 @@
   line-height: 0;
 }
 
-/* -------------------------
-   Logo sizing
-   ------------------------- */
-
+/* Logo sizing */
 .header .logo img.am-logo {
   height: 170px;
   width: auto;
@@ -61,19 +46,6 @@
     height: 130px;
   }
 }
-
-/* -------------------------
-   Menu stays right
-   ------------------------- */
-
-.header #menu {
-  position: absolute;
-  right: 1rem;
-}
-
-/* =========================================================
-   Bulletproof logo swap (FIXED)
-   ========================================================= */
 
 /* Hide all logos by default */
 .header .logo a > img.am-logo {
@@ -92,10 +64,7 @@ html[data-theme="dark"]
   display: block;
 }
 
-/* -------------------------
-   iOS safe-area padding
-   ------------------------- */
-
+/* iOS safe-area padding */
 @supports (padding: max(0px)) {
   .header .logo {
     padding-left: max(16px, env(safe-area-inset-left));
@@ -104,16 +73,15 @@ html[data-theme="dark"]
 }
 
 /* =========================================================
-   HARD ALIGN header with content width (PaperMod-safe)
+   HARD ALIGN header with content width
    ========================================================= */
 
-/* Constrain header to same width as main content */
 .header {
   width: 100%;
 }
 
 .header .nav {
-  max-width: var(--main-width);
+  max-width: var(--main-width, 1120px);
   margin-left: auto;
   margin-right: auto;
   padding-left: 0;

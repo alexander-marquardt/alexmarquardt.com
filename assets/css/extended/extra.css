@@ -147,6 +147,27 @@ body.list .post-content > h1:first-of-type {
 }
 
 /* =========================================================
+   TOC — remove bullets completely (all levels)
+   ========================================================= */
+
+.toc ul,
+.toc ol {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+
+.toc li {
+  margin: 0;
+  padding-left: 0;
+}
+
+/* Preserve hierarchy via indentation only */
+.toc ul ul {
+  padding-left: 1.1em;
+}
+
+/* =========================================================
    Typography scale — titles + headings
    ========================================================= */
 

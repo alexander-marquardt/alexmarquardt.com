@@ -349,6 +349,21 @@ html[data-theme="dark"] #hamburger-panel li a:focus {
   transform: translateZ(0);
 }
 
+/* iOS Safari: fully suppress list markers in hamburger menu */
+#hamburger-panel,
+#hamburger-panel ul,
+#hamburger-panel li {
+  list-style: none !important;
+  list-style-type: none !important;
+  list-style-position: inside !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+
+#hamburger-panel li::marker {
+  content: "";
+}
+
 /* =========================================================
    Theme toggle (SVG) — outlined, inherited color
    ========================================================= */

@@ -1,4 +1,29 @@
 /* =========================================================
+   Wide desktop content expansion (PaperMod-safe)
+   ========================================================= */
+
+@media (min-width: 1200px) {
+  :root {
+    --main-width: 1120px;
+    --nav-width: 1120px;
+  }
+}
+
+@media (min-width: 1600px) {
+  :root {
+    --main-width: 1280px;
+    --nav-width: 1280px;
+  }
+}
+
+@media (min-width: 2000px) {
+  :root {
+    --main-width: 1440px;
+    --nav-width: 1440px;
+  }
+}
+
+/* =========================================================
    Theme bar above header (content-aligned)
    ========================================================= */
 

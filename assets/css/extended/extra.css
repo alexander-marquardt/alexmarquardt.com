@@ -21,3 +21,16 @@
   cursor: pointer;
   padding: 0px;
 }
+
+/* =========================================================
+   Home page: tighten spacing below header
+   ========================================================= */
+
+body.list .post-content > h1:first-of-type {
+  margin-top: 0px;
+}
+
+
+body.list .main {
+  padding-top: 8px;   /* was 24px */
+}

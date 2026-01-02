@@ -102,3 +102,21 @@ html[data-theme="dark"]
     padding-right: max(16px, env(safe-area-inset-right));
   }
 }
+
+/* =========================================================
+   HARD ALIGN header with content width (PaperMod-safe)
+   ========================================================= */
+
+/* Constrain header to same width as main content */
+.header {
+  width: 100%;
+}
+
+.header .nav {
+  max-width: var(--main-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0;
+  padding-right: 0;
+  box-sizing: border-box;
+}

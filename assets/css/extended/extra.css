@@ -2,10 +2,18 @@
    PaperMod — global visual consistency
    ========================================================= */
 
-/* Base theme colors */
+/* Base theme colors + link system */
 :root {
   --theme: #ffffff;
   --entry: #ffffff;
+
+  --link-color: #1a5fb4;
+  --link-color-visited: #5a6ea8;
+}
+
+html[data-theme="dark"] {
+  --link-color: #8ab4f8;
+  --link-color-visited: #9aa7d6;
 }
 
 /* Ensure consistent background everywhere */
@@ -186,38 +194,6 @@ body.list .post-content > h1:first-of-type {
   margin-top: 1.1em;
 }
 
-/* Tablets */
-@media (max-width: 768px) {
-  .post-title,
-  .page-header h1,
-  .post-content h1 {
-    font-size: 32px;
-    line-height: 1.25;
-  }
-
-  .post-content h2 { font-size: 26px; }
-  .post-content h3 { font-size: 21px; }
-  .post-content h4 { font-size: 18px; }
-  .post-content h5 { font-size: 17px; }
-  .post-content h6 { font-size: 16px; }
-}
-
-/* Phones */
-@media (max-width: 480px) {
-  .post-title,
-  .page-header h1,
-  .post-content h1 {
-    font-size: 28px;
-    line-height: 1.25;
-  }
-
-  .post-content h2 { font-size: 23px; }
-  .post-content h3 { font-size: 19px; }
-  .post-content h4 { font-size: 17px; }
-  .post-content h5,
-  .post-content h6 { font-size: 16px; }
-}
-
 /* =========================================================
    Responsive body text scaling
    ========================================================= */
@@ -231,54 +207,54 @@ body.list .post-content > h1:first-of-type {
 }
 
 /* =========================================================
-   Footer + TOC links — inherit-safe
+   GLOBAL LINK STYLING (body + TOC)
    ========================================================= */
 
-.toc a,
-footer.footer a {
-  color: var(--link-color, #1a5fb4);
+.post-content a,
+.entry-content a,
+.toc a {
+  color: var(--link-color);
   text-decoration: none;
+  box-shadow: none;
 }
 
-html[data-theme="dark"] .toc a,
-html[data-theme="dark"] footer.footer a {
-  color: var(--link-color-dark, #8ab4f8);
-}
-
-footer.footer a:hover,
-.toc a:hover {
+.post-content a:hover,
+.entry-content a:hover,
+.toc a:hover,
+.post-content a:focus,
+.entry-content a:focus,
+.toc a:focus {
   text-decoration: underline;
   text-underline-offset: 0.15em;
 }
 
+.post-content a:visited,
+.entry-content a:visited,
+.toc a:visited {
+  color: var(--link-color-visited);
+}
+
 /* =========================================================
-   Footer links — hard reset of PaperMod underline
+   Footer links — PaperMod underline reset + reuse link system
    ========================================================= */
 
+/* Required to override PaperMod gradient-based underline */
 footer.footer a,
 footer.footer a:link,
 footer.footer a:visited {
-  color: var(--link-color, #1a5fb4) !important;
+  color: var(--link-color) !important;
 
-  /* Kill PaperMod underline implementation */
   background-image: none !important;
-  background-size: 0 0 !important;
-  background-repeat: no-repeat !important;
-  background-position: 0 100% !important;
-
   box-shadow: none !important;
   border: none !important;
-
   text-decoration: none !important;
 }
 
-/* Dark theme */
 html[data-theme="dark"] footer.footer a,
 html[data-theme="dark"] footer.footer a:visited {
-  color: var(--link-color-dark, #8ab4f8) !important;
+  color: var(--link-color) !important;
 }
 
-/* Real underline on interaction — same as body links */
 footer.footer a:hover,
 footer.footer a:focus {
   text-decoration: underline !important;
@@ -317,29 +293,16 @@ footer.footer a:focus {
 #hamburger-panel {
   position: absolute;
   top: 100%;
-
-  /* Move slightly left to avoid logo bleed */
   left: -8px;
-
   margin-top: 8px;
   background: var(--theme);
   border: 1px solid rgba(0,0,0,0.10);
   border-radius: 6px;
   min-width: 200px;
   z-index: 1000;
-
-  /* Key fix: clip underlying content cleanly */
   overflow: hidden;
-}
-
-/* Shadow (safe everywhere now that clipping is correct) */
-#hamburger-panel {
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
-
-/* =========================================================
-   Hamburger dropdown — list + hover
-   ========================================================= */
 
 #hamburger-panel ul {
   list-style: none;
@@ -369,7 +332,7 @@ html[data-theme="dark"] #hamburger-panel li a:focus {
 }
 
 /* =========================================================
-   Theme toggle (SVG) — outline only, inherited color
+   Theme toggle (SVG)
    ========================================================= */
 
 #theme-toggle svg {
@@ -377,17 +340,14 @@ html[data-theme="dark"] #hamburger-panel li a:focus {
   height: 26px;
   display: block;
   transform: translateY(6px);
-
   fill: none;
   stroke: currentColor;
   stroke-width: 1.75;
-
   opacity: 0.5;
   transition: opacity 0.15s ease;
   pointer-events: none;
 }
 
-/* Hover affordance (desktop only) */
 @media (hover: hover) {
   #hamburger-toggle:hover,
   #theme-toggle:hover svg {

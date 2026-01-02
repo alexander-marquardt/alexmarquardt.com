@@ -65,3 +65,29 @@ description = "Technical writing on search relevance, data pipelines, and distri
 [taxonomies]
   tags = ""
   categories = ""
+
+[menu]
+
+  [[menu.main]]
+    identifier = "home"
+    name = "Home"
+    url = "/"
+    weight = 1
+
+  [[menu.main]]
+    identifier = "about"
+    name = "About me"
+    url = "/about/"
+    weight = 2
+
+  [[menu.main]]
+    identifier = "professional"
+    name = "Professional"
+    url = "/professional/"
+    weight = 3
+
+  [[menu.main]]
+    identifier = "personal"
+    name = "Personal"
+    url = "/personal/"
+    weight = 4

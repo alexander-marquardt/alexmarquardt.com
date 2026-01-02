@@ -27,3 +27,26 @@
     }
   });
 </script>
+
+<script>
+  (function () {
+    const toggle = document.getElementById("hamburger-toggle");
+    const panel = document.getElementById("hamburger-panel");
+
+    if (!toggle || !panel) return;
+
+    toggle.addEventListener("click", () => {
+      const open = panel.hasAttribute("hidden");
+      panel.toggleAttribute("hidden");
+      toggle.setAttribute("aria-expanded", open);
+    });
+
+    // Close on outside click
+    document.addEventListener("click", (e) => {
+      if (!panel.contains(e.target) && !toggle.contains(e.target)) {
+        panel.setAttribute("hidden", "");
+        toggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  })();
+</script>

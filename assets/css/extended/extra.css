@@ -52,9 +52,10 @@ body,
 .theme-bar-inner {
   max-width: var(--main-width, 1120px);
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0px;              /* MATCH .main */
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .theme-bar #theme-toggle {
@@ -320,4 +321,57 @@ footer.footer a:focus {
 html[data-theme="dark"] footer.footer a,
 html[data-theme="dark"] footer.footer a:visited {
   color: #8ab4f8 !important;
+}
+
+/* Hide default PaperMod inline menu */
+.header #menu {
+  display: none !important;
+}
+
+/* =========================
+   Hamburger menu
+   ========================= */
+
+.hamburger {
+  position: relative;
+}
+
+#hamburger-toggle {
+  font-size: 22px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+/* Dropdown panel */
+#hamburger-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  background: var(--theme);
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  border-radius: 6px;
+  min-width: 200px;
+  z-index: 1000;
+}
+
+/* Menu list */
+#hamburger-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+}
+
+#hamburger-panel li a {
+  display: block;
+  padding: 8px 16px;
+  color: inherit;
+  text-decoration: none;
+}
+
+#hamburger-panel li a:hover {
+  background: rgba(0,0,0,0.05);
 }

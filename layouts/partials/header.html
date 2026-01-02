@@ -1,18 +1,52 @@
+{{/* =========================================================
+     Theme bar (above header)
+     - Left: Hamburger menu
+     - Right: Theme toggle
+     ========================================================= */}}
+
 <div class="theme-bar">
   <div class="theme-bar-inner">
-    {{- if not site.Params.disableThemeToggle }}
+
+    {{/* Hamburger menu (left) */}}
+    <div class="hamburger">
+      <button id="hamburger-toggle"
+              aria-label="Open menu"
+              title="Menu">
+        ☰
+      </button>
+
+      <div id="hamburger-panel" hidden>
+        <ul>
+          {{ range site.Menus.main }}
+            <li>
+              <a href="{{ .URL | absLangURL }}">{{ .Name }}</a>
+            </li>
+          {{ end }}
+        </ul>
+      </div>
+    </div>
+
+    {{/* Theme toggle (right) */}}
+    {{ if not site.Params.disableThemeToggle }}
       <button id="theme-toggle"
               aria-label="Toggle theme"
               title="Toggle theme">
-        <!-- EXACT SVGs FROM PaperMod -->
-        <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18"
-             viewBox="0 0 24 24" fill="none" stroke="currentColor"
+
+        <!-- Moon icon -->
+        <svg id="moon" xmlns="http://www.w3.org/2000/svg"
+             width="24" height="18"
+             viewBox="0 0 24 24"
+             fill="none" stroke="currentColor"
              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 12.79A9 9 0 1 1 11.21 3
                    7 7 0 0 0 21 12.79z"></path>
         </svg>
-        <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18"
-             viewBox="0 0 24 24" fill="none" stroke="currentColor"
+
+        <!-- Sun icon -->
+        <svg id="sun" xmlns="http://www.w3.org/2000/svg"
+             width="24" height="18"
+             viewBox="0 0 24 24"
+             fill="none" stroke="currentColor"
              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="5"></circle>
           <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -25,33 +59,41 @@
           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
       </button>
-    {{- end }}
+    {{ end }}
+
   </div>
 </div>
+
+{{/* =========================================================
+     Header with centered logo
+     ========================================================= */}}
+
 <header class="header">
   <nav class="nav">
+
     <div class="logo">
-      {{- if site.Title -}}
-      <a href="{{ "" | absLangURL }}" accesskey="h" title="{{ site.Title }} (Alt + H)">
-        <img class="am-logo am-logo-light"
-             src="{{ "alexmarquardt-light.png" | relURL }}"
-             alt="{{ site.Title }}" aria-label="logo">
-        <img class="am-logo am-logo-dark"
-             src="{{ "alexmarquardt-dark.png" | relURL }}"
-             alt="{{ site.Title }}" aria-label="logo">
-        <span class="sr-only">{{ site.Title }}</span>
-      </a>
-      {{- end -}}
+      {{ if site.Title }}
+        <a href="{{ "" | absLangURL }}"
+           accesskey="h"
+           title="{{ site.Title }} (Alt + H)">
+
+          <img class="am-logo am-logo-light"
+               src="{{ "alexmarquardt-light.png" | relURL }}"
+               alt="{{ site.Title }}"
+               aria-label="logo">
+
+          <img class="am-logo am-logo-dark"
+               src="{{ "alexmarquardt-dark.png" | relURL }}"
+               alt="{{ site.Title }}"
+               aria-label="logo">
+
+          <span class="sr-only">{{ site.Title }}</span>
+        </a>
+      {{ end }}
     </div>
 
-    <ul id="menu">
-      {{- range site.Menus.main }}
-      <li>
-        <a href="{{ .URL | absLangURL }}" title="{{ .Name }}">
-          <span{{- if eq .URL $.RelPermalink }} class="active"{{- end }}>{{ .Name }}</span>
-        </a>
-      </li>
-      {{- end }}
-    </ul>
+    {{/* Default PaperMod menu is intentionally NOT rendered here
+         (hidden and replaced by hamburger) */}}
+
   </nav>
 </header>

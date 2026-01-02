@@ -251,6 +251,32 @@ footer.footer a:focus {
 }
 
 /* =========================================================
+   Restore link color for TOC and Footer (inherit-safe)
+   ========================================================= */
+
+/* TOC links */
+.toc a,
+.toc a:visited {
+  color: var(--link-color, #1a5fb4);
+}
+
+html[data-theme="dark"] .toc a,
+html[data-theme="dark"] .toc a:visited {
+  color: var(--link-color-dark, #8ab4f8);
+}
+
+/* Footer links */
+footer.footer a,
+footer.footer a:visited {
+  color: var(--link-color, #1a5fb4);
+}
+
+html[data-theme="dark"] footer.footer a,
+html[data-theme="dark"] footer.footer a:visited {
+  color: var(--link-color-dark, #8ab4f8);
+}
+
+/* =========================================================
    Hamburger menu
    ========================================================= */
 

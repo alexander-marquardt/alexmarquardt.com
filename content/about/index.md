@@ -4,17 +4,13 @@ url: about
 ---
 ## Senior Principal Architect | GenAI & Search
 
-I work on complex technical systems where performance, scale, and real-world constraints intersect. My focus is on architectural decision-making in distributed search and AI platforms, identifying structural risks, design trade-offs, and system behaviors that shape reliability and performance at scale.
-
-In my current role at Elastic, I operate at enterprise scale across GenAI and Search. I apply systems-level reasoning to high-impact problems, with an emphasis on creating reusable architectural assets, including patterns, middleware, tools, and delivery models. This reduces recurring escalations and improves how teams design, operate, and reason about similar systems over time.
-
-A recurring pattern in my work is converting one-off, high-risk technical situations into repeatable solutions that improve reliability, performance, and delivery efficiency over time. The goal is a long-term reduction in operational load and a structural improvement in how systems are designed and supported.
+In my current role at Elastic, I work on GenAI and Search in enterprise environments where relevance, reliability, and performance requirements drive architectural decisions. I capture high-impact, one-off solutions and turn them into reusable assets, including patterns, middleware, tools, and delivery models. These assets reduce recurring escalations and improve how systems are designed and operated.
 
 ## From Semiconductors to Distributed Systems
 
 Earlier in my career, I worked as a core architect on FPGA architecture and placement and routing algorithms for the Stratix and Cyclone FPGA families. These platforms went on to generate cumulative product revenue exceeding $15B, and the underlying algorithms remain widely deployed in production semiconductor tooling.
 
-That work established a foundation in algorithmic optimization, performance-critical design, and resource trade-offs under tight constraints. The same mental models now guide how I approach distributed search relevance, performance diagnosis, and retrieval-augmented (RAG) architectures, where architectural decisions can carry outsized system-level consequences.
+That work established a foundation in algorithmic optimization, performance-critical design, and resource trade-offs under tight constraints. The same mental models now guide how I approach distributed search, performance diagnosis, and retrieval-augmented (RAG) architectures, where architectural decisions can have outsized consequences.
 
 ## Scope and Perspective
 

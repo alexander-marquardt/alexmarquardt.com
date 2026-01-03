@@ -14,7 +14,7 @@ The material emphasizes architectural reasoning for large-scale systems. It exam
 
 I am a Senior Principal Architect working on GenAI and Search at [Elastic](https://www.elastic.co/), with a focus on system-level architecture, relevance design, and large-scale operational behavior.
 
-Earlier in my career, I was a core architect on FPGA architectures and placement/routing algorithms; that work resulted in peer-reviewed publications cited over 3,600 times according to [Google Scholar](https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&hl=en).
+Earlier in my career, I was a core architect on FPGA architectures and placement/routing algorithms; that work resulted in peer-reviewed publications that have been cited over [3,600 times](https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&hl=en).
 
 Formal academic publications, patents, and open-source contributions are documented in my [Professional record](/professional/).
 

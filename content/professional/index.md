@@ -20,7 +20,7 @@ This page provides supporting material for that work, including selected publica
 
 ## Scientific Publications
 
-The publications listed below have been **cited over 3600 times** according to [Google Scholar.](https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&hl=en) These publications reflect early work in FPGA architecture, placement, and routing algorithms.
+The publications listed below have been cited over [3,600 times](https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&hl=en). These publications reflect my early work in FPGA architecture, placement, and routing algorithms.
 
 ### Book:
 

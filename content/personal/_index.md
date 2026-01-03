@@ -23,3 +23,9 @@ aliases:
 ## Tourism and Travel
 
 - [Barcelona: A Personal Guide](/personal/barcelona-a-personal-guide/) (April 21, 2024)
+
+## Additional Information
+
+- [Home](/)
+- [About the Author](/about/)
+- [Professional Record](/professional/)

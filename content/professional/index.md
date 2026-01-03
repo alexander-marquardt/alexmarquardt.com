@@ -70,4 +70,6 @@ The publications listed below have been cited over [3,600 times](https://scholar
 
 ## Additional Information
 
+- [Home](/)
 - [About the Author](/about/)
+- [Other Areas of Interest](/personal/)

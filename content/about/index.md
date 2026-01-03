@@ -18,6 +18,6 @@ I operate across engineering, product management, consulting, and architecture, 
 
 ## Additional Information
 
-- [Professional Record, Publications and Patents](/professional/)
-
-- [Finance, productivity, nutrition, and travel](/personal/)
+- [Home](/)
+- [Professional Record](/professional/)
+- [Other Areas of Interest](/personal/)

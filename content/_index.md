@@ -151,8 +151,6 @@ Details on publications, patents, and open-source contributions are in my [Profe
 
 # Additional Information
 
-- [About the author](/about/)
-
-- [Professional record, publications and patents](/professional/)
-
-- [Finance, productivity, nutrition, and travel](/personal/)
+- [About the Author](/about/)
+- [Professional Record](/professional/)
+- [Other Areas of Interest](/personal/)

@@ -4,9 +4,7 @@ url: professional
 aliases:
   - /scientific-publications-patents-awards-and-education/
 ---
-My professional work spans semiconductor architecture, distributed search systems, and large-scale data platforms, with peer-reviewed publications, patents, and open-source contributions.
-
-This page provides supporting material for that work, including selected publications, patents, open-source projects, and formal education.
+My professional work spans semiconductor architecture, distributed search systems, and large-scale data platforms. This page provides supporting material for that work, including selected publications, patents, open-source projects, and formal education.
 
 ## External Profiles
 

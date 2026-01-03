@@ -9,6 +9,14 @@ This site brings together my technical writing on search, data pipelines, and di
 
 The material emphasizes architectural reasoning for large-scale systems. It examines how relevance models, reliability mechanisms, and ingest pipelines behave under real-world constraints, with attention to system-level decisions that shape scalability, maintainability, and long-term operational effort.
 
+
+# Professional context
+
+- **Current focus:** Senior Principal Architect working on GenAI and Search at [Elastic](https://www.elastic.co/), focused on system-level architecture, relevance design, and large-scale operational behavior.
+- **Prior work:** Core architect on FPGA architectures and placement/routing algorithms; peer-reviewed publications cited over 3,600 times ([Google Scholar.](https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&hl=en)).
+- **Publications & patents:** Formal academic work, patents, and open-source contributions are documented in my [Professional record](/professional/).
+- **Profile:** [LinkedIn](https://www.linkedin.com/in/alexandermarquardt/)
+
 # Elastic Stack
 
 ## Search & Relevance

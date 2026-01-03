@@ -1,11 +1,14 @@
 ---
 title: Professional Record and Publications
-description: This page provides supporting material for my professional background, including selected publications, patents, open-source contributions, and formal education.
 url: professional
 aliases:
   - /scientific-publications-patents-awards-and-education/
 ---
-## Profiles
+My professional work spans semiconductor architecture, distributed search systems, and large-scale data platforms, with peer-reviewed publications, patents, and open-source contributions.
+
+This page provides supporting material for that work, including selected publications, patents, open-source projects, and formal education.
+
+## External Profiles
 
 - [LinkedIn Profile](https://www.linkedin.com/in/alexandermarquardt/)
 

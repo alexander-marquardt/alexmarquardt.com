@@ -5,7 +5,7 @@ date: 2025-12-30
 
 # About this site
 
-This site collects my technical writing on search, data pipelines, and distributed systems, grounded in enterprise-scale production experience. It focuses on relevance, performance, reliability, and the architectural decisions that make systems maintainable over time.
+This site collects my technical writing on search, data pipelines, and distributed systems. The articles are grounded in enterprise-scale production experience and focus on relevance, performance, reliability, and maintainable system architecture.
 
 # Professional context
 

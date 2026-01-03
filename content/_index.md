@@ -5,22 +5,13 @@ date: 2025-12-30
 
 # About this site
 
-This site brings together my technical writing on search, data pipelines, and distributed systems at enterprise scale. The work is informed by real production systems and reflects recurring patterns, trade-offs, and architectural decisions observed across system design, deployment, and long-term operation.
-
-The material emphasizes architectural reasoning for large-scale systems. It examines how relevance models, reliability mechanisms, and ingest pipelines behave under real-world constraints, with attention to system-level decisions that shape scalability, maintainability, and long-term operational effort.
-
+This site collects my technical writing on search, data pipelines, and distributed systems, grounded in enterprise-scale production experience. It focuses on relevance, performance, reliability, and the architectural decisions that make systems maintainable over time.
 
 # Professional context
 
-I am a Senior Principal Architect working on GenAI and Search at [Elastic](https://www.elastic.co/), with a focus on system-level architecture, relevance design, and large-scale operational behavior.
+I am a Senior Principal Architect working on GenAI and Search at [Elastic](https://www.elastic.co/). Earlier in my career, I worked on FPGA architectures and placement/routing algorithms; my peer-reviewed publications from that work have been cited over [3,600 times](https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&hl=en).
 
-Earlier in my career, I was a core architect on FPGA architectures and placement/routing algorithms; that work resulted in peer-reviewed publications that have been cited over [3,600 times](https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&hl=en).
-
-Formal academic publications, patents, and open-source contributions are documented in my [Professional record](/professional/).
-
-Additional professional background is available on [LinkedIn](https://www.linkedin.com/in/alexandermarquardt/).
-
-# Elastic Stack
+Details on publications, patents, and open-source contributions are in my [Professional record](/professional/). Additional professional background is available on [LinkedIn](https://www.linkedin.com/in/alexandermarquardt/).
 
 ## Search & Relevance
 

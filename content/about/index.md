@@ -14,7 +14,7 @@ That work established a foundation in algorithmic optimization, performance-crit
 
 ## Scope and Perspective
 
-I operate across engineering, product management, consulting, and architecture, grounding decisions in how systems behave under real-world conditions. That perspective is shaped by academic and applied computer engineering research and large-scale system design.
+I operate across engineering, product management, consulting, and architecture. My perspective is shaped by academic and applied computer engineering research and large-scale system design, and is grounded in how systems behave under real-world conditions.
 
 ## Additional Information
 

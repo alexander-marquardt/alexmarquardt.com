@@ -37,9 +37,9 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 
 - [Using slow logs in Elastic Cloud Enterprise](/elastic/using-slow-logs-in-elastic-cloud-enterprise/) (Apr 26, 2020)
 
-- [Using parallel Logstash pipelines to improve persistent queue throughput | Elastic Blog](https://www.elastic.co/blog/using-parallel-logstash-pipelines-to-improve-persistent-queue-performance) (Nov 14, 2019)
+- [Using parallel Logstash pipelines to improve persistent queue throughput | Elastic Blog](https://www.elastic.co/blog/using-parallel-logstash-pipelines-to-improve-persistent-queue-performance) (Nov 14, 2019)
 
-- [Improving the performance of high-cardinality terms aggregations | Elastic Blog](https://www.elastic.co/blog/improving-the-performance-of-high-cardinality-terms-aggregations-in-elasticsearch) (May 9, 2019)
+- [Improving the performance of high-cardinality terms aggregations | Elastic Blog](https://www.elastic.co/blog/improving-the-performance-of-high-cardinality-terms-aggregations-in-elasticsearch) (May 9, 2019)
 
 - [How to tune Elasticsearch for aggregation performance](/elastic/how-to-tune-elasticsearch-for-aggregation-performance/) (Oct 2, 2018)
 

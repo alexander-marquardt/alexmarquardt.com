@@ -10,7 +10,7 @@ My professional work spans semiconductor architecture, distributed search system
 
 - [LinkedIn Profile](https://www.linkedin.com/in/alexandermarquardt/)
 
-- [Github page](https://github.com/alexander-marquardt/)
+- [Github Profile](https://github.com/alexander-marquardt/)
 
 ## Recognition
 

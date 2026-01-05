@@ -25,7 +25,7 @@ The publications listed below have been cited over [3,600 times](https://scholar
 
 ### Thesis
 
-- [Cluster-Based Architecture, Timing-Driven Packing and Timing-Driven Placement for FPGAs](https://utoronto.scholaris.ca/items/91e23f84-10c5-41e8-97ec-724d40330176) (Apr 1999 — National Library of Canada).
+- [Cluster-Based Architecture, Timing-Driven Packing and Timing-Driven Placement for FPGAs](https://tspace.library.utoronto.ca/handle/1807/13510) (Apr 1999 — National Library of Canada).
 
 ### Peer-reviewed Publications
 

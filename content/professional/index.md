@@ -29,11 +29,11 @@ The publications listed below have been cited over [3,600 times](https://scholar
 
 ### Peer-reviewed Publications
 
-- [The Stratix II Logic and Routing Architecture](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=d-dosjEAAAAJ&citation_for_view=d-dosjEAAAAJ:4TOpqqG69KYC) (Nov 2005  — ACM/Sigda 13th International Symposium on Field-Programmabel Gate Arrays). 
-- [The Stratix Routing and Logic Architecture](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=d-dosjEAAAAJ&citation_for_view=d-dosjEAAAAJ:M3ejUd6NZC8C) (Feb 2003  — ACM/Sigda International Symposium on Field-Programmable Gate Arrays).
-- [Speed and Area trade-offs in Cluster-Based FPGA Architectures](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=d-dosjEAAAAJ&citation_for_view=d-dosjEAAAAJ:9yKSN-GCB0IC) (Feb 2000  — IEEE Transactions on VLSI).
-- [Timing-Driven Placement for FPGAs](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=d-dosjEAAAAJ&citation_for_view=d-dosjEAAAAJ:u-x6o8ySG0sC) (Feb 2000 — Proc. 8th. ACM/SIGDA Intl. Symposium on FPGAs).
-- [Using Cluster-Based Logic Blocks and Timing-Driven Packing to Improve FPGA Speed and Density](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=d-dosjEAAAAJ&citation_for_view=d-dosjEAAAAJ:d1gkVwhDpl0C) (Feb 1999  — Proc. 7th ACM/SIGDA Intl. Symposium on FPGAs).
+- [The Stratix II Logic and Routing Architecture](https://dl.acm.org/doi/10.1145/1046192.1046195) (Nov 2005  — ACM/Sigda 13th International Symposium on Field-Programmabel Gate Arrays). 
+- [The Stratix Routing and Logic Architecture](https://dl.acm.org/doi/10.1145/611817.611821) (Feb 2003  — ACM/Sigda International Symposium on Field-Programmable Gate Arrays).
+- [Speed and Area trade-offs in Cluster-Based FPGA Architectures](https://ieeexplore.ieee.org/document/820764?arnumber=820764) (Feb 2000  — IEEE Transactions on VLSI).
+- [Timing-Driven Placement for FPGAs](https://dl.acm.org/doi/10.1145/329166.329208) (Feb 2000 — Proc. 8th. ACM/SIGDA Intl. Symposium on FPGAs).
+- [Using Cluster-Based Logic Blocks and Timing-Driven Packing to Improve FPGA Speed and Density](https://dl.acm.org/doi/10.1145/296399.296426) (Feb 1999  — Proc. 7th ACM/SIGDA Intl. Symposium on FPGAs).
 
 ## Patents
 

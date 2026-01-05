@@ -5,13 +5,13 @@ date: 2025-12-30
 
 # About this site
 
-This site collects my technical writing on search, data pipelines, and distributed systems. The articles are grounded in enterprise-scale production experience and focus on relevance, performance, reliability, and maintainable system architecture.
+This site collects my technical writing on search, data pipelines, and distributed systems. Topics include relevance, performance, reliability, data ingestion, and maintainable system architecture.
 
 # Professional context
 
-I am a Senior Principal Architect working on GenAI and Search at [Elastic](https://www.elastic.co/). Earlier in my career, I worked on FPGA architectures and placement/routing algorithms; my peer-reviewed publications from that work have been cited over [3,600 times](https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&hl=en).
+I am a Senior Principal Architect working on GenAI and Search at [Elastic](https://www.elastic.co/). Earlier work in FPGA architecture and placement/routing produced peer-reviewed publications cited over [3,600 times](https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&hl=en).
 
-Details on publications, patents, and open-source contributions are in my [Professional record](/professional/). Additional professional background is available on [LinkedIn](https://www.linkedin.com/in/alexandermarquardt/).
+Details on publications, patents, and open-source contributions are in my [Professional record](/professional/). Additional background is available on [LinkedIn](https://www.linkedin.com/in/alexandermarquardt/).
 
 ## Search & Relevance
 

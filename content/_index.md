@@ -9,7 +9,7 @@ This site collects my technical writing on search, data pipelines, and distribut
 
 # Professional context
 
-I am a Senior Principal Architect working on GenAI and Search at [Elastic](https://www.elastic.co/). Earlier work in FPGA architecture and placement/routing produced peer-reviewed publications cited over [3,600 times](https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&hl=en).
+I am a Senior Principal Architect working on GenAI and Search at [Elastic](https://www.elastic.co/). Earlier work in FPGA architecture and placement & routing algorithms produced peer-reviewed publications that have been cited over [3,600 times](https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&hl=en).
 
 Details on publications, patents, and open-source contributions are in my [Professional record](/professional/). Additional background is available on [LinkedIn](https://www.linkedin.com/in/alexandermarquardt/).
 

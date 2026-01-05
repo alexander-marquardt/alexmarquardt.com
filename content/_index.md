@@ -5,13 +5,13 @@ date: 2025-12-30
 
 # About this site
 
-This site collects my technical writing on search, data pipelines, and distributed systems. Topics include relevance, performance, reliability, data ingestion, and maintainable system architecture.
+This site collects my technical writing on search, data pipelines, and distributed systems. Topics include relevance, performance, reliability, data ingestion, and system architecture.
 
 # Professional context
 
 I am a Senior Principal Architect working on GenAI and Search at [Elastic](https://www.elastic.co/). Earlier in my career, I worked on FPGA architecture and algorithms. My peer-reviewed publications have been cited over [3,600 times](https://scholar.google.co.uk/citations?user=d-dosjEAAAAJ&hl=en).
 
-More details can be found at [About the Author](/about/) and [Professional Record and Publications](/professional/). Additional background is documented on [LinkedIn](https://www.linkedin.com/in/alexandermarquardt/).
+More background: [About the Author](/about/) · [Professional Record](/professional/) · [LinkedIn](https://www.linkedin.com/in/alexandermarquardt/)
 
 ## Search & Relevance
 
@@ -148,9 +148,3 @@ More details can be found at [About the Author](/about/) and [Professional Recor
 - [How to generate unique identifiers for use with MongoDB](/mongodb/how-to-generate-unique-identifiers-for-use-with-mongodb/) (Jan 30, 2017)
 
 - [How to manually perform a point in time restore in MongoDB](/mongodb/mongodb-point-in-time-restore/) (Jan 25, 2017)
-
-# Additional Information
-
-- [About the Author](/about/)
-- [Professional Record](/professional/)
-- [Other Areas of Interest](/personal/)

@@ -21,7 +21,7 @@ The publications listed below have been cited over [3,600 times](https://scholar
 
 ### Book:
 
-- [Architecture and CAD for Deep-Submicron FPGAs](https://www.amazon.com/Architecture-Deep-Submicron-Springer-International-Engineering/dp/0792384601?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3BJQDFjH2rTFyqLTVXSfr%2Bqg%3D%3D) (Mar, 1999 — The Springer International Series in Engineering and Computer Science).
+- [Architecture and CAD for Deep-Submicron FPGAs](https://link.springer.com/book/10.1007/978-1-4615-5145-4) (Mar, 1999 — The Springer International Series in Engineering and Computer Science).
 
 ### Thesis
 

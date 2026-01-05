@@ -16,9 +16,8 @@ aliases:
 
 ## Nutrition
 
-1. [How to mitigate hangovers](/personal/how-to-mitigate-hangovers/) (Jul 31, 2019)
-
-3. [A summary of recent research on increasing lifespan](/personal/a-summary-of-recent-research-on-increasing-lifespan/) (June 1, 2021)
+- [How to mitigate hangovers](/personal/how-to-mitigate-hangovers/) (Jul 31, 2019)
+- [A summary of recent research on increasing lifespan](/personal/a-summary-of-recent-research-on-increasing-lifespan/)(June 1, 2021)
 
 ## Tourism and Travel
 

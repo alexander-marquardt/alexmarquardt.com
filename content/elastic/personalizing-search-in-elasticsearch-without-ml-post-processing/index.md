@@ -73,7 +73,7 @@ A SCALE of 3.5 (which is added to the BASE\_BOOST of 1) ensures that the boost (
   
 Likewise, the impact of recent vs. old purchases can be controlled by the HALF\_LIFE\_DAYS value.
 
-### Explanation of the Formula
+### Explanation of the formula
 
 #### 1\. Log frequency term
 

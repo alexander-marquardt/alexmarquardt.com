@@ -45,7 +45,7 @@ At query time we execute **two phases**:
 
 3. **Search phase** — Build a query that includes a function\_score query that incorporates the personalised product boosts that we just calculated, so that **items previously purchased by this user are pushed to the top** of the results. Run the user’s query against the product catalog.
 
-## The forumula
+## The formula
 
 We have an index that contains the purchase history for each user. Each product that a client has purchased has the following fields defined:
 

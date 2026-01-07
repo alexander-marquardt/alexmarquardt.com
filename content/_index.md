@@ -13,6 +13,8 @@ I am a Senior Principal Architect working on GenAI and Search at [Elastic](https
 
 More details: [About the Author](/about/) · [Professional Record](/professional/) · [LinkedIn](https://www.linkedin.com/in/alexandermarquardt/)
 
+# Elastic Stack
+
 ## Search & Relevance
 
 - [Influencing BM25 ranking with multiplicative boosting in Elasticsearch | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/bm25-ranking-multiplicative-boosting-elasticsearch) (Dec 22, 2025)

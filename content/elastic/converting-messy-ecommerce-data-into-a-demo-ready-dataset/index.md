@@ -1,5 +1,5 @@
 ---
-title: "Demo-grade e-commerce datasets: High-quality and clean grocery and electronics datasets"
+title: "Demo-grade e-commerce datasets: Clean and useable grocery and electronics datasets"
 date: 2026-01-13
 description: "Turn messy product data into clean, image-rich NDJSON for e-commerce search demos and relevance work."
 slug: clean-ndjson-ecommerce-demo-data
@@ -7,9 +7,9 @@ slug: clean-ndjson-ecommerce-demo-data
 
 ## Introduction
 
-If you want to demo e-commerce search, you need good data: titles that look real, images that load, categories and attributes that facet cleanly, and enough product variety that a query rewriter or a re-ranker actually has room to show impact. If you want to evaluate search quality, you also need query and relevance judgments, which is a different kind of dataset entirely.
+If you want to demo e-commerce search, you need good data: titles that look real, images that load, categories and attributes that facet cleanly, and enough product variety that a query rewriter or a re-ranker actually has room to show impact. 
 
-Because it is difficult to find good, free, and open demo data sets, many teams get stuck using a small dataset, or a synthetic toy catalog, or whatever was easiest to download. And then they wonder why their demo doesn’t feel believable, and customers wonder why the convincing demo isnt reproduceable on their production system.
+Because it is difficult to find good, free, and open demo data sets, many teams get stuck using a small dataset, or a synthetic toy catalog, or whatever was easiest to download. This results in unrealistic demos, and customers end up confused as to why the amazing demo experience isn't reproduceable on production system.
 
 For work that I am doing on a query rewriter I need a good and large dataset with the following characteristics:
 
@@ -124,7 +124,7 @@ The key is that once the data is in this shape, you can iterate on search logic 
 
 ### How the data looks
 
-Below is an example of how the cleaned icecat data looks in a simple ecommerce frontend.
+Below is an example of how the cleaned Open Food Facts data looks in a simple ecommerce frontend.
 
 ![Demo screenshot](images/cleaned-food-data.png)
 

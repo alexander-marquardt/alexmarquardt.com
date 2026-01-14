@@ -1,36 +1,40 @@
 ---
-title: "Extracting and transforming clean and useable grocery and electronics datasets"
+title: "Extracting and transforming clean and usable grocery and electronics datasets"
 date: 2026-01-13
-description: "Turn messy open-source product data into clean, image-rich NDJSON for e-commerce search demos and relevance work."
-slug: clean-ndjson-ecommerce-demo-data
+description: "Turn messy open-source product data into clean, image-rich NDJSON for e-commerce demos and relevance work."
+slug: clean-and-free-ndjson-ecommerce-demo-data
 ---
 
 ## Introduction
 
 If you want to demo e-commerce search, you need a catalog that behaves like a real catalog: realistic titles, images that load, categories and attributes that facet cleanly, and enough product variety that a query rewriter or re-ranker actually has room to show impact.
 
-In practice, it can be surprisingly hard to find demo datasets that are (a) large and realistic, (b) easy to ingest, and (c) safe to reuse in commercial settings. The default outcome is usually a tiny dataset, a synthetic toy catalog, or a format that requires a lot of one-off parsing. That often makes a demo feel less credible, and it makes it harder to reproduce the same experience on a production catalog.
+In practice, it can be surprisingly hard to find demo datasets that are (a) large and realistic, (b) easy to ingest, and (c) safe to reuse in commercial settings. In many cases, the practical outcome is a tiny dataset, a synthetic toy catalog, or a format that requires a lot of one-off parsing. That often makes a demo feel less credible, and it makes it harder to reproduce the same experience on a production catalog.
 
-For some query rewriting work I’m doing, I needed two things at the same time: a realistic, image-rich product catalog, and a clean representation of that catalog that can be indexed and iterated on quickly. To get there, I built two small repositories that turn open data sources into “demo-grade” NDJSON: one for grocery using Open Food Facts, and one for electronics/computers using Open Icecat.
+For some query rewriting work I’m involved in, I needed a realistic, image-rich product catalog and a clean representation of that catalog that can be indexed and iterated on quickly. For this, I built two small repositories that take data from open sources, and produce “demo-grade” NDJSON: one based on [Open Food Facts](https://es.openfoodfacts.org/) which results in over 100K usable and clean grocery products, and one based on [Open Icecat](https://icecat.biz/) which results in over 1 million usable and clean computer/electronics products. The value of these scripts is that they take the type of data that normally comes in awkward formats (huge nested JSON/XML, inconsistent field names, unclear image handling) and convert it into a consistent, search-ready document format.
 
-To get there, I built two small repositories that take data from open sources, and produce “demo-grade” NDJSON: one based on [Open Food Facts](https://es.openfoodfacts.org/) which results in over 100K useable and clean grocery products, and one based on [Open Icecat](https://icecat.biz/) which results in over 1 million useable and clean compuetr and elecronics products. The value of these scripts is that they take the type of data that normally comes in awkward formats (huge nested JSON/XML, inconsistent field names, unclear image handling) and convert it into a consistent, search-ready document format.
+- [Icecat harvester](https://github.com/alexander-marquardt/icecat-harvester/)
+- [Open Food Facts extractor](https://github.com/alexander-marquardt/open-food-facts-ndjson-extractor)
 
-- Icecat harvester: https://github.com/alexander-marquardt/icecat-harvester/
-- Open Food Facts extractor: https://github.com/alexander-marquardt/open-food-facts-ndjson-extractor
+## NDJSON
 
-## Why NDJSON is the point
-
-Search systems want documents. They want one document per product, flat enough to map and query, but rich enough to facet, filter, and display.
-
-Many “product datasets” technically contain what you need, but the structure is hostile to iteration. A product might have hundreds of fields, nested sub-documents, language variants scattered across keys, and images represented as metadata that still requires custom URL construction. You can absolutely write the glue once, but then you end up rewriting it every time you switch data sources or every time your demo needs one additional field.
-
-NDJSON is boring in exactly the right way: one JSON object per line, streamable, greppable, and trivial to bulk ingest. The end-state I wanted for both sources was the same: a clean, stable schema that a search engine can ingest in minutes.
+Elasticsearch ingests JSON documents. NDJSON is a file format that allows one JSON object per line, which is trivial to bulk ingest. The output of these tools is a clean, stable schema that a search engine can ingest in minutes.
 
 ## Dataset #1: Open Food Facts as a demo catalog (with images)
 
-Open Food Facts is not an “e-commerce” dataset in the Amazon sense. It is a product database built for transparency: ingredients, allergens, nutrition, and label-derived metadata. The reason it works so well for demos is that it still behaves like a real product catalog: it has product names, categories, and images. Importantly, its data reuse posture is explicit and documented (ODbL for the database; CC BY-SA for images). That clarity matters when you intend to show a dataset to customers.
+Open Food Facts is not an “e-commerce” dataset in the Amazon sense. It is a product database built for transparency: ingredients, allergens, nutrition, and label-derived metadata. The reason it works well for demos is that it still behaves like a real product catalog: it has product names, categories, and images. Importantly, its data reuse posture is explicit and documented (ODbL for the database; CC BY-SA for images). That clarity matters when you intend to show a dataset to customers.
 
-The raw Open Food Facts export is a huge JSONL file with a lot of structure. The extractor repository turns it into clean NDJSON that is immediately indexable. It also computes image URLs based on the official image URL scheme, and it can apply quality gates such as “English titles/descriptions” and “must have a front image.”
+The raw Open Food Facts export is a large JSONL file with a lot of structure. The extractor repository turns it into clean NDJSON that is immediately indexable. It also computes image URLs based on the official image URL scheme, and it can apply quality gates such as “English titles/descriptions” and “must have a front image.”
+
+### Inclusion criteria (why ~4.2M → ~100K)
+
+After parsing, filtering, and cleaning over 4.2 million source records from Open Food Facts, the resulting dataset contains over 100K clean, flat JSON objects. This reduction is expected: the extractor is intentionally strict because the goal is a demo-grade catalog.
+
+A record is included only if it meets all of the following:
+
+- English title and description
+- A usable front image
+- At least one meaningful category (placeholder/empty categories are excluded)
 
 Repo: https://github.com/alexander-marquardt/open-food-facts-ndjson-extractor
 
@@ -50,18 +54,18 @@ The output schema is intentionally practical. It includes:
 | `categories` | list | Cleaned list of category tags. |
 | `attrs` | object | **Flattened Dictionary** of key-value attributes (e.g., Nutri-Score, Energy). |
 | `attr_keys` | list | List of all keys available in `attrs` for faceting. |
-| `dietary_restrictions` | list | Extracted dietary tags (e.g., vegan, vegetarian). |
+| `dietary_restrictions` | list | Parsed dietary tags (e.g., ["vegan","vegetarian"]) for efficient filtering (the original raw value is still present in `attrs` when available). |
 
-### After: Cleaned NDJSON for Search Example
+### After: Cleaned NDJSON for Grocery Search
 
-The output is over 100K clean, flat JSON objects, that are ready to be indexed into a search engine like Elasticsearch or OpenSearch.
+This resulting data is ready to be indexed into a search engine like Elasticsearch or OpenSearch, and looks as follows:
 
 ```json
 {
   "id": "0008127000019",
   "title": "Extra virgin olive oil",
   "brand": "Athena Imports",
-  "description": "Extra virgin olive oil\n\nExtra virgin olive oil\n\n\nKey Specifications:\n- **Category**: Plant based foods and beverages\n- **Serving size**: 15 ml\n- **Nutri-Score**: B\n- **NOVA group**: 2\n- **Eco-Score**: E\n- **Dietary**: vegan, vegetarian\n- **Ingredients analysis**: palm-oil-free, vegan, vegetarian\n- **Energy (kcal/100g)**: 800 kcal\n- **Fat (g/100g)**: 93.3 g\n- **Saturated fat (g/100g)**: 13.3 g\n- **Sugars (g/100g)**: 0 g\n- **Salt (g/100g)**: 0 g\n- **Protein (g/100g)**: 0 g\n- **Countries**: United States",
+  "description": "Extra virgin olive oil\n\nExtra virgin olive oil\n\n\nKey Specifications:\n- **Category**: Plant based foods and beverages\n- **Serving size**: 15 ml\n- **Nutri-Score**: B\n- **NOVA group**: 2\n- **Eco-Score**: E\n- **Dietary restrictions**: vegan, vegetarian\n- **Ingredients analysis**: palm-oil-free, vegan, vegetarian\n- **Energy (kcal/100g)**: 800 kcal\n- **Fat (g/100g)**: 93.3 g\n- **Saturated fat (g/100g)**: 13.3 g\n- **Sugars (g/100g)**: 0 g\n- **Salt (g/100g)**: 0 g\n- **Protein (g/100g)**: 0 g\n- **Countries**: United States",
   "image_url": "https://images.openfoodfacts.org/images/products/000/812/700/0019/front_en.5.400.jpg",
   "price": 2.49,
   "currency": "EUR",
@@ -92,7 +96,7 @@ The output is over 100K clean, flat JSON objects, that are ready to be indexed i
   "attr_keys": [
     "Category",
     "Countries",
-    "Dietary",
+    "Dietary restrictions",
     "Eco-Score",
     "Energy (kcal/100g)",
     "Estimated unit price",
@@ -127,9 +131,21 @@ Below is an example of how the cleaned Open Food Facts data looks in a simple ec
 
 ## Dataset #2: Icecat for electronics-style product catalogs
 
-Open Food Facts is excellent for food/CPG. But many demos benefit from an electronics-style catalog with spec-rich attributes and product-type variety. That’s where Icecat is useful.
+Open Food Facts is excellent for food/CPG. But some demos benefit from an electronics-style catalog with spec-rich attributes and product-type variety. That’s where Icecat is useful.
 
 Icecat is typically consumed via XML interfaces and nested structures that cannot be indexed directly into Elasticsearch. The Icecat harvester repo is designed as an ETL pipeline where downloading and parsing are separate steps. That separation matters: you can download once, iterate on schema transformation many times, and regenerate clean NDJSON without re-downloading everything.
+
+### Inclusion criteria (why  25M → 3.5M → 1M)
+
+The raw Icecat index is massive, spanning over 25 million data sheets in the global catalog. However, I have targeted a subset of the _open_ index covering only "interesting" categories of products (the desired categories are easily configurable). This subset contains approximately 3.5M data sheets. After further filtering and processing, I end up with about 1M demo-quality products.
+
+The final resulting demo dataset is significantly smaller than the original 25M for the following reasons:
+
+1. **Open vs. Full Tier**: We specifically target the "Open Icecat" portion of the catalog. While the "Full Icecat" database includes over 28,000 brands, only a subset (the "sponsoring brands" like HP, Lenovo, and Samsung) authorize their data for free, unrestricted distribution.
+
+2. **Regional/Category Filtering**: We use a targets.txt file to focus only on high-utility categories (like Laptops and Smartphones). This avoids millions of "spare part" records or "cables" that clutter a search experience.
+
+3. **The "Demo-Ready" Quality Gate**: Our script applies a strict filter: No Image = No Entry. A product without a visual asset is a dead-end in a demo UI. By requiring at least one high-resolution image URL and a valid title, we prune the "metadata-only" records that make up a large portion of the raw feed.
 
 Repo: https://github.com/alexander-marquardt/icecat-harvester/
 
@@ -147,7 +163,9 @@ Repo: https://github.com/alexander-marquardt/icecat-harvester/
 | `attrs` | object | **Flattened Dictionary** of technical specifications. |
 | `attr_keys` | list | List of all keys available in `attrs` (used for search facets). |
 
-### Example Record
+### After: Cleaned NDJSON for Electronics Search
+
+After parsing, filtering, and cleaning over 3.5 million source records, the resulting dataset contains over a million clean, flat JSON objects, that are ready to be indexed into a search engine like Elasticsearch or OpenSearch. 
 
 ```json
 {
@@ -178,11 +196,27 @@ Below is an example of how the cleaned icecat data looks in a simple ecommerce f
 
 The goal is that a loader or indexing pipeline can ingest both Icecat and Open Food Facts with the same code path. That’s why both repositories converge on a similar NDJSON structure:
 
-- stable top-level fields (`id`, `title`, `brand`, `description`, `image_url`, `price`, `currency`, `categories`)
-- an attribute map (`attrs`) plus a list of keys (`attr_keys`) that is easy to turn into facets
-- deterministic output for reproducibility
+| Field | Type | Source: Icecat Logic (Electronics) | Source: Open Food Facts Logic (Grocery) |
+| :--- | :--- | :--- | :--- |
+| **id** | string | Unique Icecat Product ID | Padded GTIN-13 Barcode |
+| **title** | string | Full Marketing Title | English Product Name |
+| **brand** | string | Manufacturer (e.g., Apple, Lenovo) | Brand/Producer Name |
+| **description** | string | **Synthesis:** Marketing text + Key Technical Specifications | **Synthesis:** Ingredients + Key Nutritional Metadata |
+| **price** | float | **Heuristic:** Category baseline modified by Brand premium | **Estimated:** Unit pricing model based on category & weight |
+| **currency** | string | Fixed (EUR) | Fixed (EUR) |
+| **image_url** | string | **High-Quality:** Select the best quality product photo from Icecat source data | **Computed:** The URL of the photo is a derived from product code, image key, revision, and resolution |
+| **categories** | list | Single-item list (Primary Icecat Category) | Hierarchical list (from broad to specific) |
+| **attrs** | object | **Flattened:** Technical specs (e.g., `"RAM": "16GB"`) | **Flattened:** Nutritional/Labels (e.g., `"Nutri-Score": "A"`) |
+| **attr_keys** | list | List of keys in `attrs` for dynamic faceting | List of keys in `attrs` for dynamic faceting |
 
-When the schema contract is consistent, you can swap catalogs without rewriting the ingestion or the demo UI.
+### Why this Schema works for Search
+By converging on this single contract, you solve the "Ingestion Gap." Whether you are indexing 100K olive oils or 1M laptops, your search engine configuration remains stable:
+
+- **Consistent Faceting**: The attrs object is a flat dictionary. In Elasticsearch, this is typically mapped as a `flattened` field to support dynamic faceting without a mapping explosion."
+
+- **Searchable Specs**: High-value technical data is injected into the description field. This ensures that a user searching for "Ryzen 7" or "Palm-oil free" finds the product via full-text search even if those specific attributes aren't explicitly boosted.
+
+- **Visual Reliability**: Both pipelines discard any record missing a valid image_url. This reduces that chances of your demo showing a "broken image" icon, making the experience feel production-ready.
 
 ## Where WANDS fits: evaluation, not demos
 

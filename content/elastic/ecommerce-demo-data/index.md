@@ -12,7 +12,7 @@ If you want to demo e-commerce search, you need a catalog that behaves like a re
 
 In practice, it can be surprisingly hard to find demo datasets that are (a) large and realistic, (b) easy to ingest, and (c) safe to reuse in commercial settings. In many cases, the practical outcome is a tiny dataset, a synthetic toy catalog, or a format that requires a lot of one-off parsing. That often makes a demo feel less credible, and it makes it harder to reproduce the same experience on a production catalog.
 
-For some query rewriting work I’m involved in, I needed a realistic, image-rich product catalog and a clean representation of that catalog that can be indexed and iterated on quickly. For this, I built two small repositories that take data from open data sources, and produce “demo-ready" NDJSON: one based on [Open Food Facts](https://es.openfoodfacts.org/) which results in over 100K usable and clean grocery products, and one based on [Open Icecat](https://icecat.biz/) which results in over 1 million usable and clean computer/electronics products. The value of these scripts is that they take the type of data that normally comes in awkward formats (huge nested JSON/XML, inconsistent field names, unclear image handling) and convert it into a consistent document format that is easy to index.
+For some query rewriting work I’m involved in, I needed a realistic, image-rich product catalog and a clean representation of that catalog that can be indexed and iterated on quickly. For this, I built two small repositories that take data from open data sources, and produce demo-ready NDJSON: one based on [Open Food Facts](https://es.openfoodfacts.org/) which results in over 100K usable and clean grocery products, and one based on [Open Icecat](https://icecat.biz/) which results in over 1 million usable and clean computer/electronics products. The value of these scripts is that they take the type of data that normally comes in awkward formats (huge nested JSON/XML, inconsistent field names, unclear image handling) and convert it into a consistent document format that is easy to index.
 
 ## The harvesters
 
@@ -134,7 +134,7 @@ The final resulting demo dataset is significantly smaller than the original 25M 
 
 2. **Regional/category filtering**: We use a targets.txt file to focus only on high-utility categories (like Laptops and Smartphones). This avoids millions of low-signal categories (e.g., spare parts, cables) that typically clutter a demo search experience.
 
-3. **The "demo-ready" quality gate**: Our script applies a strict filter: **No Image = No Entry**. A product without a visual asset is a dead-end in a demo UI. By requiring at least one high-resolution image URL and a valid title, we prune the "metadata-only" records that make up a large portion of the raw feed.
+3. **The demo-ready quality gate**: Our script applies a strict filter: **No Image = No Entry**. A product without a visual asset is a dead-end in a demo UI. By requiring at least one high-resolution image URL and a valid title, we prune the "metadata-only" records that make up a large portion of the raw feed.
 
 4. **Deduplication**: Icecat often provides separate XML files for the same product to handle different languages or minor regional packaging variants. Our pipeline deduplicates these by Product ID, ensuring that the search index contains one canonical record per item rather than many near-identical variants.
 

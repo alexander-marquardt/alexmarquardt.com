@@ -1,8 +1,8 @@
 ---
-title: "Extracting and transforming clean and usable grocery and electronics datasets"
-date: 2026-01-13
+title: "From messy product feeds to demo-grade ecommerce data"
+date: 2026-01-14
 description: "Turn messy open-source product data into clean, image-rich NDJSON for e-commerce demos and relevance work."
-slug: clean-and-free-ndjson-ecommerce-demo-data
+slug: ecommerce-demo-data
 ---
 
 ## Introduction
@@ -13,20 +13,26 @@ In practice, it can be surprisingly hard to find demo datasets that are (a) larg
 
 For some query rewriting work I’m involved in, I needed a realistic, image-rich product catalog and a clean representation of that catalog that can be indexed and iterated on quickly. For this, I built two small repositories that take data from open sources, and produce “demo-grade” NDJSON: one based on [Open Food Facts](https://es.openfoodfacts.org/) which results in over 100K usable and clean grocery products, and one based on [Open Icecat](https://icecat.biz/) which results in over 1 million usable and clean computer/electronics products. The value of these scripts is that they take the type of data that normally comes in awkward formats (huge nested JSON/XML, inconsistent field names, unclear image handling) and convert it into a consistent, search-ready document format.
 
-- [Icecat harvester](https://github.com/alexander-marquardt/icecat-harvester/)
-- [Open Food Facts extractor](https://github.com/alexander-marquardt/open-food-facts-ndjson-extractor)
+## The harvesters
+
+To solve the data gap, I built two open-source ETL pipelines. These tools handle the "heavy lifting" of downloading millions of records and transforming them into search-ready NDJSON:
+
+* [**Icecat Harvester**](https://github.com/alexander-marquardt/icecat-harvester/): Optimized for high-speed XML streaming and electronics metadata.
+* [**Open Food Facts Extractor**](https://github.com/alexander-marquardt/open-food-facts-ndjson-extractor): Tailored for deep JSONL parsing and grocery-specific attribute extraction.
+
 
 ## NDJSON
 
 Elasticsearch ingests JSON documents. NDJSON is a file format that allows one JSON object per line, which is trivial to bulk ingest. The output of these tools is a clean, stable schema that a search engine can ingest in minutes.
 
-## Dataset #1: Open Food Facts as a demo catalog (with images)
+
+## Dataset #1: Open Food Facts as a demo catalog
 
 Open Food Facts is not an “e-commerce” dataset in the Amazon sense. It is a product database built for transparency: ingredients, allergens, nutrition, and label-derived metadata. The reason it works well for demos is that it still behaves like a real product catalog: it has product names, categories, and images. Importantly, its data reuse posture is explicit and documented (ODbL for the database; CC BY-SA for images). That clarity matters when you intend to show a dataset to customers.
 
 The raw Open Food Facts export is a large JSONL file with a lot of structure. The extractor repository turns it into clean NDJSON that is immediately indexable. It also computes image URLs based on the official image URL scheme, and it can apply quality gates such as “English titles/descriptions” and “must have a front image.”
 
-### Inclusion criteria (why ~4.2M → ~100K)
+### Open Food Facts inclusion criteria
 
 After parsing, filtering, and cleaning over 4.2 million source records from Open Food Facts, the resulting dataset contains over 100K clean, flat JSON objects. This reduction is expected: the extractor is intentionally strict because the goal is a demo-grade catalog.
 
@@ -36,27 +42,8 @@ A record is included only if it meets all of the following:
 - A usable front image
 - At least one meaningful category (placeholder/empty categories are excluded)
 
-Repo: https://github.com/alexander-marquardt/open-food-facts-ndjson-extractor
 
-The output schema is intentionally practical. It includes:
-
-### Schema Overview
-
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `id` | string | GTIN-13 barcode (padded). |
-| `title` | string | Product name (English). |
-| `brand` | string | Manufacturer or brand name. |
-| `description` | string | Synthesized description (Title + Ingredients + Key Specs). |
-| `price` | float | Synthetic, deterministic price for e-commerce simulation. |
-| `currency` | string | Currency code (default: EUR). |
-| `image_url` | string | Computed primary product image URL. |
-| `categories` | list | Cleaned list of category tags. |
-| `attrs` | object | **Flattened Dictionary** of key-value attributes (e.g., Nutri-Score, Energy). |
-| `attr_keys` | list | List of all keys available in `attrs` for faceting. |
-| `dietary_restrictions` | list | Parsed dietary tags (e.g., ["vegan","vegetarian"]) for efficient filtering (the original raw value is still present in `attrs` when available). |
-
-### After: Cleaned NDJSON for Grocery Search
+### After: Cleaned NDJSON for grocery search
 
 This resulting data is ready to be indexed into a search engine like Elasticsearch or OpenSearch, and looks as follows:
 
@@ -135,35 +122,21 @@ Open Food Facts is excellent for food/CPG. But some demos benefit from an electr
 
 Icecat is typically consumed via XML interfaces and nested structures that cannot be indexed directly into Elasticsearch. The Icecat harvester repo is designed as an ETL pipeline where downloading and parsing are separate steps. That separation matters: you can download once, iterate on schema transformation many times, and regenerate clean NDJSON without re-downloading everything.
 
-### Inclusion criteria (why  25M → 3.5M → 1M)
+### Icecat inclusion criteria (why 25M → 3.5M → 1M)
 
 The raw Icecat index is massive, spanning over 25 million data sheets in the global catalog. However, I have targeted a subset of the _open_ index covering only "interesting" categories of products (the desired categories are easily configurable). This subset contains approximately 3.5M data sheets. After further filtering and processing, I end up with about 1M demo-quality products.
 
 The final resulting demo dataset is significantly smaller than the original 25M for the following reasons:
 
-1. **Open vs. Full Tier**: We specifically target the "Open Icecat" portion of the catalog. While the "Full Icecat" database includes over 28,000 brands, only a subset (the "sponsoring brands" like HP, Lenovo, and Samsung) authorize their data for free, unrestricted distribution.
+1. **Open vs. full tier**: We specifically target the "Open Icecat" portion of the catalog. While the "Full Icecat" database includes over 28,000 brands, only a subset (the "sponsoring brands" like HP, Lenovo, and Samsung) authorize their data for free, unrestricted distribution.
 
-2. **Regional/Category Filtering**: We use a targets.txt file to focus only on high-utility categories (like Laptops and Smartphones). This avoids millions of "spare part" records or "cables" that clutter a search experience.
+2. **Regional/category filtering**: We use a targets.txt file to focus only on high-utility categories (like Laptops and Smartphones). This avoids millions of "spare part" records or "cables" that clutter a search experience.
 
-3. **The "Demo-Ready" Quality Gate**: Our script applies a strict filter: No Image = No Entry. A product without a visual asset is a dead-end in a demo UI. By requiring at least one high-resolution image URL and a valid title, we prune the "metadata-only" records that make up a large portion of the raw feed.
+3. **The "demo-ready" quality gate**: Our script applies a strict filter: **No Image = No Entry**. A product without a visual asset is a dead-end in a demo UI. By requiring at least one high-resolution image URL and a valid title, we prune the "metadata-only" records that make up a large portion of the raw feed.
 
-Repo: https://github.com/alexander-marquardt/icecat-harvester/
+4. **Deduplication**: Icecat often provides separate XML files for the same product to handle different languages or minor regional packaging variants. Our pipeline deduplicates these by Product ID, ensuring that your search index contains only one "Golden Record" per item rather than ten near-identical results.
 
-### Schema Overview
-
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `id` | string | Unique Icecat product identifier. |
-| `title` | string | Full product name and marketing title. |
-| `brand` | string | Manufacturer name (e.g., Lenovo, HP). |
-| `description` | string | Cleaned text description (HTML tags removed). |
-| `price` | float | Estimated/Heuristic price in EUR. |
-| `image_url` | string | Primary high-resolution product image URL. |
-| `categories` | list | List of category names assigned to the product. |
-| `attrs` | object | **Flattened Dictionary** of technical specifications. |
-| `attr_keys` | list | List of all keys available in `attrs` (used for search facets). |
-
-### After: Cleaned NDJSON for Electronics Search
+### After: Cleaned NDJSON for electronics search
 
 After parsing, filtering, and cleaning over 3.5 million source records, the resulting dataset contains over a million clean, flat JSON objects, that are ready to be indexed into a search engine like Elasticsearch or OpenSearch. 
 
@@ -198,25 +171,25 @@ The goal is that a loader or indexing pipeline can ingest both Icecat and Open F
 
 | Field | Type | Source: Icecat Logic (Electronics) | Source: Open Food Facts Logic (Grocery) |
 | :--- | :--- | :--- | :--- |
-| **id** | string | Unique Icecat Product ID | Padded GTIN-13 Barcode |
-| **title** | string | Full Marketing Title | English Product Name |
-| **brand** | string | Manufacturer (e.g., Apple, Lenovo) | Brand/Producer Name |
-| **description** | string | **Synthesis:** Marketing text + Key Technical Specifications | **Synthesis:** Ingredients + Key Nutritional Metadata |
-| **price** | float | **Heuristic:** Category baseline modified by Brand premium | **Estimated:** Unit pricing model based on category & weight |
-| **currency** | string | Fixed (EUR) | Fixed (EUR) |
-| **image_url** | string | **High-Quality:** Select the best quality product photo from Icecat source data | **Computed:** The URL of the photo is a derived from product code, image key, revision, and resolution |
-| **categories** | list | Single-item list (Primary Icecat Category) | Hierarchical list (from broad to specific) |
-| **attrs** | object | **Flattened:** Technical specs (e.g., `"RAM": "16GB"`) | **Flattened:** Nutritional/Labels (e.g., `"Nutri-Score": "A"`) |
-| **attr_keys** | list | List of keys in `attrs` for dynamic faceting | List of keys in `attrs` for dynamic faceting |
+| id | string | Unique Icecat Product ID | Padded GTIN-13 Barcode |
+| title | string | Full Marketing Title | English Product Name |
+| brand | string | Manufacturer (e.g., Apple, Lenovo) | Brand/Producer Name |
+| description | string | **Synthesis:** Marketing text + Key Technical Specifications | **Synthesis:** Ingredients + Key Nutritional Metadata |
+| price | float | **Heuristic:** Category baseline modified by Brand premium | **Estimated:** Unit pricing model based on category & weight |
+| currency | string | Fixed (EUR) | Fixed (EUR) |
+| image_url | string | **High-Quality:** Selects the best available primary product photo | **Computed:** URL derived from product code and image metadata |
+| categories | list | Single-item list (Primary Icecat Category) | Hierarchical list (from broad to specific) |
+| attrs | object | **Flattened:** Technical specs (e.g., "RAM": "16GB") | **Flattened:** Nutritional/Labels (e.g., "Nutri-Score": "A") |
+| attr_keys | list | List of keys in attrs for dynamic faceting | List of keys in attrs for dynamic faceting |
 
-### Why this Schema works for Search
+### Why this schema works for search
 By converging on this single contract, you solve the "Ingestion Gap." Whether you are indexing 100K olive oils or 1M laptops, your search engine configuration remains stable:
 
-- **Consistent Faceting**: The attrs object is a flat dictionary. In Elasticsearch, this is typically mapped as a `flattened` field to support dynamic faceting without a mapping explosion."
+- **Consistent faceting**: The attrs object is a flat dictionary. In Elasticsearch, this is typically mapped as a `flattened` field to support dynamic faceting without a mapping explosion."
 
-- **Searchable Specs**: High-value technical data is injected into the description field. This ensures that a user searching for "Ryzen 7" or "Palm-oil free" finds the product via full-text search even if those specific attributes aren't explicitly boosted.
+- **Searchable specs**: High-value technical data is injected into the description field. This ensures that a user searching for "Ryzen 7" or "Palm-oil free" finds the product via full-text search even if those specific attributes aren't explicitly boosted.
 
-- **Visual Reliability**: Both pipelines discard any record missing a valid image_url. This reduces that chances of your demo showing a "broken image" icon, making the experience feel production-ready.
+- **Visual reliability**: Both pipelines discard any record missing a valid image_url. This reduces that chances of your demo showing a "broken image" icon, making the experience feel production-ready.
 
 ## Where WANDS fits: evaluation, not demos
 

@@ -17,6 +17,8 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 
 ## Search & Relevance
 
+- [Building clean and usable datasets for ecommerce data](/elastic/clean-and-free-ecommerce-demo-data) (Jan 14, 2026)
+
 - [Influencing BM25 ranking with multiplicative boosting in Elasticsearch | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/bm25-ranking-multiplicative-boosting-elasticsearch) (Dec 22, 2025)
 
 - [Boosting e-commerce search by profit and popularity with the function score query in Elasticsearch | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/function-score-query-boosting-profit-popularity-elasticsearch) (Dec 17, 2025)

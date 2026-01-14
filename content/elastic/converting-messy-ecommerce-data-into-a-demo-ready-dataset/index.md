@@ -1,22 +1,19 @@
 ---
-title: "Demo-grade e-commerce datasets: Clean and useable grocery and electronics datasets"
+title: "Extracting and transforming clean and useable grocery and electronics datasets"
 date: 2026-01-13
-description: "Turn messy product data into clean, image-rich NDJSON for e-commerce search demos and relevance work."
+description: "Turn messy open-source product data into clean, image-rich NDJSON for e-commerce search demos and relevance work."
 slug: clean-ndjson-ecommerce-demo-data
 ---
 
 ## Introduction
 
-If you want to demo e-commerce search, you need good data: titles that look real, images that load, categories and attributes that facet cleanly, and enough product variety that a query rewriter or a re-ranker actually has room to show impact. 
+If you want to demo e-commerce search, you need a catalog that behaves like a real catalog: realistic titles, images that load, categories and attributes that facet cleanly, and enough product variety that a query rewriter or re-ranker actually has room to show impact.
 
-Because it is difficult to find good, free, and open demo data sets, many teams get stuck using a small dataset, or a synthetic toy catalog, or whatever was easiest to download. This results in unrealistic demos, and customers end up confused as to why the amazing demo experience isn't reproduceable on production system.
+In practice, it can be surprisingly hard to find demo datasets that are (a) large and realistic, (b) easy to ingest, and (c) safe to reuse in commercial settings. The default outcome is usually a tiny dataset, a synthetic toy catalog, or a format that requires a lot of one-off parsing. That often makes a demo feel less credible, and it makes it harder to reproduce the same experience on a production catalog.
 
-For work that I am doing on a query rewriter I need a good and large dataset with the following characteristics:
+For some query rewriting work I’m doing, I needed two things at the same time: a realistic, image-rich product catalog, and a clean representation of that catalog that can be indexed and iterated on quickly. To get there, I built two small repositories that turn open data sources into “demo-grade” NDJSON: one for grocery using Open Food Facts, and one for electronics/computers using Open Icecat.
 
-1. **A realistic product catalog** that is large enough and rich enough to demo modern e-commerce search (including images).
-2. **A clean representation** of that catalog that is easy to ingest into a search engine and easy to iterate on.
-
-To get there, I built two small repositories that take open sources and produce “demo-grade” NDJSON: one based on [Open Food Facts](https://es.openfoodfacts.org/) which results in over 100K useable and clean grocery products, and one based on [Open Icecat](https://icecat.biz/) which results in over 1 million useable and clean compuetr and elecronics products. The value of these scripts is that they take the type of data that normally comes in awkward formats (huge nested JSON/XML, inconsistent field names, unclear image handling) and convert it into a consistent, search-ready document format.
+To get there, I built two small repositories that take data from open sources, and produce “demo-grade” NDJSON: one based on [Open Food Facts](https://es.openfoodfacts.org/) which results in over 100K useable and clean grocery products, and one based on [Open Icecat](https://icecat.biz/) which results in over 1 million useable and clean compuetr and elecronics products. The value of these scripts is that they take the type of data that normally comes in awkward formats (huge nested JSON/XML, inconsistent field names, unclear image handling) and convert it into a consistent, search-ready document format.
 
 - Icecat harvester: https://github.com/alexander-marquardt/icecat-harvester/
 - Open Food Facts extractor: https://github.com/alexander-marquardt/open-food-facts-ndjson-extractor
@@ -66,7 +63,7 @@ The output is over 100K clean, flat JSON objects, that are ready to be indexed i
   "brand": "Athena Imports",
   "description": "Extra virgin olive oil\n\nExtra virgin olive oil\n\n\nKey Specifications:\n- **Category**: Plant based foods and beverages\n- **Serving size**: 15 ml\n- **Nutri-Score**: B\n- **NOVA group**: 2\n- **Eco-Score**: E\n- **Dietary**: vegan, vegetarian\n- **Ingredients analysis**: palm-oil-free, vegan, vegetarian\n- **Energy (kcal/100g)**: 800 kcal\n- **Fat (g/100g)**: 93.3 g\n- **Saturated fat (g/100g)**: 13.3 g\n- **Sugars (g/100g)**: 0 g\n- **Salt (g/100g)**: 0 g\n- **Protein (g/100g)**: 0 g\n- **Countries**: United States",
   "image_url": "https://images.openfoodfacts.org/images/products/000/812/700/0019/front_en.5.400.jpg",
-  "price": 0.49,
+  "price": 2.49,
   "currency": "EUR",
   "categories": [
     "Plant based foods and beverages",

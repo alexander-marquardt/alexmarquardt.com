@@ -8,7 +8,7 @@ slug: ecommerce-demo-data
 
 ## Introduction
 
-Demonstrating e-commerce search requires a catalog with realistic titles, working images, usable categories and attributes for faceting, and sufficient product variety to observe the effect of query rewriting or re-ranking. In other words, the dataset needs to behave like a real catalog.
+Demonstrating e-commerce search requires a catalog with realistic titles, working images, usable categories and attributes, and sufficient product variety to observe the effect of query rewriting or re-ranking. In other words, the dataset needs to behave like a real catalog.
 
 In practice, it can be surprisingly hard to find demo data that is (a) sufficiently large, (b) easy to ingest, and (c) safe to use in commercial settings. A common workaround is to use a smaller dataset, a synthetic catalog, or a source format that requires significant one-off parsing. That tends to make demos less convincing and reduces the likelihood that the same experience can be reproduced on rewal-workd production catalogs.
 

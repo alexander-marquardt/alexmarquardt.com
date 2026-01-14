@@ -10,7 +10,7 @@ slug: ecommerce-demo-data
 
 Demonstrating e-commerce search requires a catalog with realistic titles, working images, usable categories and attributes, and sufficient product variety to observe the effect of query rewriting or re-ranking. In other words, the dataset needs to behave like a real catalog.
 
-In practice, it can be surprisingly hard to find demo data that is (a) sufficiently large, (b) easy to ingest, and (c) safe to use in commercial settings. A common workaround is to use a smaller dataset, a synthetic catalog, or a source format that requires significant one-off parsing. That tends to make demos less convincing and reduces the likelihood that the same experience can be reproduced on rewal-workd production catalogs.
+In practice, it can be surprisingly hard to find demo data that is (a) sufficiently large, (b) easy to ingest, and (c) safe to use in commercial settings. A common workaround is to use a smaller dataset, a synthetic catalog, or a source format that requires significant one-off parsing. That tends to make demos less convincing and reduces the likelihood that the same experience can be reproduced on real-world production catalogs.
 
 For some query rewriting work I’m involved in, I needed an image-rich product catalog and a clean representation of that catalog that could be indexed and iterated on quickly. To support this, I built two tools that take data from open sources and output demo-ready NDJSON. One pipeline is based on [Open Food Facts](https://es.openfoodfacts.org/) and produces over 100K usable grocery products; the other is based on [Open Icecat](https://icecat.biz/) and produces over 1 million usable computer/electronics products. These tools take data that often comes in awkward formats (nested JSON/XML, inconsistent field names, and image metadata that isn’t directly usable) and convert it into clean NDJSON documents with a consistent schema.
 
@@ -248,8 +248,6 @@ This may be perfectly fine for research benchmarking, but it reintroduces the sa
 
 ## Conclusion
 
-If you want to build and demo e-commerce search, the blocker is often the dataset: getting something large, realistic, image-rich, and easy to ingest.
-
-Open Food Facts and Icecat are two sources that (a) contain the kinds of fields demos need, including images and metadata, and (b) have licensing frameworks that are clear enough to build on without feeling like you’re stepping into a gray area. The real work — and the real value — is in turning raw, awkward source formats into clean, stable NDJSON that is easy to index, easy to query, and easy to use in demos. Not more, not less.
+If you want to build and demo e-commerce search, the blocker is often the dataset.Open Food Facts and Icecat are two sources that (a) contain the kinds of fields demos need, including images and metadata, and (b) have licensing frameworks that are clear enough to build on without feeling like you’re stepping into a gray area. The real work — and the real value — is in turning raw, awkward source formats into clean, stable NDJSON that is easy to index, easy to query, and easy to use in demos. Not more, not less.
 
 If you’re doing relevance evaluation, WANDS is still in the picture. It’s a different tool for a different job. But for demo catalogs that look and feel real, Icecat and Open Food Facts are the two foundations I’m using today.

@@ -1,5 +1,5 @@
 ---
-title: "From messy product feeds to demo-grade ecommerce data"
+title: "From messy product feeds to demo-grade e-commerce data"
 date: 2026-01-14
 description: "Turn messy open-source product data into clean, image-rich NDJSON for e-commerce demos and relevance work."
 slug: ecommerce-demo-data
@@ -15,11 +15,10 @@ For some query rewriting work I’m involved in, I needed a realistic, image-ric
 
 ## The harvesters
 
-To solve the data gap, I built two open-source ETL pipelines. These tools handle the "heavy lifting" of downloading millions of records and transforming them into search-ready NDJSON:
+To solve the data gap, I built two open-source ETL pipelines. These tools download large catalogs and transform them into search-ready NDJSON:
 
-* [**Icecat Harvester**](https://github.com/alexander-marquardt/icecat-harvester/): Optimized for high-speed XML streaming and electronics metadata.
-* [**Open Food Facts Extractor**](https://github.com/alexander-marquardt/open-food-facts-ndjson-extractor): Tailored for deep JSONL parsing and grocery-specific attribute extraction.
-
+* [**Icecat Harvester**](https://github.com/alexander-marquardt/icecat-harvester/): Streams Icecat XML at scale and normalizes electronics metadata.
+* [**Open Food Facts Extractor**](https://github.com/alexander-marquardt/open-food-facts-ndjson-extractor): Parses Open Food Facts JSONL and extracts grocery attributes and images.
 
 ## NDJSON
 
@@ -42,6 +41,7 @@ A record is included only if it meets all of the following:
 - A usable front image
 - At least one meaningful category (placeholder/empty categories are excluded)
 
+This is intentional: for demos, the cost of including (or fixing) incomplete products is higher than the cost of excluding them.
 
 ### After: Cleaned NDJSON for grocery search
 
@@ -106,6 +106,8 @@ This resulting data is ready to be indexed into a search engine like Elasticsear
 }
 ```
 
+Note: attrs["Dietary restrictions"] reflects the raw, display-friendly value, while dietary_restrictions is a normalized array for efficient filtering/faceting.
+
 ### Benefits
 
 The key is that once the data is in this shape, you can iterate on search logic quickly. Query rewriting rules, category routing, facet behavior, synonyms, typo handling, attribute extraction — all of it becomes easier when the data is already clean.
@@ -124,17 +126,17 @@ Icecat is typically consumed via XML interfaces and nested structures that canno
 
 ### Icecat inclusion criteria (why 25M → 3.5M → 1M)
 
-The raw Icecat index is massive, spanning over 25 million data sheets in the global catalog. However, I have targeted a subset of the _open_ index covering only "interesting" categories of products (the desired categories are easily configurable). This subset contains approximately 3.5M data sheets. After further filtering and processing, I end up with about 1M demo-quality products.
+The raw Icecat index is massive, spanning more than 25 million data sheets in the global catalog. However, I have targeted a subset of the _open_ index covering only "interesting" categories of products (the desired categories are easily configurable). This subset contains approximately 3.5M data sheets. After further filtering and processing, I end up with about 1M demo-quality products.
 
 The final resulting demo dataset is significantly smaller than the original 25M for the following reasons:
 
-1. **Open vs. full tier**: We specifically target the "Open Icecat" portion of the catalog. While the "Full Icecat" database includes over 28,000 brands, only a subset (the "sponsoring brands" like HP, Lenovo, and Samsung) authorize their data for free, unrestricted distribution.
+1. **Open vs. full tier**: We specifically target the "Open Icecat" portion of the catalog. While the "Full Icecat" database includes over 28,000 brands, only a subset (the "sponsoring brands" like HP, Lenovo, and Samsung) make their content available via the Open Icecat tier.
 
-2. **Regional/category filtering**: We use a targets.txt file to focus only on high-utility categories (like Laptops and Smartphones). This avoids millions of "spare part" records or "cables" that clutter a search experience.
+2. **Regional/category filtering**: We use a targets.txt file to focus only on high-utility categories (like Laptops and Smartphones). This avoids millions of low-signal categories (e.g., spare parts, cables) that typically clutter a demo search experience.
 
 3. **The "demo-ready" quality gate**: Our script applies a strict filter: **No Image = No Entry**. A product without a visual asset is a dead-end in a demo UI. By requiring at least one high-resolution image URL and a valid title, we prune the "metadata-only" records that make up a large portion of the raw feed.
 
-4. **Deduplication**: Icecat often provides separate XML files for the same product to handle different languages or minor regional packaging variants. Our pipeline deduplicates these by Product ID, ensuring that your search index contains only one "Golden Record" per item rather than ten near-identical results.
+4. **Deduplication**: Icecat often provides separate XML files for the same product to handle different languages or minor regional packaging variants. Our pipeline deduplicates these by Product ID, ensuring that the search index contains one canonical record per item rather than many near-identical variants.
 
 ### After: Cleaned NDJSON for electronics search
 
@@ -179,17 +181,17 @@ The goal is that a loader or indexing pipeline can ingest both Icecat and Open F
 | currency | string | Fixed (EUR) | Fixed (EUR) |
 | image_url | string | **High-Quality:** Selects the best available primary product photo | **Computed:** URL derived from product code and image metadata |
 | categories | list | Single-item list (Primary Icecat Category) | Hierarchical list (from broad to specific) |
-| attrs | object | **Flattened:** Technical specs (e.g., "RAM": "16GB") | **Flattened:** Nutritional/Labels (e.g., "Nutri-Score": "A") |
+| attrs | object | **Flattened:** Technical specs (e.g., `"RAM": "16GB"`) | **Flattened:** Nutritional/Labels (e.g., `"Nutri-Score": "A"`) |
 | attr_keys | list | List of keys in attrs for dynamic faceting | List of keys in attrs for dynamic faceting |
 
 ### Why this schema works for search
 By converging on this single contract, you solve the "Ingestion Gap." Whether you are indexing 100K olive oils or 1M laptops, your search engine configuration remains stable:
 
-- **Consistent faceting**: The attrs object is a flat dictionary. In Elasticsearch, this is typically mapped as a `flattened` field to support dynamic faceting without a mapping explosion."
+- **Consistent faceting**: The attrs object is a flat dictionary. In Elasticsearch, this is typically mapped as a `flattened` field to support dynamic faceting without a mapping explosion.
 
 - **Searchable specs**: High-value technical data is injected into the description field. This ensures that a user searching for "Ryzen 7" or "Palm-oil free" finds the product via full-text search even if those specific attributes aren't explicitly boosted.
 
-- **Visual reliability**: Both pipelines discard any record missing a valid image_url. This reduces that chances of your demo showing a "broken image" icon, making the experience feel production-ready.
+- **Visual reliability**: Both pipelines discard any record missing a valid image_url. This reduces the chances of your demo showing a "broken image" icon, making the experience feel production-ready.
 
 ## Where WANDS fits: evaluation, not demos
 
@@ -212,7 +214,7 @@ There are many attractive datasets in the research ecosystem, but many of them c
 
 The UCSD / McAuley Lab Amazon datasets are impressive: reviews, metadata, sometimes images, large scale. For demos, they look great on paper.
 
-The problem is not technical quality. The problem is posture: the underlying content originates from Amazon, and many releases are framed as academic research resources. In addition, the Amazon Reviews 2023 ecosystem is frequently referenced with non-commercial research restrictions in derivative distributions.
+The problem is not technical quality. The problem is posture: the underlying content originates from Amazon, and many releases are framed as academic research resources. In addition, the Amazon Reviews 2023 ecosystem is frequently referenced with non-commercial research restrictions in some derivative distributions.
 
 - Amazon Reviews 2023 landing page: https://amazon-reviews-2023.github.io/
 - UCSD Amazon review data: https://jmcauley.ucsd.edu/data/amazon/
@@ -246,8 +248,8 @@ This may be perfectly fine for research benchmarking, but it reintroduces the sa
 
 ## Conclusion
 
-If you want to build and demo e-commerce search, the blocker is rarely your search engine. The blocker is usually the dataset. Most people accept that and operate with a small catalog because they believe that getting good data is difficult. The point of these two repositories is to ease that burden.
+If you want to build and demo e-commerce search, the blocker is often the dataset: getting something large, realistic, image-rich, and easy to ingest.
 
-Open Food Facts and Icecat are not magical. They are just two sources that (a) contain the kinds of fields demos need, including images and metadata, and (b) have licensing frameworks that are clear enough to build on without feeling like you’re stepping into a gray area. The real work — and the real value — is in turning raw, awkward source formats into clean, stable NDJSON that is easy to index, easy to query, and easy to use in demos. Not more, not less.
+Open Food Facts and Icecat are two sources that (a) contain the kinds of fields demos need, including images and metadata, and (b) have licensing frameworks that are clear enough to build on without feeling like you’re stepping into a gray area. The real work — and the real value — is in turning raw, awkward source formats into clean, stable NDJSON that is easy to index, easy to query, and easy to use in demos. Not more, not less.
 
 If you’re doing relevance evaluation, WANDS is still in the picture. It’s a different tool for a different job. But for demo catalogs that look and feel real, Icecat and Open Food Facts are the two foundations I’m using today.

@@ -16,9 +16,7 @@ For work that I am doing on a query rewriter I need a good and large dataset wit
 1. **A realistic product catalog** that is large enough and rich enough to demo modern e-commerce search (including images).
 2. **A clean representation** of that catalog that is easy to ingest into a search engine and easy to iterate on.
 
-That’s it. Not more, not less.
-
-To get there, I built two small repositories that take open sources and produce “demo-grade” NDJSON: one based on [Open Food Facts](https://es.openfoodfacts.org/), and one based on [Open Icecat](https://icecat.biz/). The value is not that they “scrape data.” The value is that they take the type of data that normally comes in awkward formats (huge nested JSON/XML, inconsistent field names, unclear image handling) and convert it into a consistent, search-ready document format.
+To get there, I built two small repositories that take open sources and produce “demo-grade” NDJSON: one based on [Open Food Facts](https://es.openfoodfacts.org/) which results in over 100K useable and clean grocery products, and one based on [Open Icecat](https://icecat.biz/) which results in over 1 million useable and clean compuetr and elecronics products. The value of these scripts is that they take the type of data that normally comes in awkward formats (huge nested JSON/XML, inconsistent field names, unclear image handling) and convert it into a consistent, search-ready document format.
 
 - Icecat harvester: https://github.com/alexander-marquardt/icecat-harvester/
 - Open Food Facts extractor: https://github.com/alexander-marquardt/open-food-facts-ndjson-extractor
@@ -41,13 +39,94 @@ Repo: https://github.com/alexander-marquardt/open-food-facts-ndjson-extractor
 
 The output schema is intentionally practical. It includes:
 
-- `title`, `brand`, `description`
-- `image_url`
-- `categories` (cleaned)
-- `attrs` + `attr_keys` (for faceting and explainability)
-- a demo-grade `price` model that produces plausible values and makes bulk sizes cheaper per unit, without pretending to be real point-in-time retail pricing
+### Schema Overview
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | string | GTIN-13 barcode (padded). |
+| `title` | string | Product name (English). |
+| `brand` | string | Manufacturer or brand name. |
+| `description` | string | Synthesized description (Title + Ingredients + Key Specs). |
+| `price` | float | Synthetic, deterministic price for e-commerce simulation. |
+| `currency` | string | Currency code (default: EUR). |
+| `image_url` | string | Computed primary product image URL. |
+| `categories` | list | Cleaned list of category tags. |
+| `attrs` | object | **Flattened Dictionary** of key-value attributes (e.g., Nutri-Score, Energy). |
+| `attr_keys` | list | List of all keys available in `attrs` for faceting. |
+| `dietary_restrictions` | list | Extracted dietary tags (e.g., vegan, vegetarian). |
+
+### After: Cleaned NDJSON for Search Example
+
+The output is over 100K clean, flat JSON objects, that are ready to be indexed into a search engine like Elasticsearch or OpenSearch.
+
+```json
+{
+  "id": "0008127000019",
+  "title": "Extra virgin olive oil",
+  "brand": "Athena Imports",
+  "description": "Extra virgin olive oil\n\nExtra virgin olive oil\n\n\nKey Specifications:\n- **Category**: Plant based foods and beverages\n- **Serving size**: 15 ml\n- **Nutri-Score**: B\n- **NOVA group**: 2\n- **Eco-Score**: E\n- **Dietary**: vegan, vegetarian\n- **Ingredients analysis**: palm-oil-free, vegan, vegetarian\n- **Energy (kcal/100g)**: 800 kcal\n- **Fat (g/100g)**: 93.3 g\n- **Saturated fat (g/100g)**: 13.3 g\n- **Sugars (g/100g)**: 0 g\n- **Salt (g/100g)**: 0 g\n- **Protein (g/100g)**: 0 g\n- **Countries**: United States",
+  "image_url": "https://images.openfoodfacts.org/images/products/000/812/700/0019/front_en.5.400.jpg",
+  "price": 0.49,
+  "currency": "EUR",
+  "categories": [
+    "Plant based foods and beverages",
+    "Plant based foods",
+    "Fats"
+  ],
+  "attrs": {
+    "Serving size": "15 ml",
+    "Nutri-Score": "B",
+    "NOVA group": "2",
+    "Eco-Score": "E",
+    "Ingredients analysis": "palm-oil-free, vegan, vegetarian",
+    "Countries": "United States",
+    "Category": "Plant based foods and beverages",
+    "Energy (kcal/100g)": "800 kcal",
+    "Fat (g/100g)": "93.3 g",
+    "Saturated fat (g/100g)": "13.3 g",
+    "Sugars (g/100g)": "0 g",
+    "Salt (g/100g)": "0 g",
+    "Protein (g/100g)": "0 g",
+    "Dietary restrictions": "vegan, vegetarian",
+    "Price source": "estimated_unit_model",
+    "Pricing bucket": "oils_fats",
+    "Estimated unit price": "11.59 EUR/l (15ml, bucket=oils_fats, scale=1.21, ratio=0.15)"
+  },
+  "attr_keys": [
+    "Category",
+    "Countries",
+    "Dietary",
+    "Eco-Score",
+    "Energy (kcal/100g)",
+    "Estimated unit price",
+    "Fat (g/100g)",
+    "Ingredients analysis",
+    "NOVA group",
+    "Nutri-Score",
+    "Price source",
+    "Pricing bucket",
+    "Protein (g/100g)",
+    "Salt (g/100g)",
+    "Saturated fat (g/100g)",
+    "Serving size",
+    "Sugars (g/100g)"
+  ],
+  "dietary_restrictions": [
+    "vegan",
+    "vegetarian"
+  ]
+}
+```
+
+### Benefits
 
 The key is that once the data is in this shape, you can iterate on search logic quickly. Query rewriting rules, category routing, facet behavior, synonyms, typo handling, attribute extraction — all of it becomes easier when the data is already clean.
+
+### How the data looks
+
+Below is an example of how the cleaned icecat data looks in a simple ecommerce frontend.
+
+![Demo screenshot](images/cleaned-food-data.png)
 
 ## Dataset #2: Icecat for electronics-style product catalogs
 
@@ -57,7 +136,46 @@ Icecat is typically consumed via XML interfaces and nested structures that canno
 
 Repo: https://github.com/alexander-marquardt/icecat-harvester/
 
-The output looks like a normal e-commerce product document: title, brand, a description that includes key specs, image URL(s), categories, and a flattened attribute dictionary. This is exactly what you want when you’re trying to demo search features like attribute-aware ranking or query rewriting (“16GB RAM”, “OLED”, “15-inch”, etc.).
+### Schema Overview
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | string | Unique Icecat product identifier. |
+| `title` | string | Full product name and marketing title. |
+| `brand` | string | Manufacturer name (e.g., Lenovo, HP). |
+| `description` | string | Cleaned text description (HTML tags removed). |
+| `price` | float | Estimated/Heuristic price in EUR. |
+| `image_url` | string | Primary high-resolution product image URL. |
+| `categories` | list | List of category names assigned to the product. |
+| `attrs` | object | **Flattened Dictionary** of technical specifications. |
+| `attr_keys` | list | List of all keys available in `attrs` (used for search facets). |
+
+### Example Record
+
+```json
+{
+  "id": "91778569",
+  "title": "Lenovo Legion 5 15ARH05H AMD Ryzen™ 7 4800H Laptop...",
+  "brand": "Lenovo",
+  "description": "Minimal meets mighty... Thermally tuned via Legion Coldfront 2.0.",
+  "price": 865.33,
+  "currency": "EUR",
+  "image_url": "https://images.icecat.biz/img/gallery_mediums/79117985_5269963235.jpg",
+  "categories": ["Laptops"],
+  "attrs": {
+    "Processor family": "AMD Ryzen™ 7",
+    "Internal memory": "16 GB",
+    "Weight": "2.46 kg"
+  },
+  "attr_keys": ["Processor family", "Internal memory", "Weight"]
+}
+```
+
+### How the data looks
+
+Below is an example of how the cleaned icecat data looks in a simple ecommerce frontend.
+
+![Demo screenshot](images/cleaned-electronics-data.png)
 
 ## One schema, two sources
 

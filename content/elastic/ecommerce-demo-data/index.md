@@ -33,7 +33,7 @@ The raw Open Food Facts export is a large JSONL file with a lot of structure. Th
 
 ### Open Food Facts inclusion criteria
 
-After parsing, filtering, and cleaning over 4.2 million source records from Open Food Facts, the resulting dataset contains over 100K clean, flat JSON objects. This reduction is expected: the extractor is intentionally strict because the goal is a catalog suitable for demos.
+After parsing, filtering, and cleaning over 4.2 million source records from Open Food Facts, the resulting dataset contains over 100K clean JSON objects. This reduction is expected: the extractor is intentionally strict because the goal is a catalog suitable for demos.
 
 A record is included only if it meets all of the following:
 
@@ -140,7 +140,7 @@ The final resulting demo dataset is significantly smaller than the original 25M 
 
 ### After: Cleaned NDJSON for electronics search
 
-After parsing, filtering, and cleaning over 3.5 million source records, the resulting dataset contains over a million clean, flat JSON objects, that are ready to be indexed into a search engine like Elasticsearch or OpenSearch. 
+After parsing, filtering, and cleaning over 3.5 million source records, the resulting dataset contains over a million clean JSON objects, that are ready to be indexed into a search engine like Elasticsearch or OpenSearch. 
 
 ```json
 {

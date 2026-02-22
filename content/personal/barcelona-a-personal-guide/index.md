@@ -83,6 +83,8 @@ Below are some must-try restaurants that offer a variety of flavors and experien
 
 - **Ciutat Comtal**: Renowned for its tapas and bustling atmosphere, this restaurant offers a wide array of Spanish dishes in a central location. It is perhaps my favourite restaurant in Barcelona. It doesn't accept reservations, to you may wish to try it out in non-peak hours.
 
+- **Merendero de la Mari**: I give this restaurant 5 stars, although for some reason it only has 4.1 on Google maps. Great for paella overlooking the port where the super-yatches are moored. The price is medium-high (between 30 and 60 euros per person), but the taste and quality is great. 
+
 - **Alba Granados**: Upper-middle/fine dining - great food and a nice atmosphere. With drinks and food, it will probably cost €60 per person or more. The food is very good and worth it. Appetizers that I have enjoyed include octopus, clams, and tuna tartar. The paellas and black rice are a good choice of main, as are the meat dishes that come with a hot stone.
 
 - **Can Fisher Restaurante playa Bogatell**: Nice location along the beach and good seafood.

@@ -16,7 +16,7 @@ For some query rewriting work I’m involved in, I needed an image-rich product 
 
 ## The harvesters
 
-To produce demo datasets, I built two open-source ETL pipelines. These tools download product records and convert them into NDJSON:
+To produce demo datasets, I built two open-source transformation pipelines. These tools convert messy product records into clean Elasticsearc-ready NDJSON:
 
 * [**Icecat Harvester**](https://github.com/alexander-marquardt/icecat-harvester/): Downloads Icecat XML and normalizes electronics metadata.
 * [**Open Food Facts Extractor**](https://github.com/alexander-marquardt/open-food-facts-ndjson-extractor): Parses Open Food Facts JSONL and extracts grocery attributes and images.
@@ -122,7 +122,7 @@ Below is an example of how the cleaned Open Food Facts data looks in a simple e-
 
 Open Food Facts is excellent for food/CPG. But some demos benefit from an electronics-style catalog with spec-rich attributes and product-type variety. That’s where Icecat is useful.
 
-Icecat is typically consumed via XML interfaces and nested structures that cannot be indexed directly into Elasticsearch. The Icecat harvester repo is designed as an ETL pipeline where downloading and parsing are separate steps. That separation matters: you can download once, iterate on schema transformation many times, and regenerate clean NDJSON without re-downloading everything.
+Icecat is typically consumed via XML interfaces and nested structures that cannot be indexed directly into Elasticsearch. The Icecat harvester repo is designed as data transformation tool, where downloading and parsing are separate steps. That separation matters: you can download once, iterate on schema transformation many times, and regenerate clean NDJSON without re-downloading everything.
 
 ### Icecat inclusion criteria (why 25M → 3.5M → 1M)
 

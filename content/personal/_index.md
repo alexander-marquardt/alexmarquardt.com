@@ -11,7 +11,7 @@ aliases:
 - [Financial implications of exercising share options](/personal/financial-implications-of-exercising-share-options/) (Jul 27, 2019)
 
 ## General productivity/tech-related
-
+- [ClaudeLoop: Autonomous Multi-Pass AI Code Review](/personal/claudeloop-autonomous-code-review) (Mar 7, 2026)
 - [Cut and paste a table from Google Sheets into an HTML document – no code required](/personal/cut-and-paste-a-table-from-google-sheets-into-an-html-document-no-code-required/) (Oct 10, 2022)
 
 ## Nutrition

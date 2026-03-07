@@ -6,7 +6,7 @@ draft: false
 slug: claudeloop-autonomous-code-review
 tags: ["ai", "code-review", "developer-tooling", "claude"]
 categories: ["AI-Assisted Development"]
-description: "A simple Python tool that runs Claude Code in an autonomous loop."
+description: "A Python tool that runs Claude Code in an autonomous, multi-pass review loop with tiered depth."
 ---
 
 Claude Code is genuinely good at code review — better than many humans at spotting certain categories of bugs. But I kept repeating the same pattern: I'd ask it to review a codebase, it would find real issues and fix them, and then I'd manually spot something obvious that it missed. This happens because a single pass through a codebase with the instruction "review everything" is fundamentally the wrong approach.
@@ -21,15 +21,31 @@ Worse, some issues are invisible until you fix other issues first. A security vu
 
 The fix is simple: run multiple passes, each focused on a single concern.
 
-There are seven built-in passes, each with a single focus:
+There are 15 built-in passes, organized into three tiers of increasing depth:
+
+**Basic** (4 passes) — core code quality:
 
 1. **Readability** — rename confusing variables, split long functions, improve comments. No behaviour changes.
 2. **DRY** — find repeated logic, extract shared helpers, consolidate constants.
 3. **Tests** — write missing tests, target >=90% coverage, run the suite and fix failures.
-4. **Documentation** — README, docstrings, config docs.
+4. **Docs** — README, docstrings, config documentation.
+
+**Thorough** (8 passes) — basic plus:
+
 5. **Security** — injection vulnerabilities, hardcoded secrets, input validation, unsafe dependencies.
 6. **Performance** — N+1 queries, blocking I/O, unnecessary allocations.
 7. **Error handling** — try/except coverage, meaningful messages, logging.
+8. **Type safety** — type annotations, replace `Any`/untyped code, run type checker.
+
+**Exhaustive** (all 15 passes) — thorough plus:
+
+9. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
+10. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
+11. **Deps** — remove unused dependencies, flag vulnerable/outdated packages.
+12. **Logging** — structured logging, request context, observability gaps.
+13. **Concurrency** — race conditions, missing locks, async/await correctness.
+14. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
+15. **API design** — consistent naming, HTTP methods, error formats, pagination.
 
 Each pass goes deep on one thing instead of shallow on everything.
 
@@ -39,7 +55,7 @@ The tool has two levels of iteration. The **inner loop** runs each review pass i
 
 The **outer loop** (`--cycles`) repeats that entire sequence. Why? Because the first cycle's improvements create a new baseline. Code that was "clean enough" after cycle 1 now has new issues visible — the DRY pass extracted a helper, but cycle 2's readability pass notices the helper has a confusing name. Cycle 2's security pass catches a validation gap that only appeared after cycle 1's refactoring.
 
-With `--cycles 2`, the tool runs all 7 passes, then runs all 7 again on the improved codebase. Each cycle finds a diminishing but real set of issues that the previous cycle's fixes made visible.
+With `--cycles 2`, the tool runs all selected passes, then runs them again on the improved codebase. Each cycle finds a diminishing but real set of issues that the previous cycle's fixes made visible.
 
 ## Compounding improvements
 
@@ -54,15 +70,36 @@ Across cycles, the effect compounds further. The second cycle starts from a much
 
 ## The tool
 
-I built [claudeloop](https://github.com/alexander-marquardt/claudeloop) — a ~300-line Python CLI that wraps Claude Code in an autonomous loop.
+I built [claudeloop](https://github.com/alexander-marquardt/claudeloop) — a single-module Python CLI that wraps Claude Code in an autonomous loop.
 
 ```bash
-# Install
 git clone https://github.com/alexander-marquardt/claudeloop.git
 cd claudeloop && uv sync
+```
 
-# Run all 7 passes over your project, repeat twice
-claudeloop --dir ~/my-project --all-passes --cycles 2
+Run with `uv run claudeloop` from the cloned directory, and choose a review depth with `--level`:
+
+```bash
+# Basic tier (default): readability, DRY, tests, docs
+uv run claudeloop --dir ~/my-project
+
+# Thorough: adds security, performance, error handling, type safety
+uv run claudeloop --dir ~/my-project --level thorough
+
+# Exhaustive: all 15 passes, repeat twice
+uv run claudeloop --dir ~/my-project --level exhaustive --cycles 2
+
+# Or pick specific passes manually
+uv run claudeloop --dir ~/my-project --passes readability security tests
+
+# Preview without running
+uv run claudeloop --dry-run
+```
+
+To make `claudeloop` available globally (without `uv run`):
+
+```bash
+uv tool install git+https://github.com/alexander-marquardt/claudeloop.git
 ```
 
 It streams progress in real time so you can see what Claude is reading, editing, and running:
@@ -74,13 +111,11 @@ It streams progress in real time so you can see what Claude is reading, editing,
 [4m12s] [Write] tests/test_handlers.py
 ```
 
-There's no hard timeout. It runs as long as Claude is producing output — only kills the process if it goes completely silent for 2 minutes (configurable with `--idle-timeout`).
-
-The seven built-in passes cover: readability, DRY, tests, documentation, security, performance, and error handling. You can run any subset, and adding custom passes is just adding an entry to a Python list.
+There's no hard timeout. It runs as long as Claude is producing output — only kills the process if it goes completely silent for 2 minutes (configurable with `--idle-timeout`). Use `-v` to see raw streaming output for debugging.
 
 ## Is this novel?
 
-No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop scripts. The idea of iterating on AI output isn't new. But `claudeloop` is specifically designed for the "walk away and come back to better code" workflow: autonomous, multi-dimensional, with sensible defaults and live progress streaming.
+No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop scripts. The idea of iterating on AI output isn't new. But `claudeloop` is specifically designed for the "walk away and come back to better code" workflow: autonomous, multi-dimensional, with tiered depth and live progress streaming.
 
 ## When to use it
 

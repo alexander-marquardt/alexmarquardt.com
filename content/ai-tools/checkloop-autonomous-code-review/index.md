@@ -65,9 +65,9 @@ The **outer loop** (`--cycles`) repeats that entire sequence. Why? Because the f
 
 With `--cycles 2`, the tool runs all selected checks, then runs them again on the improved codebase. Each cycle finds a diminishing but real set of issues that the previous cycle's fixes made visible.
 
-### Skipping no-op checks
+### Every check runs every cycle
 
-On cycle 2 and beyond, `checkloop` automatically skips any check that made no changes in the previous cycle. If the DRY check found nothing to extract in cycle 1, it won't run again in cycle 2. This avoids wasting time re-running checks that have already done their job. The bookend checks (test-fix and test-validate) always run on every cycle regardless, since new changes from other checks could introduce regressions.
+All checks run on every cycle — nothing is skipped. Earlier checks routinely create work for later ones: a readability rename reveals duplication for the DRY check, a security fix introduces a new code path that needs error handling, a performance refactor changes an API that needs updated tests. Skipping checks that "did nothing last time" would miss these cascading improvements. Convergence detection (below) handles the case where there's genuinely nothing left to do.
 
 ### Convergence detection
 

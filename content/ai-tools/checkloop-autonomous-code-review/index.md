@@ -4,6 +4,7 @@ title: "Autonomous Multi-Check AI Code Review"
 date: 2026-03-07
 draft: false
 slug: checkloop-autonomous-code-review
+alias: claudeloop-autonomous-code-review
 tags: ["ai", "code-review", "developer-tooling", "claude"]
 categories: ["AI-Assisted Development"]
 description: "A Python tool that runs Claude Code in an autonomous, multi-check review loop with tiered depth and convergence detection."

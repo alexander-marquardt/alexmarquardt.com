@@ -41,7 +41,7 @@ Every tier starts with a **test-fix** check (runs the existing test suite and fi
 **Thorough** (10 checks) — basic plus:
 
 5. **Security** — injection vulnerabilities, hardcoded secrets, input validation, unsafe dependencies.
-6. **Performance** — N+1 queries, blocking I/O, unnecessary allocations.
+6. **Performance** — N+1 queries, O(N²) algorithms, blocking I/O, unnecessary allocations.
 7. **Error handling** — try/except coverage, meaningful messages, logging.
 8. **Type safety** — type annotations, replace `Any`/untyped code, run type checker.
 

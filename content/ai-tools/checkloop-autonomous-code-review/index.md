@@ -3,7 +3,7 @@ showtoc: true
 title: "Autonomous Multi-Check AI Code Review"
 date: 2026-03-07
 draft: false
-slug: claudeloop-autonomous-code-review
+slug: checkloop-autonomous-code-review
 tags: ["ai", "code-review", "developer-tooling", "claude"]
 categories: ["AI-Assisted Development"]
 description: "A Python tool that runs Claude Code in an autonomous, multi-check review loop with tiered depth and convergence detection."
@@ -13,7 +13,7 @@ Claude Code is genuinely good at code review — better than many humans at spot
 
 I found myself doing this over and over: review, spot what it missed, ask again, spot more, ask again. The code kept getting better with each round, but it took constant manual intervention to drive the process forward. After the fourth or fifth time doing this on a single project, I realized the iteration itself was the valuable part — and there was no reason I should be the one managing it by hand.
 
-That's what led me to build `claudeloop`. Instead of me sitting there cycling through review after review, the tool does it autonomously. And instead of asking Claude to look at "everything" each time, it breaks the review into focused, dimension-specific checks that compound on each other.
+That's what led me to build `checkloop`. Instead of me sitting there cycling through review after review, the tool does it autonomously. And instead of asking Claude to look at "everything" each time, it breaks the review into focused, dimension-specific checks that compound on each other.
 
 ## The problem with "review everything"
 
@@ -65,15 +65,15 @@ With `--cycles 2`, the tool runs all selected checks, then runs them again on th
 
 ### Skipping no-op checks
 
-On cycle 2 and beyond, `claudeloop` automatically skips any check that made no changes in the previous cycle. If the DRY check found nothing to extract in cycle 1, it won't run again in cycle 2. This avoids wasting time re-running checks that have already done their job. The bookend checks (test-fix and test-validate) always run on every cycle regardless, since new changes from other checks could introduce regressions.
+On cycle 2 and beyond, `checkloop` automatically skips any check that made no changes in the previous cycle. If the DRY check found nothing to extract in cycle 1, it won't run again in cycle 2. This avoids wasting time re-running checks that have already done their job. The bookend checks (test-fix and test-validate) always run on every cycle regardless, since new changes from other checks could introduce regressions.
 
 ### Convergence detection
 
-When running multiple cycles, `claudeloop` can stop early once the codebase stabilises. After each cycle it commits the changes and measures what percentage of total tracked lines were modified. If that percentage falls below the `--converged-at-percentage` threshold (default 0.1%), the loop exits. This prevents unnecessary cycles once the code has converged to a stable state.
+When running multiple cycles, `checkloop` can stop early once the codebase stabilises. After each cycle it commits the changes and measures what percentage of total tracked lines were modified. If that percentage falls below the `--converged-at-percentage` threshold (default 0.1%), the loop exits. This prevents unnecessary cycles once the code has converged to a stable state.
 
 ```bash
 # Run up to 5 cycles, but stop early if changes drop below 0.5%
-uv run claudeloop --dir ~/my-project --cycles 5 --converged-at-percentage 0.5
+uv run checkloop --dir ~/my-project --cycles 5 --converged-at-percentage 0.5
 ```
 
 ## Compounding improvements
@@ -89,45 +89,45 @@ Across cycles, the effect compounds further. The second cycle starts from a much
 
 ## Process management
 
-Since `claudeloop` is designed to run unattended for long periods (potentially hours with many checks and multiple cycles), it takes care to manage system resources:
+Since `checkloop` is designed to run unattended for long periods (potentially hours with many checks and multiple cycles), it takes care to manage system resources:
 
 - **Process group isolation** — each Claude Code subprocess runs in its own process group. When a check completes or times out, the entire group is killed (SIGTERM, then SIGKILL after 5 seconds), ensuring no orphaned Node.js processes accumulate.
-- **Orphan scanning** — after every check, `claudeloop` scans for surviving child processes and kills any that escaped the process group cleanup.
+- **Orphan scanning** — after every check, `checkloop` scans for surviving child processes and kills any that escaped the process group cleanup.
 - **Idle timeout** — if Claude produces no output for 2 minutes (configurable with `--idle-timeout`), the process is killed and the next check begins. There's no hard wall-clock timeout — checks can run as long as they're making progress.
 - **Memory reporting** — in verbose mode (`-v`), current RSS is logged after every check so you can monitor memory usage during long runs.
 
 ## The tool
 
-I built [claudeloop](https://github.com/alexander-marquardt/claudeloop) — a single-module Python CLI that wraps Claude Code in an autonomous loop.
+I built [checkloop](https://github.com/alexander-marquardt/checkloop) — a single-module Python CLI that wraps Claude Code in an autonomous loop.
 
 ```bash
-git clone https://github.com/alexander-marquardt/claudeloop.git
-cd claudeloop && uv sync
+git clone https://github.com/alexander-marquardt/checkloop.git
+cd checkloop && uv sync
 ```
 
-Run with `uv run claudeloop` from the cloned directory, and choose a check depth with `--level`:
+Run with `uv run checkloop` from the cloned directory, and choose a check depth with `--level`:
 
 ```bash
 # Basic tier (default): readability, DRY, tests, docs
-uv run claudeloop --dir ~/my-project
+uv run checkloop --dir ~/my-project
 
 # Thorough: adds security, performance, error handling, type safety
-uv run claudeloop --dir ~/my-project --level thorough
+uv run checkloop --dir ~/my-project --level thorough
 
 # Exhaustive: all 17 checks, repeat twice
-uv run claudeloop --dir ~/my-project --level exhaustive --cycles 2
+uv run checkloop --dir ~/my-project --level exhaustive --cycles 2
 
 # Or pick specific checks manually
-uv run claudeloop --dir ~/my-project --checks readability security tests
+uv run checkloop --dir ~/my-project --checks readability security tests
 
 # Preview without running
-uv run claudeloop --dry-run
+uv run checkloop --dry-run
 ```
 
-To make `claudeloop` available globally (without `uv run`):
+To make `checkloop` available globally (without `uv run`):
 
 ```bash
-uv tool install git+https://github.com/alexander-marquardt/claudeloop.git
+uv tool install git+https://github.com/alexander-marquardt/checkloop.git
 ```
 
 It streams progress in real time so you can see what Claude is reading, editing, and running:
@@ -143,7 +143,7 @@ Use `-v` to see operational events and timing, or `--debug` for raw subprocess o
 
 ## Is this novel?
 
-No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop scripts. The idea of iterating on AI output isn't new. But `claudeloop` is specifically designed for the "walk away and come back to better code" workflow: autonomous, multi-dimensional, with tiered depth, convergence detection, and live progress streaming.
+No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop scripts. The idea of iterating on AI output isn't new. But `checkloop` is specifically designed for the "walk away and come back to better code" workflow: autonomous, multi-dimensional, with tiered depth, convergence detection, and live progress streaming.
 
 ## When to use it
 
@@ -151,4 +151,4 @@ I use it on feature branches before opening a PR. Point it at the branch, run tw
 
 It's not a replacement for human review. It's the first round that makes human review more productive.
 
-The repo is at [github.com/alexander-marquardt/claudeloop](https://github.com/alexander-marquardt/claudeloop). MIT licensed.
+The repo is at [github.com/alexander-marquardt/checkloop](https://github.com/alexander-marquardt/checkloop). MIT licensed.

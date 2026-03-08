@@ -118,7 +118,7 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 - [How to Debug Elasticsearch Source Code in IntelliJ IDEA | Elastic Blog](https://www.elastic.co/blog/how-to-debug-elasticsearch-source-code-in-intellij-idea) (Feb 14, 2019)
 
 # AI Tools
-- [ClaudeLoop: Autonomous Multi-Pass AI Code Review](/ai-tools/claudeloop-autonomous-code-review) (Mar 7, 2026)
+- [CheckLoop: Autonomous Multi-Pass AI Code Review](/ai-tools/checkloop-autonomous-code-review) (Mar 7, 2026)
 
 # Airbyte
 

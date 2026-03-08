@@ -89,14 +89,31 @@ Within a single cycle, the checks compound on each other:
 
 Across cycles, the effect compounds further. The second cycle starts from a much cleaner codebase and consistently finds a second layer of issues that the first cycle couldn't see.
 
+## Checkpoint & resume
+
+Long runs get interrupted — you close your laptop, the terminal crashes, or you Ctrl+C because you need the machine for something else. Rather than restarting from scratch, `checkloop` saves a checkpoint after every completed check. On the next run, it detects the incomplete session and asks whether to pick up where it left off:
+
+```
+Previous incomplete run detected:
+  Started     : 2026-03-08T14:30:00+00:00
+  Progress    : cycle 1/2, check 3/6 completed
+  Next check  : tests
+
+  Resume from checkpoint? [y/N] (defaulting to N in 10s):
+```
+
+If you don't respond within 10 seconds (useful for unattended restarts), it starts fresh. The checkpoint file is cleaned up automatically on successful completion. Use `--no-resume` to skip the prompt entirely.
+
 ## Process management
 
 Since `checkloop` is designed to run unattended for long periods (potentially hours with many checks and multiple cycles), it takes care to manage system resources:
 
 - **Process group isolation** — each Claude Code subprocess runs in its own process group. When a check completes or times out, the entire group is killed (SIGTERM, then SIGKILL after 5 seconds), ensuring no orphaned Node.js processes accumulate.
-- **Orphan scanning** — after every check, `checkloop` scans for surviving child processes and kills any that escaped the process group cleanup.
-- **Idle timeout** — if Claude produces no output for 2 minutes (configurable with `--idle-timeout`), the process is killed and the next check begins. There's no hard wall-clock timeout — checks can run as long as they're making progress.
-- **Memory reporting** — in verbose mode (`-v`), current RSS is logged after every check so you can monitor memory usage during long runs.
+- **Session-based cleanup** — after killing the process group, `checkloop` scans the session for any stragglers that escaped the group (e.g. processes that called `setsid()`). An atexit handler sweeps all tracked sessions on program exit, including on SIGTERM and SIGHUP.
+- **Memory limit** — the child process tree's total RSS is sampled every 10 seconds. If it exceeds the `--max-memory-mb` limit (default 8192MB), the entire process group is killed immediately. This prevents runaway test suites or language servers from consuming all system memory.
+- **Idle timeout** — if Claude produces no output for 5 minutes (configurable with `--idle-timeout`), the process is killed and the next check begins.
+- **Hard check timeout** — optional wall-clock limit per check (`--check-timeout`), which kills even actively-running checks. Useful for CI or when you know no single check should take more than a certain amount of time.
+- **Memory reporting** — in verbose mode (`-v`), current RSS and child process count are logged after every check so you can monitor resource usage during long runs.
 
 ## The tool
 

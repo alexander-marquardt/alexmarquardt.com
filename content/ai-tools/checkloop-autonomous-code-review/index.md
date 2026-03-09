@@ -59,11 +59,11 @@ Each check goes deep on one thing instead of shallow on everything.
 
 **On-demand:** There's also a `cleanup-ai-slop` check that's not part of any tier — it only runs when you explicitly request it with `--cleanup-ai-slop`. This is a remediation tool for codebases that have already accumulated AI-generated noise. It removes redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests, and reverts operational config changes that don't fix real vulnerabilities. It's designed to delete code, not add it.
 
-## Two loops, not one
+## Two levels of iteration
 
-The tool has two levels of iteration. The **inner loop** runs each check in sequence — readability, then DRY, then tests, then security, and so on. Each check focuses on one dimension and builds on the cleanup of the previous one.
+The tool iterates at two levels. The **inner level** runs each check in sequence — readability, then DRY, then tests, then security, and so on. Each check focuses on one dimension and builds on the cleanup of the previous one.
 
-The **outer loop** (`--cycles`) repeats that entire sequence. Why? Because the first cycle's improvements create a new baseline. Code that was "clean enough" after cycle 1 now has new issues visible — the DRY check extracted a helper, but cycle 2's readability check notices the helper has a confusing name. Cycle 2's security check catches a validation gap that only appeared after cycle 1's refactoring.
+The **outer level** (`--cycles`) repeats that entire sequence. Why? Because the first cycle's improvements create a new baseline. Code that was "clean enough" after cycle 1 now has new issues visible — the DRY check extracted a helper, but cycle 2's readability check notices the helper has a confusing name. Cycle 2's security check catches a validation gap that only appeared after cycle 1's refactoring.
 
 With `--cycles 2`, the tool runs all selected checks, then runs them again on the improved codebase. Each cycle finds a diminishing but real set of issues that the previous cycle's fixes made visible.
 

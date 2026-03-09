@@ -11,7 +11,7 @@ categories: ["AI-Assisted Development"]
 description: "A Python tool that runs Claude Code in an autonomous, multi-check review loop with tiered depth and convergence detection."
 ---
 
-Claude Code is genuinely good at code review — better than many humans at spotting certain categories of bugs. But I kept running into the same frustrating loop. I'd ask it to review a codebase, it would find real issues and fix them, and I'd think we were done. Then I'd look at the code myself and immediately spot something obvious that it missed. So I'd ask it to review again, and it would catch *that* issue plus a few more — but miss yet another category entirely. Each time I thought the review was complete, another manual round would turn up more problems.
+Claude Code is genuinely good at code review — better than many humans at spotting certain categories of bugs. But I often experiueced that it would find real issues and fix them, and I'd think we were done, but another check would reveal additional errors. So I'd ask it to review again, and it would catch *that* issue plus a few more — but miss yet another category entirely. Each time I thought the review was complete, another manual round would turn up more problems.
 
 I found myself doing this over and over: review, spot what it missed, ask again, spot more, ask again. The code kept getting better with each round, but it took constant manual intervention to drive the process forward. After the fourth or fifth time doing this on a single project, I realized the iteration itself was the valuable part — and there was no reason I should be the one managing it by hand.
 
@@ -91,7 +91,7 @@ Across cycles, the effect compounds further. The second cycle starts from a much
 
 ## Avoiding AI-generated noise
 
-One of the biggest risks with autonomous AI code review is that the tool generates _more_ code without generating _better_ code. After running `checkloop` on a real codebase and having an experienced developer compare the result to the original, several anti-patterns emerged:
+One of the biggest risks with autonomous AI code review is that the tool generates _more_ code without generating _better_ code. After running `checkloop` on a real codebase and comparing the result to the original, several anti-patterns emerged:
 
 - **Blanket docstrings** — adding docstrings to every function, even when the name and signature are self-documenting. This adds clutter without value.
 - **Over-handling errors** — wrapping code in try/except when the wrapped call can't actually raise. Misleading error handling is worse than none.

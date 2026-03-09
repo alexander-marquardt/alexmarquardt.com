@@ -57,6 +57,8 @@ Every tier starts with a **test-fix** check (runs the existing test suite and fi
 
 Each check goes deep on one thing instead of shallow on everything.
 
+**On-demand:** There's also a `cleanup-ai-slop` check that's not part of any tier — it only runs when you explicitly request it with `--cleanup-ai-slop`. This is a remediation tool for codebases that have already accumulated AI-generated noise. It removes redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests, and reverts operational config changes that don't fix real vulnerabilities. It's designed to delete code, not add it.
+
 ## Two loops, not one
 
 The tool has two levels of iteration. The **inner loop** runs each check in sequence — readability, then DRY, then tests, then security, and so on. Each check focuses on one dimension and builds on the cleanup of the previous one.
@@ -103,6 +105,8 @@ One of the biggest risks with autonomous AI code review is that the tool generat
 Every check prompt in `checkloop` now includes explicit guardrails against these patterns. A global instruction prepended to all checks tells Claude to respect the existing codebase style, avoid blanket additions, and only make changes that are clearly justified. Individual checks reinforce this — the readability check says "don't rename for marginal gains", the error handling check says "only add try/except where code can meaningfully respond", the logging check says "don't log on hot paths", and so on.
 
 These guardrails don't prevent all noise, but they significantly reduce it. The goal is that every change in the diff should be defensible on its own merits.
+
+For codebases that already have accumulated AI slop, the `cleanup-ai-slop` check (run with `--cleanup-ai-slop`) actively finds and removes it — redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests, and reverted operational config changes.
 
 ## Run summaries
 

@@ -57,7 +57,7 @@ Every tier starts with a **test-fix** check (runs the existing test suite and fi
 
 Each check goes deep on one thing instead of shallow on everything.
 
-**On-demand:** There's also a `cleanup-ai-slop` check that's not part of any tier — it only runs when you explicitly request it with `--cleanup-ai-slop`. This is a remediation tool for codebases that have already accumulated AI-generated noise. It removes redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests, and reverts operational config changes that don't fix real vulnerabilities. It's designed to delete code, not add it.
+**On-demand:** There's also a `cleanup-ai-slop` check that's not part of any tier — it only runs when you explicitly request it with `--cleanup-ai-slop`. This is a remediation tool for codebases that have already accumulated AI-generated noise. It removes redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests, and reverts operational config changes that don't fix real vulnerabilities. It's designed to delete code, not add it. When combined with other checks, it runs last (right before test-validate) so it gets the final word — earlier checks like tests, docs, and error handling tend to re-introduce slop that this check cleans up.
 
 ## Two levels of iteration
 

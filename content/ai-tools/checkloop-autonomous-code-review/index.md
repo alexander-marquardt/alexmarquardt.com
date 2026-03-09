@@ -33,24 +33,24 @@ Every tier starts with a **test-fix** check (runs the existing test suite and fi
 
 **Basic** (6 checks) — core code quality:
 
-1. **Readability** — rename confusing variables, split long functions, improve comments. No behaviour changes.
+1. **Readability** — rename genuinely confusing variables (not marginal preference renames), split long functions, improve comments. No behaviour changes.
 2. **DRY** — find repeated logic, extract shared helpers, consolidate constants.
-3. **Tests** — write missing tests, target >=90% coverage, run the suite and fix failures.
-4. **Docs** — README, docstrings, config documentation.
+3. **Tests** — write behaviour-driven tests for happy paths, edge cases, and real error conditions. Avoids testing impossible defensive paths.
+4. **Docs** — README, config documentation. Docstrings only where purpose isn't obvious from the name.
 
 **Thorough** (10 checks) — basic plus:
 
-5. **Security** — injection vulnerabilities, hardcoded secrets, input validation, unsafe dependencies.
+5. **Security** — injection vulnerabilities, hardcoded secrets, input validation. Won't change CORS/retry/auth config without a clear vulnerability.
 6. **Performance** — N+1 queries, O(N²) algorithms, blocking I/O, unnecessary allocations.
-7. **Error handling** — try/except coverage, meaningful messages, logging.
+7. **Error handling** — error handling only where code can meaningfully respond. No wrapping code that can't fail.
 8. **Type safety** — type annotations, replace `Any`/untyped code, run type checker.
 
 **Exhaustive** (all 17 checks) — thorough plus:
 
 9. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
 10. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
-11. **Deps** — remove unused dependencies, flag vulnerable/outdated packages.
-12. **Logging** — structured logging, request context, observability gaps.
+11. **Deps** — remove verified-unused dependencies, flag vulnerable/outdated packages.
+12. **Logging** — structured logging at entry points. No debug logging on hot paths.
 13. **Concurrency** — race conditions, missing locks, async/await correctness.
 14. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
 15. **API design** — consistent naming, HTTP methods, error formats, pagination.
@@ -71,11 +71,11 @@ All checks run on every cycle — nothing is skipped. Earlier checks routinely c
 
 ### Convergence detection
 
-When running multiple cycles, `checkloop` can stop early once the codebase stabilises. After each cycle it commits the changes and measures what percentage of total tracked lines were modified. If that percentage falls below the `--converged-at-percentage` threshold (default 0.1%), the loop exits. This prevents unnecessary cycles once the code has converged to a stable state.
+When running multiple cycles, `checkloop` can stop early once the codebase stabilises. After each cycle it measures what percentage of total tracked lines were modified. If that percentage falls below the `--convergence-threshold` threshold (default 0.1%), the loop exits. This prevents unnecessary cycles once the code has converged to a stable state.
 
 ```bash
 # Run up to 5 cycles, but stop early if changes drop below 0.5%
-uv run checkloop --dir ~/my-project --cycles 5 --converged-at-percentage 0.5
+uv run checkloop --dir ~/my-project --cycles 5 --convergence-threshold 0.5
 ```
 
 ## Compounding improvements
@@ -88,6 +88,48 @@ Within a single cycle, the checks compound on each other:
 4. The **tests** check writes tests against the now-clean API surface, achieving coverage that would have been painful to write against the original code.
 
 Across cycles, the effect compounds further. The second cycle starts from a much cleaner codebase and consistently finds a second layer of issues that the first cycle couldn't see.
+
+## Avoiding AI-generated noise
+
+One of the biggest risks with autonomous AI code review is that the tool generates _more_ code without generating _better_ code. After running `checkloop` on a real codebase and having an experienced developer compare the result to the original, several anti-patterns emerged:
+
+- **Blanket docstrings** — adding docstrings to every function, even when the name and signature are self-documenting. This adds clutter without value.
+- **Over-handling errors** — wrapping code in try/except when the wrapped call can't actually raise. Misleading error handling is worse than none.
+- **Over-logging** — adding `logger.debug()` to every function entry, including hot paths like query builders, where it adds overhead for no diagnostic value.
+- **Coverage-driven tests** — writing tests that pass `None` where the type says `str` (with `# type: ignore`) to test defensive paths that can't actually happen.
+- **Rename churn** — renaming variables for marginal clarity, creating large diffs through hot paths for little improvement.
+- **Breaking operational defaults** — tightening CORS settings or changing retry policies under the banner of "security" when there's no actual vulnerability.
+
+Every check prompt in `checkloop` now includes explicit guardrails against these patterns. A global instruction prepended to all checks tells Claude to respect the existing codebase style, avoid blanket additions, and only make changes that are clearly justified. Individual checks reinforce this — the readability check says "don't rename for marginal gains", the error handling check says "only add try/except where code can meaningfully respond", the logging check says "don't log on hot paths", and so on.
+
+These guardrails don't prevent all noise, but they significantly reduce it. The goal is that every change in the diff should be defensible on its own merits.
+
+## Run summaries
+
+After each cycle, `checkloop` prints a summary table showing per-check results — exit codes, kill reasons, lines changed, and duration. In multi-cycle runs, an overall summary at the end aggregates per-cycle totals so you can immediately see whether the number of changes is decreasing (converging) or increasing (diverging):
+
+```
+────────────────────────────────────────────────────────────────────────
+  Overall Summary
+────────────────────────────────────────────────────────────────────────
+
+  Cycle  Checks    OK  Fail  Kill    Lines  Changed  Duration
+  ─────  ──────  ────  ────  ────  ───────  ───────  ────────
+      1       6     6     0     0      482    5/6     12m30s
+      2       6     6     0     0      156    4/6      9m15s
+      3       6     6     0     0       28    2/6      6m42s
+
+  Total cycles : 3
+  Total checks : 18  (18 ok, 0 failed, 0 killed)
+  Total lines  : 666
+  Elapsed      : 28m27s
+```
+
+The lines column shows green when decreasing and yellow when increasing. All output is also written to `.checkloop-run.log` at DEBUG level for post-run analysis.
+
+## Per-check commits
+
+Each check commits its changes individually rather than squashing all changes from a cycle into one commit. This makes it easy to see exactly what each check did when reviewing the git history, and to revert a specific check's changes without losing the rest of the cycle's work.
 
 ## Checkpoint & resume
 

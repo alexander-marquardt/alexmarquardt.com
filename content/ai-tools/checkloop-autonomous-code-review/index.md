@@ -8,7 +8,7 @@ aliases:
   - /ai-tools/claudeloop-autonomous-code-review/
 tags: ["ai", "code-review", "developer-tooling", "claude"]
 categories: ["AI-Assisted Development"]
-description: "A Python tool that runs Claude Code in an autonomous, multi-check review loop with tiered depth and convergence detection."
+description: "A Python tool that runs Claude Code in an autonomous, multi-check review loop with three levels of review thoroughness and convergence detection."
 ---
 
 Claude Code is genuinely good at code review — better than many humans at spotting certain categories of bugs. But I often experienced that it would find real issues and fix them, and I'd think we were done, but another check would reveal additional errors. So I'd ask it to review again, and it would catch *that* issue plus a few more — but miss yet another category entirely. Each time I thought the review was complete, another manual round would turn up more problems.

@@ -213,11 +213,11 @@ Use `-v` to see operational events and timing, or `--debug` for raw subprocess o
 
 No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop scripts. The idea of iterating on AI output isn't new. But `checkloop` is specifically designed for the "walk away and come back to better code" workflow: autonomous, multi-dimensional, with configurable review levels, convergence detection, and live progress streaming.
 
-## Token usage
+## Token usage (Be Careful!!!)
 
 Each check is a full Claude Code session — reading files, making edits, running tests. A basic-tier run (6 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (10 checks) or exhaustive (17 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
 
-I usually kick off runs right before bed or when stepping away from the keyboard. The tool is designed to run unattended, and this way it doesn't compete with tokens you need for interactive work during the day.
+I often kick off runs right before bed or when stepping away from the keyboard. The tool is designed to run unattended, but can burn through a lot of tokens. Pay attention to your token useage.
 
 ## When to use it
 

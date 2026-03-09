@@ -11,7 +11,7 @@ categories: ["AI-Assisted Development"]
 description: "A Python tool that runs Claude Code in an autonomous, multi-check review loop with tiered depth and convergence detection."
 ---
 
-Claude Code is genuinely good at code review — better than many humans at spotting certain categories of bugs. But I often experiueced that it would find real issues and fix them, and I'd think we were done, but another check would reveal additional errors. So I'd ask it to review again, and it would catch *that* issue plus a few more — but miss yet another category entirely. Each time I thought the review was complete, another manual round would turn up more problems.
+Claude Code is genuinely good at code review — better than many humans at spotting certain categories of bugs. But I often experienced that it would find real issues and fix them, and I'd think we were done, but another check would reveal additional errors. So I'd ask it to review again, and it would catch *that* issue plus a few more — but miss yet another category entirely. Each time I thought the review was complete, another manual round would turn up more problems.
 
 I found myself doing this over and over: review, spot what it missed, ask again, spot more, ask again. The code kept getting better with each round, but it took constant manual intervention to drive the process forward. After the fourth or fifth time doing this on a single project, I realized the iteration itself was the valuable part — and there was no reason I should be the one managing it by hand.
 
@@ -33,17 +33,17 @@ Every tier starts with a **test-fix** check (runs the existing test suite and fi
 
 **Basic** (6 checks) — core code quality:
 
-1. **Readability** — rename genuinely confusing variables (not marginal preference renames), split long functions, improve comments. No behaviour changes.
-2. **DRY** — find repeated logic, extract shared helpers, consolidate constants.
-3. **Tests** — write behaviour-driven tests for happy paths, edge cases, and real error conditions. Avoids testing impossible defensive paths.
-4. **Docs** — README, config documentation. Docstrings only where purpose isn't obvious from the name.
+1. **Readability** — rename genuinely confusing variables (not marginal preference renames), split long functions, add module-level and class-level docstrings that explain design strategy and intent. No behaviour changes.
+2. **DRY** — find repeated logic, extract shared helpers, separate mixed concerns into focused modules when it improves testability.
+3. **Tests** — write behaviour-driven tests that verify correctness of complex logic (regex, parsing, validation), not just that code runs. Unit tests with mocks for external services, integration tests separately. Avoids testing impossible defensive paths.
+4. **Docs** — README, config documentation. Module-level docstrings for design strategy, class docstrings for intent. Function docstrings only where name and signature don't tell the full story.
 
 **Thorough** (10 checks) — basic plus:
 
 5. **Security** — injection vulnerabilities, hardcoded secrets, input validation. Won't change CORS/retry/auth config without a clear vulnerability.
-6. **Performance** — N+1 queries, O(N²) algorithms, blocking I/O, unnecessary allocations.
-7. **Error handling** — error handling only where code can meaningfully respond. No wrapping code that can't fail.
-8. **Type safety** — type annotations, replace `Any`/untyped code, run type checker.
+6. **Performance** — N+1 queries, O(N²) algorithms, blocking I/O, unnecessary allocations. Selective caching (`@cache`, `@lru_cache`) for expensive repeated computations like compiled regexes and config loading.
+7. **Error handling** — centralized error handling for external services (shared helpers that log context and raise consistent errors). Only where code can meaningfully respond. No wrapping code that can't fail.
+8. **Type safety** — type annotations, replace `Any`/untyped code, runtime validation at API boundaries (Annotated types, Pydantic, Zod). Run type checker.
 
 **Exhaustive** (all 17 checks) — thorough plus:
 
@@ -95,7 +95,7 @@ Across cycles, the effect compounds further. The second cycle starts from a much
 
 One of the biggest risks with autonomous AI code review is that the tool generates _more_ code without generating _better_ code. After running `checkloop` on a real codebase and comparing the result to the original, several anti-patterns emerged:
 
-- **Blanket docstrings** — adding docstrings to every function, even when the name and signature are self-documenting. This adds clutter without value.
+- **Blanket docstrings** — adding docstrings to every function, even when the name and signature are self-documenting. Module-level docstrings explaining design strategy and class docstrings explaining intent _are_ valuable — the problem is function-level docstrings like "Get a user by their ID" on `get_user_by_id`.
 - **Over-handling errors** — wrapping code in try/except when the wrapped call can't actually raise. Misleading error handling is worse than none.
 - **Over-logging** — adding `logger.debug()` to every function entry, including hot paths like query builders, where it adds overhead for no diagnostic value.
 - **Coverage-driven tests** — writing tests that pass `None` where the type says `str` (with `# type: ignore`) to test defensive paths that can't actually happen.
@@ -163,7 +163,7 @@ Since `checkloop` is designed to run unattended for long periods (potentially ho
 
 ## The tool
 
-I built [checkloop](https://github.com/alexander-marquardt/checkloop) — a single-module Python CLI that wraps Claude Code in an autonomous loop.
+I built [checkloop](https://github.com/alexander-marquardt/checkloop) — a modular Python CLI that wraps Claude Code in an autonomous loop.
 
 ```bash
 git clone https://github.com/alexander-marquardt/checkloop.git
@@ -184,6 +184,9 @@ uv run checkloop --dir ~/my-project --level exhaustive --cycles 2
 
 # Or pick specific checks manually
 uv run checkloop --dir ~/my-project --checks readability security tests
+
+# Clean up AI-generated code slop (on-demand, not part of any tier)
+uv run checkloop --dir ~/my-project --cleanup-ai-slop
 
 # Preview without running
 uv run checkloop --dry-run

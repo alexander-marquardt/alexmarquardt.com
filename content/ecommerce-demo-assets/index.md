@@ -10,8 +10,6 @@ This page provides publicly accessible images used for e-commerce demos. The ima
 
 ## Groceries
 
-### original images
-
 ### 400x400 images
 
 - [one-apple-001-400x400.png](/ecommerce-demo-assets/images/groceries/one-apple-001-400x400.png)
@@ -35,6 +33,23 @@ This page provides publicly accessible images used for e-commerce demos. The ima
 - [iPhone-14-400x400.png](/ecommerce-demo-assets/images/electronics/iPhone-14-400x400.png)
 - [iPhone-SE-(3rd-Gen)-400x400.png](/ecommerce-demo-assets/images/electronics/iPhone-SE-(3rd-Gen)-400x400.png)
 - [iphone-13-mini-400x400.png](/ecommerce-demo-assets/images/electronics/iphone-13-mini-400x400.png)
+
+## Musgrave
+
+### 400x400 images
+
+- [alps-steak-knife-6cs-400x400.jpg](/ecommerce-demo-assets/images/musgrave/alps-steak-knife-6cs-400x400.jpg)
+- [beef-steak-mince-90vl-400x400.jpg](/ecommerce-demo-assets/images/musgrave/beef-steak-mince-90vl-400x400.jpg)
+- [butchers-select-sirloin-rump-steak-400x400.jpg](/ecommerce-demo-assets/images/musgrave/butchers-select-sirloin-rump-steak-400x400.jpg)
+- [chefs-house-steak-knifes-12pk-400x400.jpg](/ecommerce-demo-assets/images/musgrave/chefs-house-steak-knifes-12pk-400x400.jpg)
+- [genware-10-inch-steak-knife-400x400.jpg](/ecommerce-demo-assets/images/musgrave/genware-10-inch-steak-knife-400x400.jpg)
+- [gray-bentos-steak-kidney-400x400.jpg](/ecommerce-demo-assets/images/musgrave/gray-bentos-steak-kidney-400x400.jpg)
+- [john-west-tuna-steak-400x400.jpg](/ecommerce-demo-assets/images/musgrave/john-west-tuna-steak-400x400.jpg)
+- [orion-steak-combo-plate-400x400.jpg](/ecommerce-demo-assets/images/musgrave/orion-steak-combo-plate-400x400.jpg)
+- [sch-steak-seasoning-jar-6x46g-400x400.jpg](/ecommerce-demo-assets/images/musgrave/sch-steak-seasoning-jar-6x46g-400x400.jpg)
+- [steak-knife-12pk-400x400.jpg](/ecommerce-demo-assets/images/musgrave/steak-knife-12pk-400x400.jpg)
+- [steak-pepper-mix-400x400.jpg](/ecommerce-demo-assets/images/musgrave/steak-pepper-mix-400x400.jpg)
+- [vogue-steak-hammer-400x400.jpg](/ecommerce-demo-assets/images/musgrave/vogue-steak-hammer-400x400.jpg)
 
 ## Direct URL pattern
 

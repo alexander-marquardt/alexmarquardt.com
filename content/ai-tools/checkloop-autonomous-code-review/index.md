@@ -27,7 +27,7 @@ Worse, some issues are invisible until you fix other issues first. A security vu
 
 The fix is simple: run multiple checks, each focused on a single concern.
 
-There are 17 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into three tiers of increasing depth:
+There are 18 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into three tiers of increasing depth:
 
 Every tier starts with a **test-fix** check (runs the existing test suite and fixes any failures) and ends with a **test-validate** check (re-runs the full suite to catch regressions introduced during review).
 
@@ -45,7 +45,7 @@ Every tier starts with a **test-fix** check (runs the existing test suite and fi
 7. **Error handling** — centralized error handling for external services (shared helpers that log context and raise consistent errors). Only where code can meaningfully respond. No wrapping code that can't fail.
 8. **Type safety** — type annotations, replace `Any`/untyped code, runtime validation at API boundaries (Annotated types, Pydantic, Zod). Run type checker.
 
-**Exhaustive** (all 17 checks) — thorough plus:
+**Exhaustive** (all 18 checks) — thorough plus:
 
 9. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
 10. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
@@ -54,10 +54,9 @@ Every tier starts with a **test-fix** check (runs the existing test suite and fi
 13. **Concurrency** — race conditions, missing locks, async/await correctness.
 14. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
 15. **API design** — consistent naming, HTTP methods, error formats, pagination.
+16. **Cleanup AI slop** — removes AI-generated noise accumulated by earlier checks: redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests. Runs last (before test-validate) so it gets the final word.
 
 Each check goes deep on one thing instead of shallow on everything.
-
-**On-demand:** There's also a `cleanup-ai-slop` check that's not part of any tier — it only runs when you explicitly request it with `--cleanup-ai-slop`. This is a remediation tool for codebases that have already accumulated AI-generated noise. It removes redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests, and reverts operational config changes that don't fix real vulnerabilities. It's designed to delete code, not add it. When combined with other checks, it runs last (right before test-validate) so it gets the final word — earlier checks like tests, docs, and error handling tend to re-introduce slop that this check cleans up.
 
 ## Two levels of iteration
 
@@ -106,7 +105,7 @@ Every check prompt in `checkloop` now includes explicit guardrails against these
 
 These guardrails don't prevent all noise, but they significantly reduce it. The goal is that every change in the diff should be defensible on its own merits.
 
-For codebases that already have accumulated AI slop, the `cleanup-ai-slop` check (run with `--cleanup-ai-slop`) actively finds and removes it — redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests, and reverted operational config changes.
+For codebases that already have accumulated AI slop, the `cleanup-ai-slop` check actively finds and removes it — redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests, and reverted operational config changes. It runs automatically as part of the exhaustive tier, or you can add it to any tier with `--level thorough --checks cleanup-ai-slop`.
 
 ## Run summaries
 
@@ -179,14 +178,14 @@ uv run checkloop --dir ~/my-project
 # Thorough: adds security, performance, error handling, type safety
 uv run checkloop --dir ~/my-project --level thorough
 
-# Exhaustive: all 17 checks, repeat twice
+# Exhaustive: all 18 checks, repeat twice
 uv run checkloop --dir ~/my-project --level exhaustive --cycles 2
 
 # Or pick specific checks manually
 uv run checkloop --dir ~/my-project --checks readability security tests
 
-# Clean up AI-generated code slop (on-demand, not part of any tier)
-uv run checkloop --dir ~/my-project --cleanup-ai-slop
+# Add a check on top of a tier (e.g. cleanup-ai-slop on top of thorough)
+uv run checkloop --dir ~/my-project --level thorough --checks cleanup-ai-slop
 
 # Preview without running
 uv run checkloop --dry-run

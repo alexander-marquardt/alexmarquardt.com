@@ -27,9 +27,9 @@ Worse, some issues are invisible until you fix other issues first. A security vu
 
 The fix is simple: run multiple checks, each focused on a single concern.
 
-There are 18 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into three tiers of increasing depth:
+There are 18 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into three execution plans of increasing depth:
 
-Every tier starts with a **test-fix** check (runs the existing test suite and fixes any failures) and ends with a **test-validate** check (re-runs the full suite to catch regressions introduced during review).
+Every plan starts with a **test-fix** check (runs the existing test suite and fixes any failures) and ends with a **test-validate** check (re-runs the full suite to catch regressions introduced during review).
 
 **Basic** (5 checks) — core code quality:
 
@@ -62,14 +62,14 @@ Each check goes deep on one thing instead of shallow on everything.
 
 Not all checks have the same cognitive demands. A readability check is mostly pattern matching — rename this confusing variable, split this long function — and Sonnet handles it quickly and cleanly. But a security check needs to trace injection paths across a frontend router, a service layer, and a database query. A concurrency check needs to reason about race conditions spanning multiple threads and lock orderings. These require Opus's deeper multi-layer analysis.
 
-Each tier file specifies which model to use for each check. The pre-populated tiers route 14 of 18 checks to Sonnet and 4 to Opus:
+Each plan file specifies which model to use for each check. The pre-populated plans route 14 of 18 checks to Sonnet and 4 to Opus:
 
 - **Opus** for: `security`, `concurrency`, `perf`, `edge-cases` — checks where subtle issues span multiple code layers and require multi-step reasoning.
 - **Sonnet** for everything else — pattern-matching tasks where Sonnet is faster and produces cleaner results.
 
 The `--model` flag overrides this per-check assignment for all checks. Use `--model opus` to force deep analysis everywhere (slower), or `--model sonnet` for the fastest possible pass.
 
-Tiers are just TOML files — three ship pre-populated (basic, thorough, exhaustive), but you can write your own with whatever checks and model assignments fit your project. For example, a security-focused tier:
+Plans are just TOML files — three ship pre-populated (basic, thorough, exhaustive), but you can write your own with whatever checks and model assignments fit your project. For example, a security-focused plan:
 
 ```toml
 [tier]
@@ -98,7 +98,7 @@ model = "sonnet"
 ```
 
 ```bash
-uv run checkloop --dir ~/my-project --tier ./security-audit.toml
+uv run checkloop --dir ~/my-project --plan ./security-audit.toml
 ```
 
 ## Two levels of iteration
@@ -146,11 +146,11 @@ One of the biggest risks with autonomous AI code review is that the tool generat
 
 Every check prompt includes explicit guardrails against these patterns. A global instruction prepended to all checks tells Claude not to add docstrings, comments, or type annotations to code it didn't otherwise change, and to leave well-named code undocumented. Individual checks reinforce this — the readability check says "don't rename for marginal gains" and "don't add docstrings to code you didn't change", the error handling check says "only add try/except where code can meaningfully respond", the logging check says "don't log on hot paths", and so on.
 
-The `docs` check itself was moved out of the default basic tier into thorough — most clean codebases don't need a blanket documentation pass, and when they do, users can opt in explicitly. When `docs` does run, it operates with a high bar: only add a docstring when name and signature leave genuine ambiguity.
+The `docs` check itself was moved out of the default basic plan into thorough — most clean codebases don't need a blanket documentation pass, and when they do, users can opt in explicitly. When `docs` does run, it operates with a high bar: only add a docstring when name and signature leave genuine ambiguity.
 
 These guardrails don't prevent all noise, but they significantly reduce it. The goal is that every change in the diff should be defensible on its own merits.
 
-For codebases that already have accumulated AI slop, the `cleanup-ai-slop` check actively finds and removes it — redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests, and reverted operational config changes. It runs automatically as part of the exhaustive tier, or you can add it to any tier with `--tier thorough --checks cleanup-ai-slop`.
+For codebases that already have accumulated AI slop, the `cleanup-ai-slop` check actively finds and removes it — redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests, and reverted operational config changes. It runs automatically as part of the exhaustive plan, or you can add it to any plan with `--plan thorough --checks cleanup-ai-slop`.
 
 ## Run summaries
 
@@ -214,29 +214,29 @@ git clone https://github.com/alexander-marquardt/checkloop.git
 cd checkloop && uv sync
 ```
 
-Run with `uv run checkloop` from the cloned directory, and pick a tier with `--tier`:
+Run with `uv run checkloop` from the cloned directory, and pick a plan with `--plan`:
 
 ```bash
-# Basic tier (default): readability, DRY, tests (all sonnet)
+# Basic plan (default): readability, DRY, tests (all sonnet)
 uv run checkloop --dir ~/my-project
 
 # Thorough: adds security (opus), perf (opus), docs, errors, types
-uv run checkloop --dir ~/my-project --tier thorough
+uv run checkloop --dir ~/my-project --plan thorough
 
 # Exhaustive: all 18 checks with optimized model assignments, repeat twice
-uv run checkloop --dir ~/my-project --tier exhaustive --cycles 2
+uv run checkloop --dir ~/my-project --plan exhaustive --cycles 2
 
 # Or pick specific checks manually
 uv run checkloop --dir ~/my-project --checks readability security tests
 
-# Add a check on top of a tier
-uv run checkloop --dir ~/my-project --tier thorough --checks cleanup-ai-slop
+# Add a check on top of a plan
+uv run checkloop --dir ~/my-project --plan thorough --checks cleanup-ai-slop
 
-# Use your own tier file
-uv run checkloop --dir ~/my-project --tier ./my-tier.toml
+# Use your own plan file
+uv run checkloop --dir ~/my-project --plan ./my-plan.toml
 
 # Force all checks to opus for deeper analysis (slower)
-uv run checkloop --dir ~/my-project --tier thorough --model opus
+uv run checkloop --dir ~/my-project --plan thorough --model opus
 
 # Preview without running
 uv run checkloop --dry-run
@@ -265,7 +265,7 @@ No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop s
 
 ## Token usage (Be Careful!!!)
 
-Each check is a full Claude Code session — reading files, making edits, running tests. A basic-tier run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (11 checks) or exhaustive (18 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
+Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (11 checks) or exhaustive (18 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
 
 I often kick off runs right before bed or when stepping away from the keyboard. The tool is designed to run unattended, but can burn through a lot of tokens. Pay attention to your token useage.
 

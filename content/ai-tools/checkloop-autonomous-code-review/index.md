@@ -31,15 +31,15 @@ There are 18 built-in checks (including two bookend checks that ensure the test 
 
 Every tier starts with a **test-fix** check (runs the existing test suite and fixes any failures) and ends with a **test-validate** check (re-runs the full suite to catch regressions introduced during review).
 
-**Basic** (6 checks) — core code quality:
+**Basic** (5 checks) — core code quality:
 
-1. **Readability** — rename genuinely confusing variables (not marginal preference renames), split long functions, add module-level and class-level docstrings that explain design strategy and intent. No behaviour changes.
+1. **Readability** — rename genuinely confusing variables (not marginal preference renames), split long functions. Will not add docstrings or comments to code it didn't change — only documents code that is genuinely confusing without explanation. No behaviour changes.
 2. **DRY** — find repeated logic, extract shared helpers, separate mixed concerns into focused modules when it improves testability.
 3. **Tests** — write behaviour-driven tests that verify correctness of complex logic (regex, parsing, validation), not just that code runs. Unit tests with mocks for external services, integration tests separately. Avoids testing impossible defensive paths.
-4. **Docs** — README, config documentation. Module-level docstrings for design strategy, class docstrings for intent. Function docstrings only where name and signature don't tell the full story.
 
-**Thorough** (10 checks) — basic plus:
+**Thorough** (11 checks) — basic plus:
 
+4. **Docs** — README, config documentation. The bar for adding docstrings is high: only where name and signature leave genuine ambiguity (complex return values, non-obvious side effects, surprising semantics). When in doubt, leaves the code undocumented.
 5. **Security** — injection vulnerabilities, hardcoded secrets, input validation. Won't change CORS/retry/auth config without a clear vulnerability.
 6. **Performance** — N+1 queries, O(N²) algorithms, blocking I/O, unnecessary allocations. Selective caching (`@cache`, `@lru_cache`) for expensive repeated computations like compiled regexes and config loading.
 7. **Error handling** — centralized error handling for external services (shared helpers that log context and raise consistent errors). Only where code can meaningfully respond. No wrapping code that can't fail.
@@ -94,14 +94,16 @@ Across cycles, the effect compounds further. The second cycle starts from a much
 
 One of the biggest risks with autonomous AI code review is that the tool generates _more_ code without generating _better_ code. After running `checkloop` on a real codebase and comparing the result to the original, several anti-patterns emerged:
 
-- **Blanket docstrings** — adding docstrings to every function, even when the name and signature are self-documenting. Module-level docstrings explaining design strategy and class docstrings explaining intent _are_ valuable — the problem is function-level docstrings like "Get a user by their ID" on `get_user_by_id`.
+- **Blanket docstrings** — adding docstrings to every function, even when the name and signature are self-documenting. A docstring saying "Get a user by their ID" on `get_user_by_id` is noise, not documentation.
 - **Over-handling errors** — wrapping code in try/except when the wrapped call can't actually raise. Misleading error handling is worse than none.
 - **Over-logging** — adding `logger.debug()` to every function entry, including hot paths like query builders, where it adds overhead for no diagnostic value.
 - **Coverage-driven tests** — writing tests that pass `None` where the type says `str` (with `# type: ignore`) to test defensive paths that can't actually happen.
 - **Rename churn** — renaming variables for marginal clarity, creating large diffs through hot paths for little improvement.
 - **Breaking operational defaults** — tightening CORS settings or changing retry policies under the banner of "security" when there's no actual vulnerability.
 
-Every check prompt in `checkloop` now includes explicit guardrails against these patterns. A global instruction prepended to all checks tells Claude to respect the existing codebase style, avoid blanket additions, and only make changes that are clearly justified. Individual checks reinforce this — the readability check says "don't rename for marginal gains", the error handling check says "only add try/except where code can meaningfully respond", the logging check says "don't log on hot paths", and so on.
+Every check prompt includes explicit guardrails against these patterns. A global instruction prepended to all checks tells Claude not to add docstrings, comments, or type annotations to code it didn't otherwise change, and to leave well-named code undocumented. Individual checks reinforce this — the readability check says "don't rename for marginal gains" and "don't add docstrings to code you didn't change", the error handling check says "only add try/except where code can meaningfully respond", the logging check says "don't log on hot paths", and so on.
+
+The `docs` check itself was moved out of the default basic tier into thorough — most clean codebases don't need a blanket documentation pass, and when they do, users can opt in explicitly. When `docs` does run, it operates with a high bar: only add a docstring when name and signature leave genuine ambiguity.
 
 These guardrails don't prevent all noise, but they significantly reduce it. The goal is that every change in the diff should be defensible on its own merits.
 
@@ -172,10 +174,10 @@ cd checkloop && uv sync
 Run with `uv run checkloop` from the cloned directory, and choose a check depth with `--level`:
 
 ```bash
-# Basic tier (default): readability, DRY, tests, docs
+# Basic tier (default): readability, DRY, tests
 uv run checkloop --dir ~/my-project
 
-# Thorough: adds security, performance, error handling, type safety
+# Thorough: adds docs, security, performance, error handling, type safety
 uv run checkloop --dir ~/my-project --level thorough
 
 # Exhaustive: all 18 checks, repeat twice
@@ -214,7 +216,7 @@ No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop s
 
 ## Token usage (Be Careful!!!)
 
-Each check is a full Claude Code session — reading files, making edits, running tests. A basic-tier run (6 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (10 checks) or exhaustive (17 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
+Each check is a full Claude Code session — reading files, making edits, running tests. A basic-tier run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (11 checks) or exhaustive (18 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
 
 I often kick off runs right before bed or when stepping away from the keyboard. The tool is designed to run unattended, but can burn through a lot of tokens. Pay attention to your token useage.
 

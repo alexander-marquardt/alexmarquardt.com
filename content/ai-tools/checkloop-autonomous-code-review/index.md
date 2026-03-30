@@ -58,6 +58,49 @@ Every tier starts with a **test-fix** check (runs the existing test suite and fi
 
 Each check goes deep on one thing instead of shallow on everything.
 
+### Per-check model selection
+
+Not all checks have the same cognitive demands. A readability check is mostly pattern matching — rename this confusing variable, split this long function — and Sonnet handles it quickly and cleanly. But a security check needs to trace injection paths across a frontend router, a service layer, and a database query. A concurrency check needs to reason about race conditions spanning multiple threads and lock orderings. These require Opus's deeper multi-layer analysis.
+
+Each tier configuration file specifies which model to use for each check. The defaults route 14 of 18 checks to Sonnet and 4 to Opus:
+
+- **Opus** for: `security`, `concurrency`, `perf`, `edge-cases` — checks where subtle issues span multiple code layers and require multi-step reasoning.
+- **Sonnet** for everything else — pattern-matching tasks where Sonnet is faster and produces cleaner results.
+
+The `--model` flag overrides this per-check assignment for all checks. Use `--model opus` to force deep analysis everywhere (slower), or `--model sonnet` for the fastest possible pass.
+
+Tier definitions are TOML files, so you can create custom tiers with different model assignments tailored to your project. For example, a security-focused tier that runs only `security`, `concurrency`, and `edge-cases` on Opus:
+
+```toml
+[tier]
+name = "security-audit"
+description = "Deep security analysis"
+
+[[checks]]
+id = "test-fix"
+model = "sonnet"
+
+[[checks]]
+id = "security"
+model = "opus"
+
+[[checks]]
+id = "concurrency"
+model = "opus"
+
+[[checks]]
+id = "edge-cases"
+model = "opus"
+
+[[checks]]
+id = "test-validate"
+model = "sonnet"
+```
+
+```bash
+uv run checkloop --dir ~/my-project --tier-file security-audit.toml
+```
+
 ## Two levels of iteration
 
 The tool iterates at two levels. The **inner level** runs each check in sequence — readability, then DRY, then tests, then security, and so on. Each check focuses on one dimension and builds on the cleanup of the previous one.
@@ -174,13 +217,13 @@ cd checkloop && uv sync
 Run with `uv run checkloop` from the cloned directory, and choose a check depth with `--level`:
 
 ```bash
-# Basic tier (default): readability, DRY, tests
+# Basic tier (default): readability, DRY, tests (all sonnet)
 uv run checkloop --dir ~/my-project
 
-# Thorough: adds docs, security, performance, error handling, type safety
+# Thorough: adds security (opus), perf (opus), docs, errors, types
 uv run checkloop --dir ~/my-project --level thorough
 
-# Exhaustive: all 18 checks, repeat twice
+# Exhaustive: all 18 checks with optimized model assignments, repeat twice
 uv run checkloop --dir ~/my-project --level exhaustive --cycles 2
 
 # Or pick specific checks manually
@@ -188,6 +231,12 @@ uv run checkloop --dir ~/my-project --checks readability security tests
 
 # Add a check on top of a tier (e.g. cleanup-ai-slop on top of thorough)
 uv run checkloop --dir ~/my-project --level thorough --checks cleanup-ai-slop
+
+# Use a custom tier file with your own check/model assignments
+uv run checkloop --dir ~/my-project --tier-file my-tier.toml
+
+# Force all checks to opus for deeper analysis (slower)
+uv run checkloop --dir ~/my-project --level thorough --model opus
 
 # Preview without running
 uv run checkloop --dry-run

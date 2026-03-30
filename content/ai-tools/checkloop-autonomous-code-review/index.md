@@ -62,14 +62,14 @@ Each check goes deep on one thing instead of shallow on everything.
 
 Not all checks have the same cognitive demands. A readability check is mostly pattern matching — rename this confusing variable, split this long function — and Sonnet handles it quickly and cleanly. But a security check needs to trace injection paths across a frontend router, a service layer, and a database query. A concurrency check needs to reason about race conditions spanning multiple threads and lock orderings. These require Opus's deeper multi-layer analysis.
 
-Each tier configuration file specifies which model to use for each check. The defaults route 14 of 18 checks to Sonnet and 4 to Opus:
+Each tier file specifies which model to use for each check. The pre-populated tiers route 14 of 18 checks to Sonnet and 4 to Opus:
 
 - **Opus** for: `security`, `concurrency`, `perf`, `edge-cases` — checks where subtle issues span multiple code layers and require multi-step reasoning.
 - **Sonnet** for everything else — pattern-matching tasks where Sonnet is faster and produces cleaner results.
 
 The `--model` flag overrides this per-check assignment for all checks. Use `--model opus` to force deep analysis everywhere (slower), or `--model sonnet` for the fastest possible pass.
 
-Tier definitions are TOML files, so you can create custom tiers with different model assignments tailored to your project. For example, a security-focused tier that runs only `security`, `concurrency`, and `edge-cases` on Opus:
+Tiers are just TOML files — three ship pre-populated (basic, thorough, exhaustive), but you can write your own with whatever checks and model assignments fit your project. For example, a security-focused tier:
 
 ```toml
 [tier]
@@ -98,7 +98,7 @@ model = "sonnet"
 ```
 
 ```bash
-uv run checkloop --dir ~/my-project --tier-file security-audit.toml
+uv run checkloop --dir ~/my-project --tier ./security-audit.toml
 ```
 
 ## Two levels of iteration
@@ -150,7 +150,7 @@ The `docs` check itself was moved out of the default basic tier into thorough �
 
 These guardrails don't prevent all noise, but they significantly reduce it. The goal is that every change in the diff should be defensible on its own merits.
 
-For codebases that already have accumulated AI slop, the `cleanup-ai-slop` check actively finds and removes it — redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests, and reverted operational config changes. It runs automatically as part of the exhaustive tier, or you can add it to any tier with `--level thorough --checks cleanup-ai-slop`.
+For codebases that already have accumulated AI slop, the `cleanup-ai-slop` check actively finds and removes it — redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests, and reverted operational config changes. It runs automatically as part of the exhaustive tier, or you can add it to any tier with `--tier thorough --checks cleanup-ai-slop`.
 
 ## Run summaries
 
@@ -214,29 +214,29 @@ git clone https://github.com/alexander-marquardt/checkloop.git
 cd checkloop && uv sync
 ```
 
-Run with `uv run checkloop` from the cloned directory, and choose a check depth with `--level`:
+Run with `uv run checkloop` from the cloned directory, and pick a tier with `--tier`:
 
 ```bash
 # Basic tier (default): readability, DRY, tests (all sonnet)
 uv run checkloop --dir ~/my-project
 
 # Thorough: adds security (opus), perf (opus), docs, errors, types
-uv run checkloop --dir ~/my-project --level thorough
+uv run checkloop --dir ~/my-project --tier thorough
 
 # Exhaustive: all 18 checks with optimized model assignments, repeat twice
-uv run checkloop --dir ~/my-project --level exhaustive --cycles 2
+uv run checkloop --dir ~/my-project --tier exhaustive --cycles 2
 
 # Or pick specific checks manually
 uv run checkloop --dir ~/my-project --checks readability security tests
 
-# Add a check on top of a tier (e.g. cleanup-ai-slop on top of thorough)
-uv run checkloop --dir ~/my-project --level thorough --checks cleanup-ai-slop
+# Add a check on top of a tier
+uv run checkloop --dir ~/my-project --tier thorough --checks cleanup-ai-slop
 
-# Use a custom tier file with your own check/model assignments
-uv run checkloop --dir ~/my-project --tier-file my-tier.toml
+# Use your own tier file
+uv run checkloop --dir ~/my-project --tier ./my-tier.toml
 
 # Force all checks to opus for deeper analysis (slower)
-uv run checkloop --dir ~/my-project --level thorough --model opus
+uv run checkloop --dir ~/my-project --tier thorough --model opus
 
 # Preview without running
 uv run checkloop --dry-run

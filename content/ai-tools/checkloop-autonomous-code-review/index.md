@@ -58,6 +58,16 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 
 Each check goes deep on one thing instead of shallow on everything.
 
+### Fully file-based architecture
+
+Every part of checkloop's behavior is defined in editable files at the project root — no Python changes needed to customize:
+
+- **`checks/`** — one Markdown file per check. Each has YAML frontmatter (`id`, `label`) and a prompt body. Edit a prompt, add a new check, or remove one by modifying files.
+- **`execution_plans/`** — TOML files that define which checks to run and which model for each. Three ship pre-populated (basic, thorough, exhaustive).
+- **`prompt_templates/`** — boilerplate injected into every check at runtime: the scope prefix (review all code vs changed files) and commit message rules.
+
+To add a new check, create a Markdown file in `checks/` and reference its ID in a plan TOML. To customize a prompt, edit the `.md` file directly.
+
 ### Per-check model selection
 
 Not all checks have the same cognitive demands. A readability check is mostly pattern matching — rename this confusing variable, split this long function — and Sonnet handles it quickly and cleanly. But a security check needs to trace injection paths across a frontend router, a service layer, and a database query. A concurrency check needs to reason about race conditions spanning multiple threads and lock orderings. These require Opus's deeper multi-layer analysis.

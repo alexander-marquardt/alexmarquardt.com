@@ -27,7 +27,7 @@ Worse, some issues are invisible until you fix other issues first. A security vu
 
 The fix is simple: run multiple checks, each focused on a single concern.
 
-There are 18 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into three execution plans of increasing depth:
+There are 19 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into three execution plans of increasing depth:
 
 Every plan starts with a **test-fix** check (runs the existing test suite and fixes any failures) and ends with a **test-validate** check (re-runs the full suite to catch regressions introduced during review).
 
@@ -37,24 +37,25 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 2. **DRY** — find repeated logic, extract shared helpers, separate mixed concerns into focused modules when it improves testability.
 3. **Tests** — write behaviour-driven tests that verify correctness of complex logic (regex, parsing, validation), not just that code runs. Unit tests with mocks for external services, integration tests separately. Avoids testing impossible defensive paths.
 
-**Thorough** (11 checks) — basic plus:
+**Thorough** (12 checks) — basic plus:
 
 4. **Docs** — README, config documentation. The bar for adding docstrings is high: only where name and signature leave genuine ambiguity (complex return values, non-obvious side effects, surprising semantics). When in doubt, leaves the code undocumented.
-5. **Security** — injection vulnerabilities, hardcoded secrets, input validation. Won't change CORS/retry/auth config without a clear vulnerability.
-6. **Performance** — N+1 queries, O(N²) algorithms, blocking I/O, unnecessary allocations. Selective caching (`@cache`, `@lru_cache`) for expensive repeated computations like compiled regexes and config loading.
-7. **Error handling** — centralized error handling for external services (shared helpers that log context and raise consistent errors). Only where code can meaningfully respond. No wrapping code that can't fail.
-8. **Type safety** — type annotations, replace `Any`/untyped code, runtime validation at API boundaries (Annotated types, Pydantic, Zod). Run type checker.
+5. **Docs accuracy** — cross-references CLI `--help` text, README examples, error messages, and API docs against actual code behavior. Fixes factual inaccuracies (wrong defaults, renamed flags, stale file paths) without adding new documentation.
+6. **Security** — injection vulnerabilities, hardcoded secrets, input validation. Won't change CORS/retry/auth config without a clear vulnerability.
+7. **Performance** — N+1 queries, O(N²) algorithms, blocking I/O, unnecessary allocations. Selective caching (`@cache`, `@lru_cache`) for expensive repeated computations like compiled regexes and config loading.
+8. **Error handling** — centralized error handling for external services (shared helpers that log context and raise consistent errors). Only where code can meaningfully respond. No wrapping code that can't fail.
+9. **Type safety** — type annotations, replace `Any`/untyped code, runtime validation at API boundaries (Annotated types, Pydantic, Zod). Run type checker.
 
-**Exhaustive** (all 18 checks) — thorough plus:
+**Exhaustive** (all 19 checks) — thorough plus:
 
-9. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
-10. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
-11. **Deps** — remove verified-unused dependencies, flag vulnerable/outdated packages.
-12. **Logging** — structured logging at entry points. No debug logging on hot paths.
-13. **Concurrency** — race conditions, missing locks, async/await correctness.
-14. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
-15. **API design** — consistent naming, HTTP methods, error formats, pagination.
-16. **Cleanup AI slop** — removes AI-generated noise accumulated by earlier checks: redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests. Runs last (before test-validate) so it gets the final word.
+10. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
+11. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
+12. **Deps** — remove verified-unused dependencies, flag vulnerable/outdated packages.
+13. **Logging** — structured logging at entry points. No debug logging on hot paths.
+14. **Concurrency** — race conditions, missing locks, async/await correctness.
+15. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
+16. **API design** — consistent naming, HTTP methods, error formats, pagination.
+17. **Cleanup AI slop** — removes AI-generated noise accumulated by earlier checks: redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests. Runs last (before test-validate) so it gets the final word.
 
 Each check goes deep on one thing instead of shallow on everything.
 
@@ -275,7 +276,7 @@ No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop s
 
 ## Token usage (Be Careful!!!)
 
-Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (11 checks) or exhaustive (18 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
+Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (12 checks) or exhaustive (19 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
 
 I often kick off runs right before bed or when stepping away from the keyboard. The tool is designed to run unattended, but can burn through a lot of tokens. Pay attention to your token useage.
 

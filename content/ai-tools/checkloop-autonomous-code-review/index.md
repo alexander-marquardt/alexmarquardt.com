@@ -45,7 +45,7 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 7. **Performance** — N+1 queries, O(N²) algorithms, blocking I/O, unnecessary allocations. Selective caching (`@cache`, `@lru_cache`) for expensive repeated computations like compiled regexes and config loading.
 8. **Error handling** — centralized error handling for external services (shared helpers that log context and raise consistent errors). Only where code can meaningfully respond. No wrapping code that can't fail.
 9. **Type safety** — type annotations, replace `Any`/untyped code, runtime validation at API boundaries (Annotated types, Pydantic, Zod). Run type checker.
-10. **Derived values** — finds frontend code that re-derives values the backend already computes and sends in API responses. Totals, permissions, status flags, formatted labels — if the backend computed it and included it in the response, the frontend should consume it, not recalculate it independently. This prevents the frontend and backend from silently drifting apart.
+10. **Derived values** — finds frontend code that re-derives values the backend already computes. Totals, permissions, status flags, formatted labels — if the backend computed it, the frontend should consume it from an existing API response, not recalculate it independently. If the value isn't in the response yet, the fix is to add it there — not to create new API calls or recompute on the frontend. Trivially deterministic computations (like `items.length`) are excluded.
 
 **Exhaustive** (all 20 checks) — thorough plus:
 

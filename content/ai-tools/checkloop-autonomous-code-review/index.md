@@ -27,7 +27,7 @@ Worse, some issues are invisible until you fix other issues first. A security vu
 
 The fix is simple: run multiple checks, each focused on a single concern.
 
-There are 20 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into three execution plans of increasing depth:
+There are 21 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into three execution plans of increasing depth:
 
 Every plan starts with a **test-fix** check (runs the existing test suite and fixes any failures) and ends with a **test-validate** check (re-runs the full suite to catch regressions introduced during review).
 
@@ -37,7 +37,7 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 2. **DRY** — find repeated logic, extract shared helpers, separate mixed concerns into focused modules when it improves testability.
 3. **Tests** — write behaviour-driven tests that verify correctness of complex logic (regex, parsing, validation), not just that code runs. Unit tests with mocks for external services, integration tests separately. Avoids testing impossible defensive paths.
 
-**Thorough** (13 checks) — basic plus:
+**Thorough** (14 checks) — basic plus:
 
 4. **Docs** — README, config documentation. The bar for adding docstrings is high: only where name and signature leave genuine ambiguity (complex return values, non-obvious side effects, surprising semantics). When in doubt, leaves the code undocumented.
 5. **Docs accuracy** — cross-references CLI `--help` text, README examples, error messages, and API docs against actual code behavior. Fixes factual inaccuracies (wrong defaults, renamed flags, stale file paths) without adding new documentation.
@@ -46,17 +46,18 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 8. **Error handling** — centralized error handling for external services (shared helpers that log context and raise consistent errors). Only where code can meaningfully respond. No wrapping code that can't fail.
 9. **Type safety** — type annotations, replace `Any`/untyped code, runtime validation at API boundaries (Annotated types, Pydantic, Zod). Run type checker.
 10. **Derived values** — finds frontend code that re-derives values the backend already computes. Totals, permissions, status flags, formatted labels — if the backend computed it, the frontend should consume it from an existing API response, not recalculate it independently. If the value isn't in the response yet, the fix is to add it there — not to create new API calls or recompute on the frontend. Trivially deterministic computations (like `items.length`) are excluded.
+11. **Architecture boundaries** — discovers the project's architectural layers (frontend/backend, standalone library/application, API/service/data), checks that dependencies flow in one direction, and fixes violations. Handles upward imports, leaking internals, shared state coupling, mixed-layer modules, and circular dependencies. Skips single-layer projects where there's nothing to enforce.
 
-**Exhaustive** (all 20 checks) — thorough plus:
+**Exhaustive** (all 21 checks) — thorough plus:
 
-11. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
-12. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
-13. **Deps** — remove verified-unused dependencies, flag vulnerable/outdated packages.
-14. **Logging** — structured logging at entry points. No debug logging on hot paths.
-15. **Concurrency** — race conditions, missing locks, async/await correctness.
-16. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
-17. **API design** — consistent naming, HTTP methods, error formats, pagination.
-18. **Cleanup slop** — removes unnecessary noise accumulated by earlier checks: redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests. Runs last (before test-validate) so it gets the final word.
+12. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
+13. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
+14. **Deps** — remove verified-unused dependencies, flag vulnerable/outdated packages.
+15. **Logging** — structured logging at entry points. No debug logging on hot paths.
+16. **Concurrency** — race conditions, missing locks, async/await correctness.
+17. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
+18. **API design** — consistent naming, HTTP methods, error formats, pagination.
+19. **Cleanup slop** — removes unnecessary noise accumulated by earlier checks: redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests. Runs last (before test-validate) so it gets the final word.
 
 Each check goes deep on one thing instead of shallow on everything.
 
@@ -74,9 +75,9 @@ To add a new check, create a Markdown file in `checks/` and reference its ID in 
 
 Not all checks have the same cognitive demands. A readability check is mostly pattern matching — rename this confusing variable, split this long function — and Sonnet handles it quickly and cleanly. But a security check needs to trace injection paths across a frontend router, a service layer, and a database query. A concurrency check needs to reason about race conditions spanning multiple threads and lock orderings. These require Opus's deeper multi-layer analysis.
 
-Each plan file specifies which model to use for each check. The pre-populated plans route 14 of 18 checks to Sonnet and 4 to Opus:
+Each plan file specifies which model to use for each check. The pre-populated plans route 14 of 19 checks to Sonnet and 5 to Opus:
 
-- **Opus** for: `security`, `concurrency`, `perf`, `edge-cases` — checks where subtle issues span multiple code layers and require multi-step reasoning.
+- **Opus** for: `security`, `concurrency`, `perf`, `edge-cases`, `architecture-boundaries` — checks where subtle issues span multiple code layers and require multi-step reasoning.
 - **Sonnet** for everything else — pattern-matching tasks where Sonnet is faster and produces cleaner results.
 
 The `--model` flag overrides this per-check assignment for all checks. Use `--model opus` to force deep analysis everywhere (slower), or `--model sonnet` for the fastest possible pass.
@@ -235,7 +236,7 @@ uv run checkloop --dir ~/my-project
 # Thorough: adds security (opus), perf (opus), docs, errors, types
 uv run checkloop --dir ~/my-project --plan thorough
 
-# Exhaustive: all 18 checks with optimized model assignments, repeat twice
+# Exhaustive: all 21 checks with optimized model assignments, repeat twice
 uv run checkloop --dir ~/my-project --plan exhaustive --cycles 2
 
 # Or pick specific checks manually
@@ -277,7 +278,7 @@ No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop s
 
 ## Token usage (Be Careful!!!)
 
-Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (13 checks) or exhaustive (20 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
+Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (14 checks) or exhaustive (21 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
 
 I often kick off runs right before bed or when stepping away from the keyboard. The tool is designed to run unattended, but can burn through a lot of tokens. Pay attention to your token useage.
 

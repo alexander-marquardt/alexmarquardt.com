@@ -17,6 +17,8 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 
 ## Search & Relevance
 
+- [Why ecommerce search needs governance & how it improves retrieval | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-improve-retrieval) (Apr 9, 2026)
+
 - [Building clean and usable datasets for ecommerce data](/elastic/ecommerce-demo-data) (Jan 14, 2026)
 
 - [Influencing BM25 ranking with multiplicative boosting in Elasticsearch | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/bm25-ranking-multiplicative-boosting-elasticsearch) (Dec 22, 2025)

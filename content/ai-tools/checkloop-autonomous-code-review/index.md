@@ -8,7 +8,7 @@ aliases:
   - /ai-tools/claudeloop-autonomous-code-review/
 tags: ["ai", "code-review", "developer-tooling", "claude"]
 categories: ["AI-Assisted Development"]
-description: "A Python tool that runs Claude Code in an autonomous, multi-check review loop with three levels of review thoroughness and convergence detection."
+description: "A Python tool that runs Claude Code in an autonomous, multi-check review loop with three levels of review thoroughness, cross-check coherence validation, and convergence detection."
 ---
 
 Claude Code is genuinely good at code review — better than many humans at spotting certain categories of bugs. But I often experienced that it would find real issues and fix them, and I'd think we were done, but another check would reveal additional errors. So I'd ask it to review again, and it would catch *that* issue plus a few more — but miss yet another category entirely. Each time I thought the review was complete, another manual round would turn up more problems.
@@ -27,7 +27,7 @@ Worse, some issues are invisible until you fix other issues first. A security vu
 
 The fix is simple: run multiple checks, each focused on a single concern.
 
-There are 21 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into three execution plans of increasing depth:
+There are 22 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into three execution plans of increasing depth:
 
 Every plan starts with a **test-fix** check (runs the existing test suite and fixes any failures) and ends with a **test-validate** check (re-runs the full suite to catch regressions introduced during review).
 
@@ -37,7 +37,7 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 2. **DRY** — find repeated logic, extract shared helpers, separate mixed concerns into focused modules when it improves testability.
 3. **Tests** — write behaviour-driven tests that verify correctness of complex logic (regex, parsing, validation), not just that code runs. Unit tests with mocks for external services, integration tests separately. Avoids testing impossible defensive paths.
 
-**Thorough** (14 checks) — basic plus:
+**Thorough** (15 checks) — basic plus:
 
 4. **Docs** — README, config documentation. The bar for adding docstrings is high: only where name and signature leave genuine ambiguity (complex return values, non-obvious side effects, surprising semantics). When in doubt, leaves the code undocumented.
 5. **Docs accuracy** — cross-references CLI `--help` text, README examples, error messages, and API docs against actual code behavior. Fixes factual inaccuracies (wrong defaults, renamed flags, stale file paths) without adding new documentation.
@@ -47,17 +47,18 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 9. **Type safety** — type annotations, replace `Any`/untyped code, runtime validation at API boundaries (Annotated types, Pydantic, Zod). Run type checker.
 10. **Derived values** — finds frontend code that re-derives values the backend already computes. Totals, permissions, status flags, formatted labels — if the backend computed it, the frontend should consume it from an existing API response, not recalculate it independently. If the value isn't in the response yet, the fix is to add it there — not to create new API calls or recompute on the frontend. Trivially deterministic computations (like `items.length`) are excluded.
 11. **Architecture boundaries** — discovers the project's architectural layers (frontend/backend, standalone library/application, API/service/data), checks that dependencies flow in one direction, and fixes violations. Handles upward imports, leaking internals, shared state coupling, mixed-layer modules, and circular dependencies. Skips single-layer projects where there's nothing to enforce.
+12. **Coherence** — reviews the codebase as a whole after all other checks and fixes cases where checks worked against each other. Catches conflicting changes (error handling added then partially stripped), cumulative over-engineering (each check added a small abstraction but together they're worse than the original), style drift away from project conventions, redundant layering from multiple checks addressing the same concern, and broken call chains from refactors that weren't fully propagated.
 
-**Exhaustive** (all 21 checks) — thorough plus:
+**Exhaustive** (all 22 checks) — thorough plus:
 
-12. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
-13. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
-14. **Deps** — remove verified-unused dependencies, flag vulnerable/outdated packages.
-15. **Logging** — structured logging at entry points. No debug logging on hot paths.
-16. **Concurrency** — race conditions, missing locks, async/await correctness.
-17. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
-18. **API design** — consistent naming, HTTP methods, error formats, pagination.
-19. **Cleanup slop** — removes unnecessary noise accumulated by earlier checks: redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests. Runs last (before test-validate) so it gets the final word.
+13. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
+14. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
+15. **Deps** — remove verified-unused dependencies, flag vulnerable/outdated packages.
+16. **Logging** — structured logging at entry points. No debug logging on hot paths.
+17. **Concurrency** — race conditions, missing locks, async/await correctness.
+18. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
+19. **API design** — consistent naming, HTTP methods, error formats, pagination.
+20. **Cleanup slop** — removes unnecessary noise accumulated by earlier checks: redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests.
 
 Each check goes deep on one thing instead of shallow on everything.
 
@@ -75,9 +76,9 @@ To add a new check, create a Markdown file in `checks/` and reference its ID in 
 
 Not all checks have the same cognitive demands. A readability check is mostly pattern matching — rename this confusing variable, split this long function — and Sonnet handles it quickly and cleanly. But a security check needs to trace injection paths across a frontend router, a service layer, and a database query. A concurrency check needs to reason about race conditions spanning multiple threads and lock orderings. These require Opus's deeper multi-layer analysis.
 
-Each plan file specifies which model to use for each check. The pre-populated plans route 14 of 19 checks to Sonnet and 5 to Opus:
+Each plan file specifies which model to use for each check. The pre-populated plans route 14 of 20 checks to Sonnet and 6 to Opus:
 
-- **Opus** for: `security`, `concurrency`, `perf`, `edge-cases`, `architecture-boundaries` — checks where subtle issues span multiple code layers and require multi-step reasoning.
+- **Opus** for: `security`, `concurrency`, `perf`, `edge-cases`, `architecture-boundaries`, `coherence` — checks where subtle issues span multiple code layers and require multi-step reasoning.
 - **Sonnet** for everything else — pattern-matching tasks where Sonnet is faster and produces cleaner results.
 
 The `--model` flag overrides this per-check assignment for all checks. Use `--model opus` to force deep analysis everywhere (slower), or `--model sonnet` for the fastest possible pass.
@@ -236,7 +237,7 @@ uv run checkloop --dir ~/my-project
 # Thorough: adds security (opus), perf (opus), docs, errors, types
 uv run checkloop --dir ~/my-project --plan thorough
 
-# Exhaustive: all 21 checks with optimized model assignments, repeat twice
+# Exhaustive: all 22 checks with optimized model assignments, repeat twice
 uv run checkloop --dir ~/my-project --plan exhaustive --cycles 2
 
 # Or pick specific checks manually
@@ -281,7 +282,7 @@ No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop s
 
 ## Token usage (Be Careful!!!)
 
-Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (14 checks) or exhaustive (21 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
+Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (15 checks) or exhaustive (22 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
 
 I often kick off runs right before bed or when stepping away from the keyboard. The tool is designed to run unattended, but can burn through a lot of tokens. Pay attention to your token useage.
 

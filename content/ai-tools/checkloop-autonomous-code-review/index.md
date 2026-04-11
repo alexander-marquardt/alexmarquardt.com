@@ -251,6 +251,9 @@ uv run checkloop --dir ~/my-project --plan ./my-plan.toml
 # Force all checks to opus for deeper analysis (slower)
 uv run checkloop --dir ~/my-project --plan thorough --model opus
 
+# Use a different Claude CLI executable (e.g. Bedrock-backed, no rate limits)
+uv run checkloop --dir ~/my-project --claude-command claude-bedrock
+
 # Preview without running
 uv run checkloop --dry-run
 ```

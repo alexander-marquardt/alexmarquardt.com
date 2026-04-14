@@ -27,7 +27,7 @@ Worse, some issues are invisible until you fix other issues first. A security vu
 
 The fix is simple: run multiple checks, each focused on a single concern.
 
-There are 22 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into three execution plans of increasing depth:
+There are 23 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into three execution plans of increasing depth:
 
 Every plan starts with a **test-fix** check (runs the existing test suite and fixes any failures) and ends with a **test-validate** check (re-runs the full suite to catch regressions introduced during review).
 
@@ -49,16 +49,17 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 11. **Architecture boundaries** — discovers the project's architectural layers (frontend/backend, standalone library/application, API/service/data), checks that dependencies flow in one direction, and fixes violations. Handles upward imports, leaking internals, shared state coupling, mixed-layer modules, and circular dependencies. Skips single-layer projects where there's nothing to enforce.
 12. **Coherence** — reviews the codebase as a whole after all other checks and fixes cases where checks worked against each other. Catches conflicting changes (error handling added then partially stripped), cumulative over-engineering (each check added a small abstraction but together they're worse than the original), style drift away from project conventions, redundant layering from multiple checks addressing the same concern, and broken call chains from refactors that weren't fully propagated.
 
-**Exhaustive** (all 22 checks) — thorough plus:
+**Exhaustive** (all 23 checks) — thorough plus:
 
 13. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
 14. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
 15. **Deps** — remove verified-unused dependencies, flag vulnerable/outdated packages.
 16. **Logging** — structured logging at entry points. No debug logging on hot paths.
 17. **Concurrency** — race conditions, missing locks, async/await correctness.
-18. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
-19. **API design** — consistent naming, HTTP methods, error formats, pagination.
-20. **Cleanup slop** — removes unnecessary noise accumulated by earlier checks: redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests.
+18. **Concurrency test coverage** — flags multi-user projects (web apps, APIs, e-commerce) that lack tests simulating concurrent access to shared state. Writes correctness-under-concurrency tests for critical operations like inventory decrement, balance transfers, and seat reservations. Verifies atomicity, idempotency, and database-level protections under parallel access. Skips single-user projects where concurrency testing doesn't apply.
+19. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
+20. **API design** — consistent naming, HTTP methods, error formats, pagination.
+21. **Cleanup slop** — removes unnecessary noise accumulated by earlier checks: redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests.
 
 Each check goes deep on one thing instead of shallow on everything.
 
@@ -76,9 +77,9 @@ To add a new check, create a Markdown file in `checks/` and reference its ID in 
 
 Not all checks have the same cognitive demands. A readability check is mostly pattern matching — rename this confusing variable, split this long function — and Sonnet handles it quickly and cleanly. But a security check needs to trace injection paths across a frontend router, a service layer, and a database query. A concurrency check needs to reason about race conditions spanning multiple threads and lock orderings. These require Opus's deeper multi-layer analysis.
 
-Each plan file specifies which model to use for each check. The pre-populated plans route 14 of 20 checks to Sonnet and 6 to Opus:
+Each plan file specifies which model to use for each check. The pre-populated plans route 14 of 21 checks to Sonnet and 7 to Opus:
 
-- **Opus** for: `security`, `concurrency`, `perf`, `edge-cases`, `architecture-boundaries`, `coherence` — checks where subtle issues span multiple code layers and require multi-step reasoning.
+- **Opus** for: `security`, `concurrency`, `concurrency-testing`, `perf`, `edge-cases`, `architecture-boundaries`, `coherence` — checks where subtle issues span multiple code layers and require multi-step reasoning.
 - **Sonnet** for everything else — pattern-matching tasks where Sonnet is faster and produces cleaner results.
 
 The `--model` flag overrides this per-check assignment for all checks. Use `--model opus` to force deep analysis everywhere (slower), or `--model sonnet` for the fastest possible pass.
@@ -237,7 +238,7 @@ uv run checkloop --dir ~/my-project
 # Thorough: adds security (opus), perf (opus), docs, errors, types
 uv run checkloop --dir ~/my-project --plan thorough
 
-# Exhaustive: all 22 checks with optimized model assignments, repeat twice
+# Exhaustive: all 23 checks with optimized model assignments, repeat twice
 uv run checkloop --dir ~/my-project --plan exhaustive --cycles 2
 
 # Or pick specific checks manually
@@ -282,7 +283,7 @@ No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop s
 
 ## Token usage (Be Careful!!!)
 
-Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (15 checks) or exhaustive (22 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
+Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (15 checks) or exhaustive (23 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
 
 I often kick off runs right before bed or when stepping away from the keyboard. The tool is designed to run unattended, but can burn through a lot of tokens. Pay attention to your token useage.
 

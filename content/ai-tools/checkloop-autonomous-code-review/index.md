@@ -148,6 +148,14 @@ Within a single cycle, the checks compound on each other:
 
 Across cycles, the effect compounds further. The second cycle starts from a much cleaner codebase and consistently finds a second layer of issues that the first cycle couldn't see.
 
+## Why incremental checks matter for large codebases
+
+Claude has a finite context window. A project with thousands of files can't fit all at once. If you ask Claude to "review everything", it has to read hundreds of files before making a single edit — filling context with code it may never need while leaving no room for the actual work. I've watched this happen: Claude reads 15 files, context fills up, and it stalls in extended thinking without producing any edits.
+
+Each checkloop check operates incrementally: read a handful of related files, make focused edits, commit, move on. The check-specific prompts guide Claude toward this pattern rather than attempting a full codebase scan. A readability check might read one module, improve its naming, commit the changes, and move to the next — instead of cataloguing every variable name in the project before touching anything. This keeps context available for reasoning and editing rather than exhausting it on upfront indexing.
+
+The result is that checkloop scales to projects that would otherwise stall a single-pass review. A 50K-line codebase that times out when you ask Claude to "review it all" becomes manageable when broken into focused, incremental passes. Each check makes progress on a bounded scope before context pressure builds up, and the suite-level orchestration ensures every part of the codebase eventually gets attention.
+
 ## Avoiding AI-generated noise
 
 One of the biggest risks with autonomous AI code review is that the tool generates _more_ code without generating _better_ code. After running `checkloop` on a real codebase and comparing the result to the original, several anti-patterns emerged:

@@ -224,9 +224,54 @@ Since `checkloop` is designed to run unattended for long periods (potentially ho
 - **Process group isolation** — each Claude Code subprocess runs in its own process group. When a check completes or times out, the entire group is killed (SIGTERM, then SIGKILL after 5 seconds), ensuring no orphaned Node.js processes accumulate.
 - **Session-based cleanup** — after killing the process group, `checkloop` scans the session for any stragglers that escaped the group (e.g. processes that called `setsid()`). An atexit handler sweeps all tracked sessions on program exit, including on SIGTERM and SIGHUP.
 - **Memory limit** — the child process tree's total RSS is sampled every 10 seconds. If it exceeds the `--max-memory-mb` limit (default 8192MB), the entire process group is killed immediately. This prevents runaway test suites or language servers from consuming all system memory.
+- **Host-wide pressure floor** — a separate safety net, `--system-free-floor-mb` (default 500MB), kills the running check if free system memory drops below that threshold regardless of checkloop's own tree size. This catches the nastiest failure mode: swap thrash severe enough to require a hard reboot, where you'd rather lose one check than the whole machine.
 - **Idle timeout** — if Claude produces no output for 5 minutes (configurable with `--idle-timeout`), the process is killed and the next check begins.
 - **Hard check timeout** — optional wall-clock limit per check (`--check-timeout`), which kills even actively-running checks. Useful for CI or when you know no single check should take more than a certain amount of time.
+- **Top-offender alerts** — when any of the kill paths fire, the log emits a one-line callout naming the single largest process in the tree: `→ top offender: pid=54321 rss=6821MB cmd=node .../claude-code`. When a kill is unexpected, that line is almost always the answer — usually a single language server or test worker, not the whole tree.
 - **Memory reporting** — in verbose mode (`-v`), current RSS and child process count are logged after every check so you can monitor resource usage during long runs.
+
+## Observability for stalls and OOMs
+
+Long autonomous runs fail in ways that are hard to diagnose after the fact. The terminal is gone, the shell buffer is gone, and the in-memory log went with it. The only useful artifacts are the ones that were already written to disk before the crash.
+
+checkloop writes two of those.
+
+### A telemetry timeline that survives crashes
+
+A background thread samples the process tree every ~3 seconds and appends one JSON line per sample to `.checkloop-telemetry/telemetry-YYYY-MM-DD.jsonl` in the target project directory. Each line captures parent RSS, total child-tree RSS, the top 5 processes by RSS (with pid and command), system free memory, swap usage, and which check was running at that moment.
+
+The file is flushed and fsynced on every write, and lives outside the per-run `.checkloop-run.log`. So when things go wrong, the timeline is intact:
+
+```bash
+# What was running when the kill fired?
+tail -20 .checkloop-telemetry/telemetry-2026-04-17.jsonl | jq .
+
+# Child-tree RSS over time, alongside the top process at each point
+jq -r '[.iso, .children_rss_mb, (.top_children[0] // {}) | .cmd] | @tsv' \
+  .checkloop-telemetry/telemetry-2026-04-17.jsonl
+```
+
+Retention is automatic — files older than 14 days are pruned, and the directory is capped at 200 MB, so it can't grow without bound. The directory is git-ignored by default.
+
+This came directly out of a bad afternoon debugging a memory-kill bug where the terminal itself was dying mid-investigation. Without an on-disk timeline there was nothing to work from the next time I opened a shell. Now there is.
+
+### A cleanup-time snapshot in `$HOME`
+
+On any process-tree cleanup path — check end, timeout, memory kill, atexit — a one-line state snapshot is appended to `~/.checkloop/cleanup-debug.log`:
+
+```
+2026-04-17T08:10:37  pid=29897 ppid=29880 sessions=[29897] descendants=[29910, 29914, 29918]
+```
+
+It lives in `$HOME`, not the project workdir, so it survives a `rm -rf` of the project, outlives any single run, and is readable from a fresh terminal after a crash. The point is forensic: when you come back to a machine and don't know what happened, this file tells you what the process tree looked like at the moment of the last cleanup, so you can reconstruct whether the kill reached everything it was supposed to.
+
+### Inline signals during silent work
+
+Not every diagnostic needs to wait for a post-mortem. Claude routinely goes silent for minutes while a subprocess runs — a large `pytest` suite, a build, a `grep` over a huge repo. The natural question, staring at a blank screen, is "is this stuck or is it working?"
+
+After about 15 seconds of silence, checkloop replaces the blank with an updating status line that shows elapsed time, what tool is running (e.g. *running pytest*), tree RSS, the current top process by RSS, and host free memory. A healthy long-running subprocess looks visibly healthy: RSS ticks up, top process is `pytest` or `python`, free memory is stable. A stalled one looks different immediately, and you stop reaching for Ctrl+C prematurely.
+
+Together these three signals — the JSONL timeline, the cleanup snapshot, and the live status line — cover the full arc of what can go wrong: watching a run in progress, diagnosing a kill just after it fires, and reconstructing a crash days later.
 
 ## The tool
 

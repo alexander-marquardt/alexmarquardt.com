@@ -27,7 +27,7 @@ Worse, some issues are invisible until you fix other issues first. A security vu
 
 The fix is simple: run multiple checks, each focused on a single concern.
 
-There are 23 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into three execution plans of increasing depth:
+There are 32 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into four execution plans of increasing depth:
 
 Every plan starts with a **test-fix** check (runs the existing test suite and fixes any failures) and ends with a **test-validate** check (re-runs the full suite to catch regressions introduced during review).
 
@@ -60,6 +60,20 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 19. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
 20. **API design** — consistent naming, HTTP methods, error formats, pagination.
 21. **Cleanup slop** — removes unnecessary noise accumulated by earlier checks: redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests.
+
+**Super-exhaustive** (all 32 checks) — everything in exhaustive plus a set of infrastructure and hygiene audits that are too slow or too project-specific to run on every pass:
+
+22. **Check-config** — audits whether the project's test, lint, type-check, and CI infrastructure matches its stack. Scaffolds Playwright for web apps missing E2E coverage, wires up coverage gates, and ensures CI runs the tools that exist locally. This is the structural check that would have caught "React frontend but no browser test runner installed" — a class of gap the behavioural `tests` check can't close on its own.
+23. **Dead code** — unused exports, orphaned files, unreachable branches, stale feature-flag references, and old commented-out blocks. Uses `ts-prune`/`vulture`/`staticcheck` where available.
+24. **Observability** — auth, payments, data mutations, external API calls, and background jobs should have structured logs, metrics, and a path to an alerting channel. Adds what's missing using the project's existing observability stack — won't introduce a new one.
+25. **Schema validation** — every external boundary (HTTP handlers, webhooks, queue consumers, external API responses, env/config) must parse through a schema (Zod/Pydantic/etc.), not a raw type assertion. Verifies webhook signature checks.
+26. **Secret leakage** — scans the repo and built output for API keys, tokens, private keys, connection strings with embedded passwords, PII in logs, and server secrets bundled into client JavaScript. Flags commits that need rotation.
+27. **Migration safety** — reviews database migrations for locking risk, concurrent-index creation, destructive-change staging (expand-and-contract vs one-step DROPs), chunked backfills, rollback paths, and transaction-boundary correctness.
+28. **Feature flags** — ghost flags (referenced in code but no longer defined), orphan flags (defined but never checked), fully-rolled-out flags with dormant branches, and conflicting flag gates.
+29. **Fixture drift** — test mocks and recorded fixtures that no longer match the real code or external APIs. Catches silently-passing mocks, deep-chain patches, stale HTTP recordings, and leaking mocks without teardown.
+30. **Meta-review** — the last check in the plan. Reads the codebase and the full set of existing checks, then writes `.checkloop-recommendations.md` with prioritised suggestions for domain-specific checks or tests that the generic suite doesn't cover. Makes no code changes. The report is printed to the terminal at the end of the run so recommendations are the last thing you see.
+
+The super-exhaustive plan is intentionally not the default — it's meant for occasional deep audits, not every pre-push pass. The meta-review at the end is what makes it worth running periodically: even when the preceding 31 checks don't produce many changes, meta-review frequently surfaces project-specific gaps (tenant-isolation tests, rate-limit regression tests, domain-invariant checks) that generic dimensions miss.
 
 Each check goes deep on one thing instead of shallow on everything.
 
@@ -293,6 +307,11 @@ uv run checkloop --dir ~/my-project --plan thorough
 
 # Exhaustive: all 23 checks with optimized model assignments, repeat twice
 uv run checkloop --dir ~/my-project --plan exhaustive --cycles 2
+
+# Super-exhaustive: exhaustive plus 8 infrastructure audits and a final
+# meta-review that writes recommendations for checks/tests specific to
+# your project. Meant for occasional deep audits.
+uv run checkloop --dir ~/my-project --plan super-exhaustive
 
 # Or pick specific checks manually
 uv run checkloop --dir ~/my-project --checks readability security tests

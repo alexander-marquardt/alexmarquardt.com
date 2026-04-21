@@ -145,6 +145,22 @@ The practical consequence is that you can kick off a multi-cycle exhaustive run 
 
 `--in-place` restores the old behaviour for cases where the clone is in the way: reviewing in-flight uncommitted work, running on non-git directories, or just wanting to see changes show up in the editor you already have open. In that mode the scratch branch is still created (named `checkloop-<iso-timestamp>`) but it lives inside the target repo.
 
+### After a run: review, push, open a PR
+
+checkloop deliberately stops once the scratch branch exists. It does not push, does not open a PR, does not merge. Those are decisions you make after looking at the diff — the tool has been wrong often enough that "review before adopting" is the default policy, not an optional step.
+
+The post-run terminal output is a numbered checklist for exactly that flow. In clone mode it prints:
+
+1. **Review the diff.** `git -C <clone-dir> log --oneline <base>..<branch>` for the shape of the changes, then `git -C <clone-dir> diff <base>..<branch>` for the substance. Read it. Autonomous checks occasionally rename a variable for the worse, over-handle an error that couldn't happen, or strip a comment that was load-bearing — you will catch these by looking.
+2. **Optional second-opinion pass with Claude.** `cd <clone-dir> && claude "Review the diff between <base> and HEAD on this branch. Flag anything that looks incorrect, risky, or lower quality than the original."` A fresh Claude session reading the completed diff spots things the in-loop checks missed: each check was focused on one dimension and never saw the combined effect. This is the single most valuable optional step.
+3. **Fetch the branch into your real repo.** `cd <your-repo> && git fetch <clone-dir> <branch>:<branch>`. The clone directory is a valid git remote path, so this Just Works and nothing touches `origin`.
+4. **Push and open a PR targeting the branch you reviewed.** `git push -u origin <branch>` then `gh pr create --base <review-branch> --head <branch>`. The PR is where CI runs, where teammates comment on individual hunks, where the commit history lands in a form your project already knows how to handle.
+5. **Merge through your normal PR workflow.** checkloop does not merge for you. If the PR passes review and CI, you merge it the same way you merge anything else.
+
+In `--in-place` mode the scratch branch already lives in your repo, so you skip the local fetch in step 3 — everything else is the same. If you want to adopt changes without a PR, `git merge --ff-only <branch>` or a targeted `git cherry-pick` are available as alternatives. If you want to discard everything, `rm -rf <clone-dir>` (clone mode) or `git branch -D <branch>` (in-place) gets you back to where you started.
+
+The point of printing this every run is that "what do I do now?" should not require re-reading the docs after the tool has been running unattended for an hour. The commands are already filled in with the real branch names and paths, ready to paste.
+
 ## Two levels of iteration
 
 The tool iterates at two levels. The **inner level** runs each check in sequence — readability, then DRY, then tests, then security, and so on. Each check focuses on one dimension and builds on the cleanup of the previous one.

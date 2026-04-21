@@ -130,6 +130,21 @@ model = "sonnet"
 uv run checkloop --dir ~/my-project --plan ./security-audit.toml
 ```
 
+## Clone-by-default: don't touch the working tree
+
+An early version of checkloop wrote directly into the user's working copy. That's fine when you know what you're getting into, but it meant you couldn't keep coding while checkloop ran — any edits you made would race against the tool's edits, and interrupting a run could leave your branch in a half-reviewed state.
+
+The current default avoids this entirely. When you pass `--review-branch <ref>`, checkloop:
+
+1. Makes a hardlink-backed `git clone --local` of `--dir` into `~/checkloop-runs/<project>-<iso-timestamp>/`. On the same filesystem this is effectively free — only uniquely modified objects consume disk.
+2. Runs `git fetch origin --prune` inside the clone, then checks out the requested ref (preferring `origin/<ref>` over any local branch of the same name) in **detached-HEAD** state, so commits can't accidentally follow an upstream back to the remote.
+3. Creates a named scratch branch — `<review-branch>-cl-<iso-timestamp>` (e.g. `main-cl-2026-04-21T10-30-45Z`) — and commits every change there.
+4. On completion (or interrupt) prints copy-pasteable commands for adopting the scratch branch into your real repo via `git fetch <clone-dir> <branch>`, merging or cherry-picking it, or discarding everything with `rm -rf <clone-dir>`.
+
+The practical consequence is that you can kick off a multi-cycle exhaustive run and keep working in the original checkout — different commits, different branches, different worktree — and the two don't collide. The clone directory is also a timestamped backup: if a check does something surprising, the pre-run state of the repo is preserved in the clone's git history until you delete it. Clones older than 14 days are pruned automatically the next time checkloop starts.
+
+`--in-place` restores the old behaviour for cases where the clone is in the way: reviewing in-flight uncommitted work, running on non-git directories, or just wanting to see changes show up in the editor you already have open. In that mode the scratch branch is still created (named `checkloop-<iso-timestamp>`) but it lives inside the target repo.
+
 ## Two levels of iteration
 
 The tool iterates at two levels. The **inner level** runs each check in sequence — readability, then DRY, then tests, then security, and so on. Each check focuses on one dimension and builds on the cleanup of the previous one.
@@ -252,20 +267,20 @@ checkloop writes two of those.
 
 ### A telemetry timeline that survives crashes
 
-A background thread samples the process tree every ~3 seconds and appends one JSON line per sample to `.checkloop-telemetry/telemetry-YYYY-MM-DD.jsonl` in the target project directory. Each line captures parent RSS, total child-tree RSS, the top 5 processes by RSS (with pid and command), system free memory, swap usage, and which check was running at that moment.
+A background thread samples the process tree every ~3 seconds and appends one JSON line per sample to `<run-dir>/.checkloop-telemetry/telemetry-YYYY-MM-DD.jsonl` — where `<run-dir>` is the per-run directory under `~/checkloop-runs/` (clone mode) or the project root (`--in-place`). Each line captures parent RSS, total child-tree RSS, the top 5 processes by RSS (with pid and command), system free memory, swap usage, and which check was running at that moment.
 
-The file is flushed and fsynced on every write, and lives outside the per-run `.checkloop-run.log`. So when things go wrong, the timeline is intact:
+The file is flushed and fsynced on every write, and lives alongside the per-run `.checkloop-run.log`. So when things go wrong, the timeline is intact:
 
 ```bash
 # What was running when the kill fired?
-tail -20 .checkloop-telemetry/telemetry-2026-04-17.jsonl | jq .
+tail -20 ~/checkloop-runs/myproj-2026-04-17T08-00-00Z/.checkloop-telemetry/telemetry-2026-04-17.jsonl | jq .
 
 # Child-tree RSS over time, alongside the top process at each point
 jq -r '[.iso, .children_rss_mb, (.top_children[0] // {}) | .cmd] | @tsv' \
-  .checkloop-telemetry/telemetry-2026-04-17.jsonl
+  ~/checkloop-runs/myproj-2026-04-17T08-00-00Z/.checkloop-telemetry/telemetry-2026-04-17.jsonl
 ```
 
-Retention is automatic — files older than 14 days are pruned, and the directory is capped at 200 MB, so it can't grow without bound. The directory is git-ignored by default.
+Retention is automatic — files older than 14 days are pruned, and the directory is capped at 200 MB, so it can't grow without bound. In `--in-place` mode the directory is git-ignored by default; in clone mode it lives outside the reviewed tree entirely.
 
 This came directly out of a bad afternoon debugging a memory-kill bug where the terminal itself was dying mid-investigation. Without an on-disk timeline there was nothing to work from the next time I opened a shell. Now there is.
 
@@ -296,40 +311,47 @@ git clone https://github.com/alexander-marquardt/checkloop.git
 cd checkloop && uv sync
 ```
 
-Run with `uv run checkloop` from the cloned directory, and pick a plan with `--plan`:
+Run with `uv run checkloop` from anywhere. Both `--dir` and a mode flag are required — either `--review-branch <ref>` (clone mode) or `--in-place`:
 
 ```bash
-# Basic plan (default): readability, DRY, tests (all sonnet)
-uv run checkloop --dir ~/my-project
+# Basic plan (default) — review origin/main in a disposable clone
+uv run checkloop --dir ~/my-project --review-branch main
 
 # Thorough: adds security (opus), perf (opus), docs, errors, types
-uv run checkloop --dir ~/my-project --plan thorough
+uv run checkloop --dir ~/my-project --review-branch main --plan thorough
 
 # Exhaustive: all 23 checks with optimized model assignments, repeat twice
-uv run checkloop --dir ~/my-project --plan exhaustive --cycles 2
+uv run checkloop --dir ~/my-project --review-branch main --plan exhaustive --cycles 2
 
 # Super-exhaustive: exhaustive plus 8 infrastructure audits and a final
 # meta-review that writes recommendations for checks/tests specific to
 # your project. Meant for occasional deep audits.
-uv run checkloop --dir ~/my-project --plan super-exhaustive
+uv run checkloop --dir ~/my-project --review-branch main --plan super-exhaustive
+
+# Review a feature branch from origin
+uv run checkloop --dir ~/my-project --review-branch feature/my-work --plan thorough
 
 # Or pick specific checks manually
-uv run checkloop --dir ~/my-project --checks readability security tests
+uv run checkloop --dir ~/my-project --review-branch main --checks readability security tests
 
 # Add a check on top of a plan
-uv run checkloop --dir ~/my-project --plan thorough --checks cleanup-ai-slop
+uv run checkloop --dir ~/my-project --review-branch main --plan thorough --checks cleanup-ai-slop
 
 # Use your own plan file
-uv run checkloop --dir ~/my-project --plan ./my-plan.toml
+uv run checkloop --dir ~/my-project --review-branch main --plan ./my-plan.toml
 
 # Force all checks to opus for deeper analysis (slower)
-uv run checkloop --dir ~/my-project --plan thorough --model opus
+uv run checkloop --dir ~/my-project --review-branch main --plan thorough --model opus
 
 # Use a different Claude CLI executable (e.g. Bedrock-backed, no rate limits)
-uv run checkloop --dir ~/my-project --claude-command claude-bedrock
+uv run checkloop --dir ~/my-project --review-branch main --claude-command claude-bedrock
+
+# Run against the working tree directly (legacy mode) — no clone, reviews
+# uncommitted changes too
+uv run checkloop --dir ~/my-project --in-place
 
 # Preview without running
-uv run checkloop --dry-run
+uv run checkloop --dir ~/my-project --review-branch main --dry-run
 ```
 
 To make `checkloop` available globally (without `uv run`):

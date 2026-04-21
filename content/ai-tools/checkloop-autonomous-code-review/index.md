@@ -137,9 +137,10 @@ An early version of checkloop wrote directly into the user's working copy. That'
 The current default avoids this entirely. When you pass `--review-branch <ref>`, checkloop:
 
 1. Makes a hardlink-backed `git clone --local` of `--dir` into `~/checkloop-runs/<project>-<iso-timestamp>/`. On the same filesystem this is effectively free — only uniquely modified objects consume disk.
-2. Runs `git fetch origin --prune` inside the clone, then checks out the requested ref (preferring `origin/<ref>` over any local branch of the same name) in **detached-HEAD** state, so commits can't accidentally follow an upstream back to the remote.
-3. Creates a named scratch branch — `<review-branch>-cl-<iso-timestamp>` (e.g. `main-cl-2026-04-21T10-30-45Z`) — and commits every change there.
-4. On completion (or interrupt) prints copy-pasteable commands for adopting the scratch branch into your real repo via `git fetch <clone-dir> <branch>`, merging or cherry-picking it, or discarding everything with `rm -rf <clone-dir>`.
+2. Runs `git fetch origin --prune` inside the clone against the local source (no network), then checks out the requested ref (preferring `origin/<ref>` over any local branch of the same name) in **detached-HEAD** state, so commits can't accidentally follow an upstream back to the remote.
+3. Rewrites the clone's `origin` URL to the source repo's real remote URL (typically the GitHub URL), so `git push origin <branch>` from inside the clone later goes straight to GitHub instead of back to the user's local source directory.
+4. Creates a named scratch branch — `<review-branch>-cl-<iso-timestamp>` (e.g. `main-cl-2026-04-21T10-30-45Z`) — and commits every change there.
+5. On completion (or interrupt) prints copy-pasteable commands for reviewing the diff, pushing the scratch branch to `origin`, opening a PR targeting the reviewed ref, and merging it through your normal PR workflow (or discarding everything with `rm -rf <clone-dir>`).
 
 The practical consequence is that you can kick off a multi-cycle exhaustive run and keep working in the original checkout — different commits, different branches, different worktree — and the two don't collide. The clone directory is also a timestamped backup: if a check does something surprising, the pre-run state of the repo is preserved in the clone's git history until you delete it. Clones older than 14 days are pruned automatically the next time checkloop starts.
 

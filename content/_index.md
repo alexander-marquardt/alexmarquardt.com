@@ -15,6 +15,8 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 
 # Ecommerce videos
 
+- [Eliminating Zero-Result Pages: PRISM's Multi-Tier Search Fallback (Part 3)](https://www.youtube.com/watch?v=k02NHvIAHsk) (Apr 29, 2026)
+
 - [Leveraging Elasticsearch Percolator Queries for Intent-Driven Search (PRISM Part 2)](https://www.youtube.com/watch?v=Ap5K2Y00Xjc) (Apr 22, 2026)
 
 - [Fixing Search Relevance in Seconds: Introducing PRISM (Part 1)](https://www.youtube.com/watch?v=e1GuL9CYWAk) (Apr 17, 2026)

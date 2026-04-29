@@ -13,9 +13,17 @@ I am a Senior Principal Architect working on GenAI and Search at [Elastic](https
 
 More details: [About the Author](/about/) · [Professional Record](/professional/) · [LinkedIn](https://www.linkedin.com/in/alexandermarquardt/)
 
+# Ecommerce videos
+
+- [Leveraging Elasticsearch Percolator Queries for Intent-Driven Search (PRISM Part 2)](https://www.youtube.com/watch?v=Ap5K2Y00Xjc) (Apr 22, 2026)
+
+- [Fixing Search Relevance in Seconds: Introducing PRISM (Part 1)](https://www.youtube.com/watch?v=e1GuL9CYWAk) (Apr 17, 2026)
+
 # Elastic Stack
 
 ## Search & Relevance
+
+- [Accelerating merchandising improvements with a governed control plane | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-zero-deploy) (Apr 28, 2026)
 
 - [Why ecommerce search needs governance & how it improves retrieval | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-improve-retrieval) (Apr 9, 2026)
 

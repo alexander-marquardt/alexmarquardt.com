@@ -27,6 +27,8 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 
 ## Search & Relevance
 
+- [Building a control plane to govern ecommerce search | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-control-plane-architecture) (May 1, 2026)
+
 - [Accelerating merchandising improvements with a governed control plane | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-zero-deploy) (Apr 28, 2026)
 
 - [Why ecommerce search needs governance & how it improves retrieval | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-improve-retrieval) (Apr 9, 2026)

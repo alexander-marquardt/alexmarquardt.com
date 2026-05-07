@@ -29,6 +29,8 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 
 ## Search & Relevance
 
+- [Multi-tier search with Elastic for ecommerce search governance: Fixing poor recall | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/multi-tier-search-ecommerce-governance) (May 6, 2026)
+
 - [Elasticsearch percolator for ecommerce search governance: translating ambiguous queries into controlled retrieval strategies | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/elasticsearch-percolator-search-governance) (May 4, 2026)
 
 - [Building a control plane to govern ecommerce search | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-control-plane-architecture) (May 1, 2026)

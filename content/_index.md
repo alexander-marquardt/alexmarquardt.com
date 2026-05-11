@@ -15,6 +15,8 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 
 # Ecommerce videos
 
+- [Search as a Strategic Asset: Brand, Product, and Seasonal Boosting (PRISM Part 6)](https://www.youtube.com/watch?v=7UUbjBpLcUM) (May 11, 2026)
+
 - [Explainable Personalization: Boosting Search with Purchase History (PRISM Part 5)](https://www.youtube.com/watch?v=TGf_pOWHA5M) (May 6, 2026)
 
 - [Beyond the Black Box: Explainable Cohort Boosting (PRISM Part 4)](https://www.youtube.com/watch?v=Um5jSQFiMvo) (Apr 30, 2026)

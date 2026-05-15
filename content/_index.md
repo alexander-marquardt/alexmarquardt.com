@@ -31,6 +31,8 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 
 ## Search & Relevance
 
+- [Ecommerce search optimization using margin and popularity boosting in Elasticsearch | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-optimization-query-governed) (May 13, 2026)
+
 - [Personalizing ecommerce search: Integrating purchase history and user cohorts | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/elasticsearch-personalized-search-governed-ecommerce) (May 11, 2026)
 
 - [Multi-tier search with Elastic for ecommerce search governance: Fixing poor recall | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/multi-tier-search-ecommerce-governance) (May 6, 2026)

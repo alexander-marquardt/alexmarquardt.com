@@ -8,7 +8,7 @@ aliases:
   - /ai-tools/claudeloop-autonomous-code-review/
 tags: ["ai", "code-review", "developer-tooling", "claude"]
 categories: ["AI-Assisted Development"]
-description: "A Python tool that runs Claude Code in an autonomous, multi-check review loop with three levels of review thoroughness, cross-check coherence validation, and convergence detection."
+description: "A Python tool that runs Claude Code in an autonomous, multi-check review loop with four levels of review thoroughness, cross-check coherence validation, and convergence detection."
 ---
 
 Claude Code is genuinely good at code review — better than many humans at spotting certain categories of bugs. But I often experienced that it would find real issues and fix them, and I'd think we were done, but another check would reveal additional errors. So I'd ask it to review again, and it would catch *that* issue plus a few more — but miss yet another category entirely. Each time I thought the review was complete, another manual round would turn up more problems.
@@ -27,7 +27,7 @@ Worse, some issues are invisible until you fix other issues first. A security vu
 
 The fix is simple: run multiple checks, each focused on a single concern.
 
-There are 32 built-in checks (including two bookend checks that ensure the test suite is green before and after the review), organized into four execution plans of increasing depth:
+There are 32 built-in checks (including two bookend checks that ensure the test suite is green before and after the review). Thirty-one of them are organized into four execution plans of increasing depth; the last is an on-demand check covered further down:
 
 Every plan starts with a **test-fix** check (runs the existing test suite and fixes any failures) and ends with a **test-validate** check (re-runs the full suite to catch regressions introduced during review).
 
@@ -37,7 +37,7 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 2. **DRY** — find repeated logic, extract shared helpers, separate mixed concerns into focused modules when it improves testability.
 3. **Tests** — write behaviour-driven tests that verify correctness of complex logic (regex, parsing, validation), not just that code runs. Unit tests with mocks for external services, integration tests separately. Avoids testing impossible defensive paths.
 
-**Thorough** (15 checks) — basic plus:
+**Thorough** (14 checks) — basic plus:
 
 4. **Docs** — README, config documentation. The bar for adding docstrings is high: only where name and signature leave genuine ambiguity (complex return values, non-obvious side effects, surprising semantics). When in doubt, leaves the code undocumented.
 5. **Docs accuracy** — cross-references CLI `--help` text, README examples, error messages, and API docs against actual code behavior. Fixes factual inaccuracies (wrong defaults, renamed flags, stale file paths) without adding new documentation.
@@ -61,19 +61,22 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 20. **API design** — consistent naming, HTTP methods, error formats, pagination.
 21. **Cleanup slop** — removes unnecessary noise accumulated by earlier checks: redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests.
 
-**Super-exhaustive** (all 32 checks) — everything in exhaustive plus a set of infrastructure and hygiene audits that are too slow or too project-specific to run on every pass:
+**Super-exhaustive** (31 checks) — everything in exhaustive plus eight infrastructure and hygiene audits that are too slow or too project-specific to run on every pass:
 
 22. **Check-config** — audits whether the project's test, lint, type-check, and CI infrastructure matches its stack. Scaffolds Playwright for web apps missing E2E coverage, wires up coverage gates, and ensures CI runs the tools that exist locally. This is the structural check that would have caught "React frontend but no browser test runner installed" — a class of gap the behavioural `tests` check can't close on its own.
 23. **Dead code** — unused exports, orphaned files, unreachable branches, stale feature-flag references, and old commented-out blocks. Uses `ts-prune`/`vulture`/`staticcheck` where available.
 24. **Observability** — auth, payments, data mutations, external API calls, and background jobs should have structured logs, metrics, and a path to an alerting channel. Adds what's missing using the project's existing observability stack — won't introduce a new one.
 25. **Schema validation** — every external boundary (HTTP handlers, webhooks, queue consumers, external API responses, env/config) must parse through a schema (Zod/Pydantic/etc.), not a raw type assertion. Verifies webhook signature checks.
 26. **Secret leakage** — scans the repo and built output for API keys, tokens, private keys, connection strings with embedded passwords, PII in logs, and server secrets bundled into client JavaScript. Flags commits that need rotation.
-27. **Migration safety** — reviews database migrations for locking risk, concurrent-index creation, destructive-change staging (expand-and-contract vs one-step DROPs), chunked backfills, rollback paths, and transaction-boundary correctness.
-28. **Feature flags** — ghost flags (referenced in code but no longer defined), orphan flags (defined but never checked), fully-rolled-out flags with dormant branches, and conflicting flag gates.
-29. **Fixture drift** — test mocks and recorded fixtures that no longer match the real code or external APIs. Catches silently-passing mocks, deep-chain patches, stale HTTP recordings, and leaking mocks without teardown.
-30. **Meta-review** — the last check in the plan. Reads the codebase and the full set of existing checks, then writes `.checkloop-recommendations.md` with prioritised suggestions for domain-specific checks or tests that the generic suite doesn't cover. Makes no code changes. The report is printed to the terminal at the end of the run so recommendations are the last thing you see.
+27. **Feature flags** — ghost flags (referenced in code but no longer defined), orphan flags (defined but never checked), fully-rolled-out flags with dormant branches, and conflicting flag gates.
+28. **Fixture drift** — test mocks and recorded fixtures that no longer match the real code or external APIs. Catches silently-passing mocks, deep-chain patches, stale HTTP recordings, and leaking mocks without teardown.
+29. **Meta-review** — the last check in the plan. Reads the codebase and the full set of existing checks, then writes `.checkloop-recommendations.md` with prioritised suggestions for domain-specific checks or tests that the generic suite doesn't cover. Makes no code changes. The report is printed to the terminal at the end of the run so recommendations are the last thing you see.
 
-The super-exhaustive plan is intentionally not the default — it's meant for occasional deep audits, not every pre-push pass. The meta-review at the end is what makes it worth running periodically: even when the preceding 31 checks don't produce many changes, meta-review frequently surfaces project-specific gaps (tenant-isolation tests, rate-limit regression tests, domain-invariant checks) that generic dimensions miss.
+The super-exhaustive plan is intentionally not the default — it's meant for occasional deep audits, not every pre-push pass. The meta-review at the end is what makes it worth running periodically: even when the preceding 30 checks don't produce many changes, meta-review frequently surfaces project-specific gaps (tenant-isolation tests, rate-limit regression tests, domain-invariant checks) that generic dimensions miss.
+
+### Checks that ship but aren't in any plan
+
+One check — **migration-safety** — is registered and editable like the others but isn't part of any plan, because it only applies to projects with SQL or relational database migrations. It reviews migrations for locking risk, concurrent-index creation, destructive-change staging (expand-and-contract vs one-step DROPs), chunked backfills, rollback paths, and transaction-boundary correctness. Run it explicitly with `--checks migration-safety` when it's relevant; the schemaless and search-backed projects that make up most runs don't pay for an invocation that would only self-skip.
 
 Each check goes deep on one thing instead of shallow on everything.
 
@@ -82,7 +85,7 @@ Each check goes deep on one thing instead of shallow on everything.
 Every part of checkloop's behavior is defined in editable files at the project root — no Python changes needed to customize:
 
 - **`checks/`** — one Markdown file per check. Each has YAML frontmatter (`id`, `label`) and a prompt body. Edit a prompt, add a new check, or remove one by modifying files.
-- **`execution_plans/`** — TOML files that define which checks to run and which model for each. Three ship pre-populated (basic, thorough, exhaustive).
+- **`execution_plans/`** — TOML files that define which checks to run and which model for each. Four ship pre-populated (basic, thorough, exhaustive, super-exhaustive).
 - **`prompt_templates/`** — boilerplate injected into every check at runtime: the scope prefix (review all code vs changed files) and commit message rules.
 
 To add a new check, create a Markdown file in `checks/` and reference its ID in a plan TOML. To customize a prompt, edit the `.md` file directly.
@@ -91,14 +94,14 @@ To add a new check, create a Markdown file in `checks/` and reference its ID in 
 
 Not all checks have the same cognitive demands. A readability check is mostly pattern matching — rename this confusing variable, split this long function — and Sonnet handles it quickly and cleanly. But a security check needs to trace injection paths across a frontend router, a service layer, and a database query. A concurrency check needs to reason about race conditions spanning multiple threads and lock orderings. These require Opus's deeper multi-layer analysis.
 
-Each plan file specifies which model to use for each check. The pre-populated plans route 14 of 21 checks to Sonnet and 7 to Opus:
+Each plan file specifies which model to use for each check. In the exhaustive plan, 15 of its 23 checks run on Sonnet and 8 on Opus:
 
-- **Opus** for: `security`, `concurrency`, `concurrency-testing`, `perf`, `edge-cases`, `architecture-boundaries`, `coherence` — checks where subtle issues span multiple code layers and require multi-step reasoning.
+- **Opus** for: `security`, `perf`, `derived-values`, `architecture-boundaries`, `edge-cases`, `concurrency`, `concurrency-testing`, `coherence` — checks where subtle issues span multiple code layers and require multi-step reasoning. The super-exhaustive plan routes two more to Opus: `observability` and `meta-review`.
 - **Sonnet** for everything else — pattern-matching tasks where Sonnet is faster and produces cleaner results.
 
 The `--model` flag overrides this per-check assignment for all checks. Use `--model opus` to force deep analysis everywhere (slower), or `--model sonnet` for the fastest possible pass.
 
-Plans are just TOML files — three ship pre-populated (basic, thorough, exhaustive), but you can write your own with whatever checks and model assignments fit your project. For example, a security-focused plan:
+Plans are just TOML files — four ship pre-populated (basic, thorough, exhaustive, super-exhaustive), but you can write your own with whatever checks and model assignments fit your project. For example, a security-focused plan:
 
 ```toml
 [tier]
@@ -138,34 +141,31 @@ The current default avoids this entirely. When you pass `--review-branch <ref>`,
 
 1. Makes a hardlink-backed `git clone --local` of `--dir` into `~/checkloop-runs/<project>-<iso-timestamp>/`. On the same filesystem this is effectively free — only uniquely modified objects consume disk.
 2. Runs `git fetch origin --prune` inside the clone against the local source (no network), then checks out the requested ref (preferring `origin/<ref>` over any local branch of the same name) in **detached-HEAD** state, so commits can't accidentally follow an upstream back to the remote.
-3. Rewrites the clone's `origin` URL to the source repo's real remote URL (typically the GitHub URL), so `git push origin <branch>` from inside the clone later goes straight to GitHub instead of back to the user's local source directory.
+3. Rewrites the clone's `origin` URL to the source repo's real remote (typically the GitHub URL), so the clone is a valid working copy of your actual project rather than one whose `origin` points back at a local directory.
 4. Creates a named scratch branch — `<review-branch>-cl-<iso-timestamp>` (e.g. `main-cl-2026-04-21T10-30-45Z`) — and commits every change there.
-5. On completion (or interrupt) prints copy-pasteable commands for reviewing the diff, pushing the scratch branch to `origin`, opening a PR targeting the reviewed ref, and merging it through your normal PR workflow (or discarding everything with `rm -rf <clone-dir>`).
+5. On completion (or interrupt) prints next-step guidance for reviewing the scratch branch and adopting the work — covered in detail below.
 
 The practical consequence is that you can kick off a multi-cycle exhaustive run and keep working in the original checkout — different commits, different branches, different worktree — and the two don't collide. The clone directory is also a timestamped backup: if a check does something surprising, the pre-run state of the repo is preserved in the clone's git history until you delete it. Clones older than 14 days are pruned automatically the next time checkloop starts.
 
 `--in-place` restores the old behaviour for cases where the clone is in the way: reviewing in-flight uncommitted work, running on non-git directories, or just wanting to see changes show up in the editor you already have open. In that mode the scratch branch is still created (named `checkloop-<iso-timestamp>`) but it lives inside the target repo.
 
-### After a run: review, push, open a PR
+### After a run: review and adopt
 
-checkloop deliberately stops once the scratch branch exists. It does not push, does not open a PR, does not merge. Those are decisions you make after looking at the diff — the tool has been wrong often enough that "review before adopting" is the default policy, not an optional step.
+checkloop deliberately stops once the scratch branch exists. It does not push, does not open a PR, does not merge. Those are decisions you make after looking at the work — the tool has been wrong often enough that "review before adopting" is the default policy, not an optional step. What checkloop prints at the end depends on the mode.
 
-The clone itself is set up so adoption is as boring as possible. `git clone --local` would normally leave the clone's `origin` pointing at the source directory on disk, which makes `git push origin` go nowhere useful. checkloop rewrites `origin` at startup to the source repo's real remote URL (whatever `git config remote.origin.url` says in your original checkout — typically a GitHub URL), after the startup fetch has already run against the local source. The fast-path fetch stays fast, and the clone ends up being a "real" working copy of your GitHub repo that you can push from directly.
+**Clone mode.** The scratch branch lives inside the disposable clone, produced by check sessions that each saw only one dimension at a time. Rather than a list of `git` commands, checkloop prints a single ready-to-paste prompt for a Claude session in your *original* repo. Pasting it tells Claude to:
 
-The post-run terminal output is a numbered checklist for the standard flow:
+- treat the clone as **read-only review material** — inspect it with `git -C <clone-dir> log` and `git -C <clone-dir> diff`, but never fetch, merge, or cherry-pick its commits;
+- decide, change by change, whether each one is correct and consistent with your project's conventions (it reads your `CLAUDE.md` / `AGENTS.md`), and skip anything wrong, over-eager, or lower quality than what's already there;
+- re-apply the improvements worth keeping by editing the original repo directly, on new branches off the reviewed ref, with descriptive commit messages;
+- run your tests and linters on each branch, then push, open a PR, and merge through your normal workflow — all from the original repo, never from the clone;
+- read `.checkloop-recommendations.md` if the meta-review check wrote one, and carry its suggestions forward into the session instead of leaving them stranded in the clone.
 
-1. **Switch into the clone.** `cd <clone-dir>`. You'll do the rest of the steps from here.
-2. **Review the diff.** `git log --oneline <base>..<branch>` for the shape of the changes, then `git diff <base>..<branch>` for the substance. Read it. Autonomous checks occasionally rename a variable for the worse, over-handle an error that couldn't happen, or strip a comment that was load-bearing — you will catch these by looking.
-3. **Optional second-opinion pass with Claude.** `claude "Review the diff between <base> and HEAD on this branch. Flag anything that looks incorrect, risky, or lower quality than the original."` A fresh Claude session reading the completed diff spots things the in-loop checks missed: each check was focused on one dimension and never saw the combined effect. This is the single most valuable optional step.
-4. **Push the branch to origin.** `git push -u origin <branch>`. Goes straight to GitHub — no intermediate hop through your original working directory.
-5. **Open a PR targeting the branch you reviewed.** `gh pr create --base <review-branch> --head <branch>`. The PR is where CI runs, where teammates comment on individual hunks, where the commit history lands in a form your project already knows how to handle.
-6. **Merge through your normal PR workflow.** checkloop does not merge for you. If the PR passes review and CI, you merge it the same way you merge anything else.
+Claude finishes with an **Accepted / Rejected / Deferred / Recommended Follow-ups** summary, so you see what it kept, what it discarded, and why. Prefer to adopt by hand? The same diff is yours to inspect with `git -C <clone-dir> diff` and re-apply as your own commits. Either way the clone is purely additive — delete it with `rm -rf <clone-dir>` when you're done.
 
-If the source repo has no pushable `origin` (local-only projects, never pushed to a remote), the clone's origin stays pointing at the source path and the post-run output falls back to a two-hop flow: fetch the branch out of the clone into your real repo first, then push and PR from there. Same destination, one extra command.
+**In-place mode.** The scratch branch already lives in your repo, so checkloop prints a numbered checklist instead: review the diff, optionally ask a fresh Claude session for a final pass over it, push the branch, open a PR targeting your original branch, and merge it yourself. It also lists shortcuts for adopting locally without a PR (`git merge --ff-only`), cherry-picking individual commits, or discarding the branch entirely.
 
-In `--in-place` mode the scratch branch already lives in your repo, so the flow is just: review, optional Claude pass, push, PR, merge — no `cd` required.
-
-The point of printing this every run is that "what do I do now?" should not require re-reading the docs after the tool has been running unattended for an hour. The commands are already filled in with the real branch names and paths, ready to paste.
+The point of printing this every run is that "what do I do now?" should not require re-reading the docs after the tool has been running unattended for an hour. The commands and prompt come pre-filled with the real branch names and paths, ready to paste.
 
 ## Two levels of iteration
 
@@ -276,8 +276,9 @@ Since `checkloop` is designed to run unattended for long periods (potentially ho
 - **Session-based cleanup** — after killing the process group, `checkloop` scans the session for any stragglers that escaped the group (e.g. processes that called `setsid()`). An atexit handler sweeps all tracked sessions on program exit, including on SIGTERM and SIGHUP.
 - **Memory limit** — the child process tree's total RSS is sampled every 10 seconds. If it exceeds the `--max-memory-mb` limit (default 8192MB), the entire process group is killed immediately. This prevents runaway test suites or language servers from consuming all system memory.
 - **Host-wide pressure floor** — a separate safety net, `--system-free-floor-mb` (default 500MB), kills the running check if free system memory drops below that threshold regardless of checkloop's own tree size. This catches the nastiest failure mode: swap thrash severe enough to require a hard reboot, where you'd rather lose one check than the whole machine.
-- **Idle timeout** — if Claude produces no output for 5 minutes (configurable with `--idle-timeout`), the process is killed and the next check begins.
-- **Hard check timeout** — optional wall-clock limit per check (`--check-timeout`), which kills even actively-running checks. Useful for CI or when you know no single check should take more than a certain amount of time.
+- **Stay-awake power assertion** (macOS) — checkloop is built for the "kick it off before bed" workflow, but a laptop left idle will sleep, and system sleep suspends the running Claude subprocess so the run looks stalled until the machine wakes. On macOS checkloop holds a `caffeinate` power assertion for the lifetime of the run, blocking idle sleep; the assertion is released automatically when checkloop exits, even on a crash. Disable it with `--no-caffeinate`, and if `caffeinate` isn't on `PATH` checkloop prints a warning and continues without it.
+- **Idle timeout** — `--idle-timeout` (default 10 minutes) bounds how long Claude can produce no output before a check is considered stalled. The threshold is consulted, not absolute: before killing, the watchdog checks whether the process tree still has live descendants and whether it is using CPU. With both signals present the kill is suppressed entirely (only `--check-timeout` bounds runtime); with one, the window is extended; with neither — the common case where the parent process is socket-blocked on a long API call during a sub-agent turn or context compaction — the kill is also suppressed, because earlier, simpler idle-kill logic repeatedly killed legitimate long-running agent work. A `compacting` status event suppresses the kill regardless.
+- **Hard check timeout** — optional wall-clock limit per check (`--check-timeout`, default off), which kills even actively-running checks. It is the real bound on the no-signal idle case above, so set it for monorepos where Claude routinely delegates to a sub-agent for long stretches.
 - **Top-offender alerts** — when any of the kill paths fire, the log emits a one-line callout naming the single largest process in the tree: `→ top offender: pid=54321 rss=6821MB cmd=node .../claude-code`. When a kill is unexpected, that line is almost always the answer — usually a single language server or test worker, not the whole tree.
 - **Memory reporting** — in verbose mode (`-v`), current RSS and child process count are logged after every check so you can monitor resource usage during long runs.
 
@@ -333,11 +334,11 @@ git clone https://github.com/alexander-marquardt/checkloop.git
 cd checkloop && uv sync
 ```
 
-Run with `uv run checkloop` from anywhere. Both `--dir` and a mode flag are required — either `--review-branch <ref>` (clone mode) or `--in-place`:
+Run with `uv run checkloop` from anywhere. A real run requires three things: `--dir`, a mode flag — either `--review-branch <ref>` (clone mode) or `--in-place` — and `--dangerously-skip-permissions`. The last one is mandatory: checkloop drives Claude Code unattended with no way to answer interactive permission prompts, so without it any check that modifies code would stall. It's spelled out in the first example below and omitted from the rest for readability — add it to every non-dry-run command.
 
 ```bash
 # Basic plan (default) — review origin/main in a disposable clone
-uv run checkloop --dir ~/my-project --review-branch main
+uv run checkloop --dir ~/my-project --review-branch main --dangerously-skip-permissions
 
 # Thorough: adds security (opus), perf (opus), docs, errors, types
 uv run checkloop --dir ~/my-project --review-branch main --plan thorough
@@ -345,9 +346,9 @@ uv run checkloop --dir ~/my-project --review-branch main --plan thorough
 # Exhaustive: all 23 checks with optimized model assignments, repeat twice
 uv run checkloop --dir ~/my-project --review-branch main --plan exhaustive --cycles 2
 
-# Super-exhaustive: exhaustive plus 8 infrastructure audits and a final
-# meta-review that writes recommendations for checks/tests specific to
-# your project. Meant for occasional deep audits.
+# Super-exhaustive: exhaustive plus eight infrastructure and hygiene audits,
+# the last of which is a meta-review that writes recommendations for
+# checks/tests specific to your project. Meant for occasional deep audits.
 uv run checkloop --dir ~/my-project --review-branch main --plan super-exhaustive
 
 # Review a feature branch from origin
@@ -359,8 +360,14 @@ uv run checkloop --dir ~/my-project --review-branch main --checks readability se
 # Add a check on top of a plan
 uv run checkloop --dir ~/my-project --review-branch main --plan thorough --checks cleanup-ai-slop
 
+# Add the on-demand migration-safety check (not part of any plan)
+uv run checkloop --dir ~/my-project --review-branch main --checks migration-safety
+
 # Use your own plan file
 uv run checkloop --dir ~/my-project --review-branch main --plan ./my-plan.toml
+
+# Only review files that changed vs a base ref
+uv run checkloop --dir ~/my-project --review-branch main --changed-only main
 
 # Force all checks to opus for deeper analysis (slower)
 uv run checkloop --dir ~/my-project --review-branch main --plan thorough --model opus
@@ -368,11 +375,14 @@ uv run checkloop --dir ~/my-project --review-branch main --plan thorough --model
 # Use a different Claude CLI executable (e.g. Bedrock-backed, no rate limits)
 uv run checkloop --dir ~/my-project --review-branch main --claude-command claude-bedrock
 
+# Don't hold a macOS power assertion (let the host idle-sleep during the run)
+uv run checkloop --dir ~/my-project --review-branch main --no-caffeinate
+
 # Run against the working tree directly (legacy mode) — no clone, reviews
 # uncommitted changes too
 uv run checkloop --dir ~/my-project --in-place
 
-# Preview without running
+# Preview without running (the only mode that doesn't need the permissions flag)
 uv run checkloop --dir ~/my-project --review-branch main --dry-run
 ```
 
@@ -399,7 +409,7 @@ No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop s
 
 ## Token usage (Be Careful!!!)
 
-Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (15 checks) or exhaustive (23 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
+Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (14 checks) or exhaustive (23 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
 
 I often kick off runs right before bed or when stepping away from the keyboard. The tool is designed to run unattended, but can burn through a lot of tokens. Pay attention to your token useage.
 

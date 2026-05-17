@@ -27,7 +27,7 @@ Worse, some issues are invisible until you fix other issues first. A security vu
 
 The fix is simple: run multiple checks, each focused on a single concern.
 
-There are 32 built-in checks (including two bookend checks that ensure the test suite is green before and after the review). Thirty-one of them are organized into four execution plans of increasing depth; the last is an on-demand check covered further down:
+There are 34 built-in checks (including two bookend checks that ensure the test suite is green before and after the review). Thirty-three of them are organized into four execution plans of increasing depth; the last is an on-demand check covered further down:
 
 Every plan starts with a **test-fix** check (runs the existing test suite and fixes any failures) and ends with a **test-validate** check (re-runs the full suite to catch regressions introduced during review).
 
@@ -37,7 +37,7 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 2. **DRY** — find repeated logic, extract shared helpers, separate mixed concerns into focused modules when it improves testability.
 3. **Tests** — write behaviour-driven tests that verify correctness of complex logic (regex, parsing, validation), not just that code runs. Unit tests with mocks for external services, integration tests separately. Avoids testing impossible defensive paths.
 
-**Thorough** (14 checks) — basic plus:
+**Thorough** (16 checks) — basic plus:
 
 4. **Docs** — README, config documentation. The bar for adding docstrings is high: only where name and signature leave genuine ambiguity (complex return values, non-obvious side effects, surprising semantics). When in doubt, leaves the code undocumented.
 5. **Docs accuracy** — cross-references CLI `--help` text, README examples, error messages, and API docs against actual code behavior. Fixes factual inaccuracies (wrong defaults, renamed flags, stale file paths) without adding new documentation.
@@ -47,32 +47,34 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 9. **Type safety** — type annotations, replace `Any`/untyped code, runtime validation at API boundaries (Annotated types, Pydantic, Zod). Run type checker.
 10. **Derived values** — finds frontend code that re-derives values the backend already computes. Totals, permissions, status flags, formatted labels — if the backend computed it, the frontend should consume it from an existing API response, not recalculate it independently. If the value isn't in the response yet, the fix is to add it there — not to create new API calls or recompute on the frontend. Trivially deterministic computations (like `items.length`) are excluded.
 11. **Architecture boundaries** — discovers the project's architectural layers (frontend/backend, standalone library/application, API/service/data), checks that dependencies flow in one direction, and fixes violations. Handles upward imports, leaking internals, shared state coupling, mixed-layer modules, and circular dependencies. Skips single-layer projects where there's nothing to enforce.
-12. **Coherence** — reviews the codebase as a whole after all other checks and fixes cases where checks worked against each other. Catches conflicting changes (error handling added then partially stripped), cumulative over-engineering (each check added a small abstraction but together they're worse than the original), style drift away from project conventions, redundant layering from multiple checks addressing the same concern, and broken call chains from refactors that weren't fully propagated.
+12. **Coherence** — reviews the codebase as a whole after all other checks and fixes cases where checks worked against each other. Catches conflicting changes (error handling added then partially stripped), cumulative over-engineering (each check added a small abstraction but together they're worse than the original), style drift away from project conventions, redundant layering from multiple checks addressing the same concern, broken call chains from refactors that weren't fully propagated, and load-bearing deletions made by the cleanup check (a deleted docstring that explained intent, a removed log line on an error path).
+13. **Tests-for-diff** — runs *after* the behavior-modifying checks. Walks this run's diff against the scratch-branch base, identifies every changed unit of behavior, and writes a regression test for any unit that lacks one. The earlier `tests` check audited pre-existing coverage; this one closes the gap that opened between then and now. Does not modify source code.
+14. **Commit-audit** — final advisory pass. Classifies every commit this run produced as behavior-change-with-test, bug-fix-with-regression-test, readability-win, documentation-only, behavior-without-test, fix-without-test, or net-neutral churn; prints the table to the terminal; and writes the same classification with a recommended action per commit (keep, drop, fold) to `.checkloop-commit-audit.md`. Never auto-reverts — the human decides.
 
-**Exhaustive** (all 23 checks) — thorough plus:
+**Exhaustive** (all 25 checks) — thorough plus:
 
-13. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
-14. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
-15. **Deps** — remove verified-unused dependencies, flag vulnerable/outdated packages.
-16. **Logging** — structured logging at entry points. No debug logging on hot paths.
-17. **Concurrency** — race conditions, missing locks, async/await correctness.
-18. **Concurrency test coverage** — flags multi-user projects (web apps, APIs, e-commerce) that lack tests simulating concurrent access to shared state. Writes correctness-under-concurrency tests for critical operations like inventory decrement, balance transfers, and seat reservations. Verifies atomicity, idempotency, and database-level protections under parallel access. Skips single-user projects where concurrency testing doesn't apply.
-19. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
-20. **API design** — consistent naming, HTTP methods, error formats, pagination.
-21. **Cleanup slop** — removes unnecessary noise accumulated by earlier checks: redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests.
+15. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
+16. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
+17. **Deps** — remove verified-unused dependencies, flag vulnerable/outdated packages.
+18. **Logging** — structured logging at entry points. No debug logging on hot paths.
+19. **Concurrency** — race conditions, missing locks, async/await correctness.
+20. **Concurrency test coverage** — flags multi-user projects (web apps, APIs, e-commerce) that lack tests simulating concurrent access to shared state. Writes correctness-under-concurrency tests for critical operations like inventory decrement, balance transfers, and seat reservations. Verifies atomicity, idempotency, and database-level protections under parallel access. Skips single-user projects where concurrency testing doesn't apply.
+21. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
+22. **API design** — consistent naming, HTTP methods, error formats, pagination.
+23. **Cleanup slop** — removes unnecessary noise accumulated by earlier checks. The bar for deletion is concrete: a docstring is removed only when it is a literal restatement of the name and signature (no rationale clause, no invariant, no edge-case note, no examples) — anything explaining the WHY is load-bearing and stays.
 
-**Super-exhaustive** (31 checks) — everything in exhaustive plus eight infrastructure and hygiene audits that are too slow or too project-specific to run on every pass:
+**Super-exhaustive** (33 checks) — everything in exhaustive plus eight infrastructure and hygiene audits that are too slow or too project-specific to run on every pass:
 
-22. **Check-config** — audits whether the project's test, lint, type-check, and CI infrastructure matches its stack. Scaffolds Playwright for web apps missing E2E coverage, wires up coverage gates, and ensures CI runs the tools that exist locally. This is the structural check that would have caught "React frontend but no browser test runner installed" — a class of gap the behavioural `tests` check can't close on its own.
-23. **Dead code** — unused exports, orphaned files, unreachable branches, stale feature-flag references, and old commented-out blocks. Uses `ts-prune`/`vulture`/`staticcheck` where available.
-24. **Observability** — auth, payments, data mutations, external API calls, and background jobs should have structured logs, metrics, and a path to an alerting channel. Adds what's missing using the project's existing observability stack — won't introduce a new one.
-25. **Schema validation** — every external boundary (HTTP handlers, webhooks, queue consumers, external API responses, env/config) must parse through a schema (Zod/Pydantic/etc.), not a raw type assertion. Verifies webhook signature checks.
-26. **Secret leakage** — scans the repo and built output for API keys, tokens, private keys, connection strings with embedded passwords, PII in logs, and server secrets bundled into client JavaScript. Flags commits that need rotation.
-27. **Feature flags** — ghost flags (referenced in code but no longer defined), orphan flags (defined but never checked), fully-rolled-out flags with dormant branches, and conflicting flag gates.
-28. **Fixture drift** — test mocks and recorded fixtures that no longer match the real code or external APIs. Catches silently-passing mocks, deep-chain patches, stale HTTP recordings, and leaking mocks without teardown.
-29. **Meta-review** — the last check in the plan. Reads the codebase and the full set of existing checks, then writes `.checkloop-recommendations.md` with prioritised suggestions for domain-specific checks or tests that the generic suite doesn't cover. Makes no code changes. The report is printed to the terminal at the end of the run so recommendations are the last thing you see.
+24. **Check-config** — audits whether the project's test, lint, type-check, and CI infrastructure matches its stack. Scaffolds Playwright for web apps missing E2E coverage, wires up coverage gates, and ensures CI runs the tools that exist locally. This is the structural check that would have caught "React frontend but no browser test runner installed" — a class of gap the behavioural `tests` check can't close on its own.
+25. **Dead code** — unused exports, orphaned files, unreachable branches, stale feature-flag references, and old commented-out blocks. Uses `ts-prune`/`vulture`/`staticcheck` where available.
+26. **Observability** — auth, payments, data mutations, external API calls, and background jobs should have structured logs, metrics, and a path to an alerting channel. Adds what's missing using the project's existing observability stack — won't introduce a new one.
+27. **Schema validation** — every external boundary (HTTP handlers, webhooks, queue consumers, external API responses, env/config) must parse through a schema (Zod/Pydantic/etc.), not a raw type assertion. Verifies webhook signature checks.
+28. **Secret leakage** — scans the repo and built output for API keys, tokens, private keys, connection strings with embedded passwords, PII in logs, and server secrets bundled into client JavaScript. Flags commits that need rotation.
+29. **Feature flags** — ghost flags (referenced in code but no longer defined), orphan flags (defined but never checked), fully-rolled-out flags with dormant branches, and conflicting flag gates.
+30. **Fixture drift** — test mocks and recorded fixtures that no longer match the real code or external APIs. Catches silently-passing mocks, deep-chain patches, stale HTTP recordings, and leaking mocks without teardown.
+31. **Meta-review** — the last check in the plan. Reads the codebase and the full set of existing checks, then writes `.checkloop-recommendations.md` with prioritised suggestions for domain-specific checks or tests that the generic suite doesn't cover. Makes no code changes. The report is printed to the terminal at the end of the run so recommendations are the last thing you see.
 
-The super-exhaustive plan is intentionally not the default — it's meant for occasional deep audits, not every pre-push pass. The meta-review at the end is what makes it worth running periodically: even when the preceding 30 checks don't produce many changes, meta-review frequently surfaces project-specific gaps (tenant-isolation tests, rate-limit regression tests, domain-invariant checks) that generic dimensions miss.
+The super-exhaustive plan is intentionally not the default — it's meant for occasional deep audits, not every pre-push pass. The meta-review at the end is what makes it worth running periodically: even when the preceding 32 checks don't produce many changes, meta-review frequently surfaces project-specific gaps (tenant-isolation tests, rate-limit regression tests, domain-invariant checks) that generic dimensions miss.
 
 ### Checks that ship but aren't in any plan
 
@@ -94,7 +96,7 @@ To add a new check, create a Markdown file in `checks/` and reference its ID in 
 
 Not all checks have the same cognitive demands. A readability check is mostly pattern matching — rename this confusing variable, split this long function — and Sonnet handles it quickly and cleanly. But a security check needs to trace injection paths across a frontend router, a service layer, and a database query. A concurrency check needs to reason about race conditions spanning multiple threads and lock orderings. These require Opus's deeper multi-layer analysis.
 
-Each plan file specifies which model to use for each check. In the exhaustive plan, 15 of its 23 checks run on Sonnet and 8 on Opus:
+Each plan file specifies which model to use for each check. In the exhaustive plan, 17 of its 25 checks run on Sonnet and 8 on Opus:
 
 - **Opus** for: `security`, `perf`, `derived-values`, `architecture-boundaries`, `edge-cases`, `concurrency`, `concurrency-testing`, `coherence` — checks where subtle issues span multiple code layers and require multi-step reasoning. The super-exhaustive plan routes two more to Opus: `observability` and `meta-review`.
 - **Sonnet** for everything else — pattern-matching tasks where Sonnet is faster and produces cleaner results.
@@ -226,6 +228,17 @@ These guardrails don't prevent all noise, but they significantly reduce it. The 
 
 For codebases that have accumulated this kind of noise, the `cleanup-ai-slop` check actively finds and removes it — redundant docstrings, unnecessary logging, misleading error handling, coverage-driven tests, and reverted operational config changes. It runs automatically as part of the exhaustive plan, or you can add it to any plan with `--plan thorough --checks cleanup-ai-slop`. Importantly, the check's commit messages and code comments use neutral language ("removed redundant docstrings", not "removed AI-generated slop") — no fingerprints left in the git history.
 
+### Catching what slips through
+
+Prompt-time guardrails are the first line of defense; they fail occasionally, and the failure mode tends to be quiet — a behavior change that quietly shipped without a test, or a "cleanup" commit that deleted a load-bearing docstring. checkloop now runs a verification layer after the behavior-modifying checks specifically to catch those:
+
+- A **universal prompt fragment** appended to every check tells the agent that any behavior change must be accompanied by a test that pins the new behavior in the same commit, and that documentation-/comment-/rename-only changes must say so explicitly in the commit body — silent skipping is treated as a rule violation.
+- The **`tests-for-diff`** check runs after the behavior-modifying checks. It walks this run's diff against the scratch-branch base, identifies every changed unit of behavior, and writes a regression test for any unit that lacks one. It does not modify source code — it only writes tests.
+- The **`coherence`** check re-reads `cleanup-ai-slop`'s diff and restores any docstrings, comments, or defensive code whose deletion removed information a future reader would have needed (intent clauses, invariants, non-obvious error semantics, references to incidents).
+- The **`commit-audit`** check is the final pass. It classifies every commit produced in the run — behavior+test, fix+regression-test, readability win, docs-only, behavior-without-test, fix-without-test, or net-neutral churn — and prints the table to the terminal alongside a `.checkloop-commit-audit.md` report. Commits flagged as missing-test or net-neutral are surfaced at the top with the exact `git revert` / `git rebase` command, but the audit is advisory only: it never reverts or rebases on its own, because misclassifications happen and the human is the right arbiter.
+
+These layers compose. The prompt fragment catches the easy case at commit time; `tests-for-diff` catches what the agent skipped; `coherence` catches what `cleanup-ai-slop` over-deleted; `commit-audit` puts the gap on the operator's radar before merge instead of relying on them to audit every diff by hand.
+
 ## Run summaries
 
 After each cycle, `checkloop` prints a summary table showing per-check results — exit codes, kill reasons, lines changed, and duration. In multi-cycle runs, an overall summary at the end aggregates per-cycle totals so you can immediately see whether the number of changes is decreasing (converging) or increasing (diverging):
@@ -343,7 +356,7 @@ uv run checkloop --dir ~/my-project --review-branch main --dangerously-skip-perm
 # Thorough: adds security (opus), perf (opus), docs, errors, types
 uv run checkloop --dir ~/my-project --review-branch main --plan thorough
 
-# Exhaustive: all 23 checks with optimized model assignments, repeat twice
+# Exhaustive: all 25 checks with optimized model assignments, repeat twice
 uv run checkloop --dir ~/my-project --review-branch main --plan exhaustive --cycles 2
 
 # Super-exhaustive: exhaustive plus eight infrastructure and hygiene audits,
@@ -409,7 +422,7 @@ No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop s
 
 ## Token usage (Be Careful!!!)
 
-Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (14 checks) or exhaustive (23 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
+Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (16 checks) or exhaustive (25 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
 
 I often kick off runs right before bed or when stepping away from the keyboard. The tool is designed to run unattended, but can burn through a lot of tokens. Pay attention to your token useage.
 

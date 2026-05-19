@@ -31,6 +31,8 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 
 ## Search & Relevance
 
+- [Agentic AI search with deterministic guardrails in Elasticsearch for safe query execution | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/agentic-ai-search-deterministic-guardrail-query-execution) (May 18, 2026)
+
 - [Ecommerce search optimization using margin and popularity boosting in Elasticsearch | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-optimization-query-governed) (May 13, 2026)
 
 - [Personalizing ecommerce search: Integrating purchase history and user cohorts | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/elasticsearch-personalized-search-governed-ecommerce) (May 11, 2026)

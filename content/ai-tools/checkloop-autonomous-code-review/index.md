@@ -27,7 +27,7 @@ Worse, some issues are invisible until you fix other issues first. A security vu
 
 The fix is simple: run multiple checks, each focused on a single concern.
 
-There are 34 built-in checks (including two bookend checks that ensure the test suite is green before and after the review). Thirty-three of them are organized into four execution plans of increasing depth; the last is an on-demand check covered further down:
+There are 36 built-in checks (including two bookend checks that ensure the test suite is green before and after the review). Thirty-five of them are organized into four execution plans of increasing depth; the last is an on-demand check covered further down:
 
 Every plan starts with a **test-fix** check (runs the existing test suite and fixes any failures) and ends with a **test-validate** check (re-runs the full suite to catch regressions introduced during review).
 
@@ -37,44 +37,46 @@ Every plan starts with a **test-fix** check (runs the existing test suite and fi
 2. **DRY** — find repeated logic, extract shared helpers, separate mixed concerns into focused modules when it improves testability.
 3. **Tests** — write behaviour-driven tests that verify correctness of complex logic (regex, parsing, validation), not just that code runs. Unit tests with mocks for external services, integration tests separately. Avoids testing impossible defensive paths.
 
-**Thorough** (16 checks) — basic plus:
+**Thorough** (17 checks) — basic plus:
 
-4. **Docs** — README, config documentation. The bar for adding docstrings is high: only where name and signature leave genuine ambiguity (complex return values, non-obvious side effects, surprising semantics). When in doubt, leaves the code undocumented.
-5. **Docs accuracy** — cross-references CLI `--help` text, README examples, error messages, and API docs against actual code behavior. Fixes factual inaccuracies (wrong defaults, renamed flags, stale file paths) without adding new documentation.
-6. **Security** — injection vulnerabilities, hardcoded secrets, input validation. Won't change CORS/retry/auth config without a clear vulnerability.
-7. **Performance** — N+1 queries, O(N²) algorithms, blocking I/O, unnecessary allocations. Selective caching (`@cache`, `@lru_cache`) for expensive repeated computations like compiled regexes and config loading.
-8. **Error handling** — centralized error handling for external services (shared helpers that log context and raise consistent errors). Only where code can meaningfully respond. No wrapping code that can't fail.
-9. **Type safety** — type annotations, replace `Any`/untyped code, runtime validation at API boundaries (Annotated types, Pydantic, Zod). Run type checker.
-10. **Derived values** — finds frontend code that re-derives values the backend already computes. Totals, permissions, status flags, formatted labels — if the backend computed it, the frontend should consume it from an existing API response, not recalculate it independently. If the value isn't in the response yet, the fix is to add it there — not to create new API calls or recompute on the frontend. Trivially deterministic computations (like `items.length`) are excluded.
-11. **Architecture boundaries** — discovers the project's architectural layers (frontend/backend, standalone library/application, API/service/data), checks that dependencies flow in one direction, and fixes violations. Handles upward imports, leaking internals, shared state coupling, mixed-layer modules, and circular dependencies. Skips single-layer projects where there's nothing to enforce.
-12. **Coherence** — reviews the codebase as a whole after all other checks and fixes cases where checks worked against each other. Catches conflicting changes (error handling added then partially stripped), cumulative over-engineering (each check added a small abstraction but together they're worse than the original), style drift away from project conventions, redundant layering from multiple checks addressing the same concern, broken call chains from refactors that weren't fully propagated, and load-bearing deletions made by the cleanup check (a deleted docstring that explained intent, a removed log line on an error path).
-13. **Tests-for-diff** — runs *after* the behavior-modifying checks. Walks this run's diff against the scratch-branch base, identifies every changed unit of behavior, and writes a regression test for any unit that lacks one. The earlier `tests` check audited pre-existing coverage; this one closes the gap that opened between then and now. Does not modify source code.
-14. **Commit-audit** — final advisory pass. Classifies every commit this run produced as behavior-change-with-test, bug-fix-with-regression-test, readability-win, documentation-only, behavior-without-test, fix-without-test, or net-neutral churn; prints the table to the terminal; and writes the same classification with a recommended action per commit (keep, drop, fold) to `.checkloop-commit-audit.md`. Never auto-reverts — the human decides.
+4. **Idiomatic** — replaces verbose, hand-rolled code with the language's built-in or standard-library equivalent when the behaviour is exactly preserved: `os.path` chains → `pathlib`, `try/except KeyError` → `dict.get`, index-into-list loops → `enumerate`/`zip`, `Object.assign({}, a, b)` → `{ ...a, ...b }`, `arr.indexOf(x) !== -1` → `arr.includes(x)`. Narrower than `complexity` (which targets control flow) and `readability` (which targets naming). Conservative by construction — leaves the code alone whenever the rewrite would require a new dependency, change a behaviour on any input, or need an explanatory comment to justify itself.
+5. **Docs** — README, config documentation. The bar for adding docstrings is high: only where name and signature leave genuine ambiguity (complex return values, non-obvious side effects, surprising semantics). When in doubt, leaves the code undocumented.
+6. **Docs accuracy** — cross-references CLI `--help` text, README examples, error messages, and API docs against actual code behavior. Fixes factual inaccuracies (wrong defaults, renamed flags, stale file paths) without adding new documentation.
+7. **Security** — injection vulnerabilities, hardcoded secrets, input validation. Won't change CORS/retry/auth config without a clear vulnerability.
+8. **Performance** — N+1 queries, O(N²) algorithms, blocking I/O, unnecessary allocations. Selective caching (`@cache`, `@lru_cache`) for expensive repeated computations like compiled regexes and config loading.
+9. **Error handling** — centralized error handling for external services (shared helpers that log context and raise consistent errors). Only where code can meaningfully respond. No wrapping code that can't fail.
+10. **Type safety** — type annotations, replace `Any`/untyped code, runtime validation at API boundaries (Annotated types, Pydantic, Zod). Run type checker.
+11. **Derived values** — finds frontend code that re-derives values the backend already computes. Totals, permissions, status flags, formatted labels — if the backend computed it, the frontend should consume it from an existing API response, not recalculate it independently. If the value isn't in the response yet, the fix is to add it there — not to create new API calls or recompute on the frontend. Trivially deterministic computations (like `items.length`) are excluded, and so are deliberate cross-check / `crossCheck(...)` patterns where the frontend recomputes specifically to detect divergence from the backend.
+12. **Architecture boundaries** — discovers the project's architectural layers (frontend/backend, standalone library/application, API/service/data), checks that dependencies flow in one direction, and fixes violations. Handles upward imports, leaking internals, shared state coupling, mixed-layer modules, and circular dependencies. Skips single-layer projects where there's nothing to enforce.
+13. **Coherence** — reviews the codebase as a whole after all other checks and fixes cases where checks worked against each other. Catches conflicting changes (error handling added then partially stripped), cumulative over-engineering (each check added a small abstraction but together they're worse than the original), style drift away from project conventions, redundant layering from multiple checks addressing the same concern, broken call chains from refactors that weren't fully propagated, and load-bearing deletions made by the cleanup check (a deleted docstring that explained intent, a removed log line on an error path). Also explicitly defers to documented architectural parities — cross-check recomputation, adapter+proxy pairs, library+HTTP parity, defense-in-depth validation — rather than flagging them as duplication.
+14. **Tests-for-diff** — runs *after* the behavior-modifying checks. Walks this run's diff against the scratch-branch base, identifies every changed unit of behavior, and writes a regression test for any unit that lacks one. The earlier `tests` check audited pre-existing coverage; this one closes the gap that opened between then and now. Does not modify source code.
+15. **Commit-audit** — final advisory pass. Classifies every commit this run produced as behavior-change-with-test, bug-fix-with-regression-test, readability-win, documentation-only, behavior-without-test, fix-without-test, or net-neutral churn; prints the table to the terminal; and writes the same classification with a recommended action per commit (keep, drop, fold) to `.checkloop-commit-audit.md`. Never auto-reverts — the human decides.
 
-**Exhaustive** (all 25 checks) — thorough plus:
+**Exhaustive** (all 27 checks) — thorough plus:
 
-15. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
-16. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
-17. **Deps** — remove verified-unused dependencies, flag vulnerable/outdated packages.
-18. **Logging** — structured logging at entry points. No debug logging on hot paths.
-19. **Concurrency** — race conditions, missing locks, async/await correctness.
-20. **Concurrency test coverage** — flags multi-user projects (web apps, APIs, e-commerce) that lack tests simulating concurrent access to shared state. Writes correctness-under-concurrency tests for critical operations like inventory decrement, balance transfers, and seat reservations. Verifies atomicity, idempotency, and database-level protections under parallel access. Skips single-user projects where concurrency testing doesn't apply.
-21. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
-22. **API design** — consistent naming, HTTP methods, error formats, pagination.
-23. **Cleanup slop** — removes unnecessary noise accumulated by earlier checks. The bar for deletion is concrete: a docstring is removed only when it is a literal restatement of the name and signature (no rationale clause, no invariant, no edge-case note, no examples) — anything explaining the WHY is load-bearing and stays.
+16. **Edge cases** — off-by-one, null/empty inputs, overflow, Unicode edge cases.
+17. **Complexity** — flatten nested conditionals, reduce cyclomatic complexity.
+18. **Deps** — remove verified-unused dependencies, flag vulnerable/outdated packages.
+19. **Logging** — structured logging at entry points. No debug logging on hot paths.
+20. **Concurrency** — race conditions, missing locks, async/await correctness.
+21. **Concurrency test coverage** — flags multi-user projects (web apps, APIs, e-commerce) that lack tests simulating concurrent access to shared state. Writes correctness-under-concurrency tests for critical operations like inventory decrement, balance transfers, and seat reservations. Verifies atomicity, idempotency, and database-level protections under parallel access. Skips single-user projects where concurrency testing doesn't apply.
+22. **Accessibility** — semantic HTML, ARIA, keyboard nav, colour contrast (WCAG AA).
+23. **API design** — consistent naming, HTTP methods, error formats, pagination.
+24. **Rationale** — ensures every non-trivial module, function, config knob, complex code block, and invariant-pinning test carries a brief explanation of *why* it exists — the threat model, business constraint, past incident, or trade-off that justifies the code being shaped the way it is. Captures the explanation wherever fits best: docstring, code comment, or doc file. Investigates via `git log --follow`, blame, and PR / issue references before writing, and — crucially — leaves a `TODO(rationale): …` marker (and reports the gap) when the rationale cannot be recovered. Documentation-only — no code changes. The audience is whoever later modifies the code or integrates it for a downstream consumer; they should be able to answer "why does this exist?" from the artefact at hand, without reverse-engineering it from git history every time.
+25. **Cleanup slop** — removes unnecessary noise accumulated by earlier checks. The bar for deletion is concrete: a docstring is removed only when it is a literal restatement of the name and signature (no rationale clause, no invariant, no edge-case note, no examples) — anything explaining the WHY is load-bearing and stays. Also actively removes AI-attribution leakage (`Co-Authored-By: Claude`, "Generated by …", "AI-assisted" trailers) from comments, docstrings, READMEs, and docs when the target project documents a no-AI-mentions rule.
 
-**Super-exhaustive** (33 checks) — everything in exhaustive plus eight infrastructure and hygiene audits that are too slow or too project-specific to run on every pass:
+**Super-exhaustive** (35 checks) — everything in exhaustive plus eight infrastructure and hygiene audits that are too slow or too project-specific to run on every pass:
 
-24. **Check-config** — audits whether the project's test, lint, type-check, and CI infrastructure matches its stack. Scaffolds Playwright for web apps missing E2E coverage, wires up coverage gates, and ensures CI runs the tools that exist locally. This is the structural check that would have caught "React frontend but no browser test runner installed" — a class of gap the behavioural `tests` check can't close on its own.
-25. **Dead code** — unused exports, orphaned files, unreachable branches, stale feature-flag references, and old commented-out blocks. Uses `ts-prune`/`vulture`/`staticcheck` where available.
-26. **Observability** — auth, payments, data mutations, external API calls, and background jobs should have structured logs, metrics, and a path to an alerting channel. Adds what's missing using the project's existing observability stack — won't introduce a new one.
-27. **Schema validation** — every external boundary (HTTP handlers, webhooks, queue consumers, external API responses, env/config) must parse through a schema (Zod/Pydantic/etc.), not a raw type assertion. Verifies webhook signature checks.
-28. **Secret leakage** — scans the repo and built output for API keys, tokens, private keys, connection strings with embedded passwords, PII in logs, and server secrets bundled into client JavaScript. Flags commits that need rotation.
-29. **Feature flags** — ghost flags (referenced in code but no longer defined), orphan flags (defined but never checked), fully-rolled-out flags with dormant branches, and conflicting flag gates.
-30. **Fixture drift** — test mocks and recorded fixtures that no longer match the real code or external APIs. Catches silently-passing mocks, deep-chain patches, stale HTTP recordings, and leaking mocks without teardown.
-31. **Meta-review** — the last check in the plan. Reads the codebase and the full set of existing checks, then writes `.checkloop-recommendations.md` with prioritised suggestions for domain-specific checks or tests that the generic suite doesn't cover. Makes no code changes. The report is printed to the terminal at the end of the run so recommendations are the last thing you see.
+26. **Check-config** — audits whether the project's test, lint, type-check, and CI infrastructure matches its stack. Scaffolds Playwright for web apps missing E2E coverage, wires up coverage gates, and ensures CI runs the tools that exist locally. This is the structural check that would have caught "React frontend but no browser test runner installed" — a class of gap the behavioural `tests` check can't close on its own.
+27. **Dead code** — unused exports, orphaned files, unreachable branches, stale feature-flag references, and old commented-out blocks. Uses `ts-prune`/`vulture`/`staticcheck` where available.
+28. **Observability** — auth, payments, data mutations, external API calls, and background jobs should have structured logs, metrics, and a path to an alerting channel. Adds what's missing using the project's existing observability stack — won't introduce a new one.
+29. **Schema validation** — every external boundary (HTTP handlers, webhooks, queue consumers, external API responses, env/config) must parse through a schema (Zod/Pydantic/etc.), not a raw type assertion. Config files loaded at startup (TOML, YAML, JSON, plugin manifests) count as boundaries too — they get the same schema-at-load treatment as `process.env`. Verifies webhook signature checks.
+30. **Secret leakage** — scans the repo and built output for API keys, tokens, private keys, connection strings with embedded passwords, PII in logs, and server secrets bundled into client JavaScript. Flags commits that need rotation.
+31. **Feature flags** — ghost flags (referenced in code but no longer defined), orphan flags (defined but never checked), fully-rolled-out flags with dormant branches, and conflicting flag gates.
+32. **Fixture drift** — test mocks and recorded fixtures that no longer match the real code or external APIs. Catches silently-passing mocks, deep-chain patches, stale HTTP recordings, and leaking mocks without teardown — including Elasticsearch / OpenSearch query fixtures whose field paths drift out of the index mapping (the worst case, because a query against a missing field doesn't error — it just returns zero hits, which an `assert len(hits) == 0` test will silently accept).
+33. **Meta-review** — the last check in the plan. Reads the codebase and the full set of existing checks, then writes `.checkloop-recommendations.md` with prioritised suggestions for domain-specific checks or tests that the generic suite doesn't cover. Makes no code changes. The report is printed to the terminal at the end of the run so recommendations are the last thing you see.
 
-The super-exhaustive plan is intentionally not the default — it's meant for occasional deep audits, not every pre-push pass. The meta-review at the end is what makes it worth running periodically: even when the preceding 32 checks don't produce many changes, meta-review frequently surfaces project-specific gaps (tenant-isolation tests, rate-limit regression tests, domain-invariant checks) that generic dimensions miss.
+The super-exhaustive plan is intentionally not the default — it's meant for occasional deep audits, not every pre-push pass. The meta-review at the end is what makes it worth running periodically: even when the preceding 34 checks don't produce many changes, meta-review frequently surfaces project-specific gaps (tenant-isolation tests, rate-limit regression tests, domain-invariant checks) that generic dimensions miss.
 
 ### Checks that ship but aren't in any plan
 
@@ -96,7 +98,7 @@ To add a new check, create a Markdown file in `checks/` and reference its ID in 
 
 Not all checks have the same cognitive demands. A readability check is mostly pattern matching — rename this confusing variable, split this long function — and Sonnet handles it quickly and cleanly. But a security check needs to trace injection paths across a frontend router, a service layer, and a database query. A concurrency check needs to reason about race conditions spanning multiple threads and lock orderings. These require Opus's deeper multi-layer analysis.
 
-Each plan file specifies which model to use for each check. In the exhaustive plan, 17 of its 25 checks run on Sonnet and 8 on Opus:
+Each plan file specifies which model to use for each check. In the exhaustive plan, 19 of its 27 checks run on Sonnet and 8 on Opus:
 
 - **Opus** for: `security`, `perf`, `derived-values`, `architecture-boundaries`, `edge-cases`, `concurrency`, `concurrency-testing`, `coherence` — checks where subtle issues span multiple code layers and require multi-step reasoning. The super-exhaustive plan routes two more to Opus: `observability` and `meta-review`.
 - **Sonnet** for everything else — pattern-matching tasks where Sonnet is faster and produces cleaner results.
@@ -356,7 +358,7 @@ uv run checkloop --dir ~/my-project --review-branch main --dangerously-skip-perm
 # Thorough: adds security (opus), perf (opus), docs, errors, types
 uv run checkloop --dir ~/my-project --review-branch main --plan thorough
 
-# Exhaustive: all 25 checks with optimized model assignments, repeat twice
+# Exhaustive: all 27 checks with optimized model assignments, repeat twice
 uv run checkloop --dir ~/my-project --review-branch main --plan exhaustive --cycles 2
 
 # Super-exhaustive: exhaustive plus eight infrastructure and hygiene audits,
@@ -422,7 +424,7 @@ No. Similar approaches exist — LLMLOOP, SELF-REFINE, and various review-loop s
 
 ## Token usage (Be Careful!!!)
 
-Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (16 checks) or exhaustive (25 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
+Each check is a full Claude Code session — reading files, making edits, running tests. A basic plan run (5 checks) on a medium-sized project typically uses 200K–500K tokens. Thorough (17 checks) or exhaustive (27 checks) with multiple cycles can easily reach several million tokens. Multi-cycle exhaustive runs on large codebases can burn through a significant portion of a daily API budget.
 
 I often kick off runs right before bed or when stepping away from the keyboard. The tool is designed to run unattended, but can burn through a lot of tokens. Pay attention to your token useage.
 

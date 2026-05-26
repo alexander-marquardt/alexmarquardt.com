@@ -13,6 +13,9 @@ I am a Senior Principal Architect working on GenAI and Search at [Elastic](https
 
 More details: [About the Author](/about/) · [Professional Record](/professional/) · [Personal](/personal/) · [LinkedIn](https://www.linkedin.com/in/alexandermarquardt/)
 
+# AI Tools
+- [CheckLoop: Autonomous Multi-Pass AI Code Review](/ai-tools/checkloop-autonomous-code-review) (Mar 7, 2026)
+
 # Ecommerce videos
 
 - [Search as a Strategic Asset: Brand, Product, and Seasonal Boosting (PRISM Part 6)](https://www.youtube.com/watch?v=7UUbjBpLcUM) (May 11, 2026)
@@ -146,9 +149,6 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 - [Using Elastic machine learning to detect anomalies in derivative values](/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/) (Apr 21, 2020)
 
 - [How to Debug Elasticsearch Source Code in IntelliJ IDEA | Elastic Blog](https://www.elastic.co/blog/how-to-debug-elasticsearch-source-code-in-intellij-idea) (Feb 14, 2019)
-
-# AI Tools
-- [CheckLoop: Autonomous Multi-Pass AI Code Review](/ai-tools/checkloop-autonomous-code-review) (Mar 7, 2026)
 
 # Airbyte
 

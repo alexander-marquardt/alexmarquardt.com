@@ -61,6 +61,13 @@ This resulting data is ready to be indexed into a search engine like Elasticsear
     "Plant based foods",
     "Fats"
   ],
+  "category_path": [
+    "Plant-based foods and beverages",
+    "Plant-based foods and beverages/Fats",
+    "Plant-based foods and beverages/Fats/Vegetable fats",
+    "Plant-based foods and beverages/Fats/Vegetable fats/Olive oils",
+    "Plant-based foods and beverages/Fats/Vegetable fats/Olive oils/Extra-virgin olive oils"
+  ],
   "attrs": {
     "Serving size": "15 ml",
     "Nutri-Score": "B",
@@ -107,6 +114,24 @@ This resulting data is ready to be indexed into a search engine like Elasticsear
 ```
 
 Note: `attrs["Dietary restrictions"]` reflects the raw, display-friendly value, while `dietary_restrictions` is a normalized array for efficient filtering/faceting.
+
+### Reconstructing a real category hierarchy
+
+A good e-commerce demo needs more than a flat bag of category labels — it needs a category *tree* you can drill into (Snacks → Salty snacks → Crisps). Open Food Facts ships `categories_tags` on every product, and at first glance it looks hierarchical. It isn't: those tags are the flattened *union of every ancestor category* drawn from the Open Food Facts category taxonomy, which is a directed acyclic graph where a single category can have several parents. Joining the tags with `/` mixes parallel roots and sibling branches and produces a path that doesn't exist.
+
+To get a real tree, the extractor loads the public Open Food Facts category taxonomy (the parent/child graph) and, for each product, walks a single canonical chain: it keeps the product's taxonomy-known tags, induces the subgraph of just that product's categories, picks the most specific leaf, and walks parents upward along the longest path to a root. The result is emitted as `category_path` — an array of cumulative `/`-joined strings:
+
+```text
+raw tags:   en:plant-based-foods-and-beverages, en:beverages, en:hot-beverages,
+            en:plant-based-beverages, en:teas, en:tea-bags        (a flat DAG union)
+
+category_path:
+  [ "Beverages",
+    "Beverages/Hot beverages",
+    "Beverages/Hot beverages/Teas" ]                              (one clean chain)
+```
+
+This is the same cumulative-path shape that merchandising tools expect for breadcrumb navigation and drill-down category facets, and the display names are taken from the taxonomy, so non-English personas get localized category labels. The original flat `categories` list is still emitted alongside it.
 
 ### Benefits
 
@@ -180,7 +205,8 @@ The goal is that a loader or indexing pipeline can ingest both Icecat and Open F
 | price | float | **Heuristic:** Category baseline modified by Brand premium | **Estimated:** Unit pricing model based on category & weight |
 | currency | string | Fixed (EUR) | Fixed (EUR) |
 | image_url | string | **High-Quality:** Selects the best available primary product photo | **Computed:** URL derived from product code and image metadata |
-| categories | list | Single-item list (Primary Icecat Category) | Hierarchical list (from broad to specific) |
+| categories | list | Single-item list (Primary Icecat Category) | Flat list of category labels (broad to specific) |
+| category_path | list | _Not populated_ | **Hierarchical:** single root→leaf chain as cumulative `/`-joined strings, rebuilt from the OFF category taxonomy graph |
 | attrs | object | **Flattened:** Technical specs (e.g., `"RAM": "16GB"`) | **Flattened:** Nutritional/Labels (e.g., `"Nutri-Score": "A"`) |
 | attr_keys | list | List of keys in attrs for dynamic faceting | List of keys in attrs for dynamic faceting |
 

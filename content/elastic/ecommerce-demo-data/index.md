@@ -40,6 +40,7 @@ A record is included only if it meets all of the following:
 - English title and description
 - A usable front image
 - At least one meaningful category (placeholder/empty categories are excluded)
+- A category hierarchy that resolves against the Open Food Facts taxonomy (products whose `category_path` can't be reconstructed are dropped by default, so every product is drill-down faceable)
 
 This is intentional: for demos, incomplete products (missing images or categories) are usually not useful.
 

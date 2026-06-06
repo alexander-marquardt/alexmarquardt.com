@@ -54,8 +54,8 @@ This resulting data is ready to be indexed into a search engine like Elasticsear
   "brand": "Athena Imports",
   "description": "Extra virgin olive oil. Extra virgin olive oil Key specifications: Category: Plant based foods and beverages; Serving size: 15 ml; Nutri-Score: B; NOVA group: 2; Eco-Score: E; Dietary restrictions: vegan, vegetarian; Ingredients analysis: palm-oil-free, vegan, vegetarian; Energy (kcal/100g): 800 kcal; Fat (g/100g): 93.3 g; Saturated fat (g/100g): 13.3 g; Sugars (g/100g): 0 g; Salt (g/100g): 0 g; Protein (g/100g): 0 g; Countries: United States",
   "image_url": "https://images.openfoodfacts.org/images/products/000/812/700/0019/front_en.5.400.jpg",
-  "price": 2.49,
-  "currency": "EUR",
+  "price": 14.29,
+  "currency": "USD",
   "categories": [
     "Plant based foods and beverages",
     "Plant based foods",
@@ -85,7 +85,7 @@ This resulting data is ready to be indexed into a search engine like Elasticsear
     "Dietary restrictions": "vegan, vegetarian",
     "Price source": "estimated_unit_model",
     "Pricing bucket": "oils_fats",
-    "Estimated unit price": "11.59 EUR/l (15ml, bucket=oils_fats, scale=1.21, ratio=0.15)"
+    "Estimated unit price": "11.59 USD/l (15ml, bucket=oils_fats, scale=1.21, ratio=0.15)"
   },
   "attr_keys": [
     "Category",
@@ -203,7 +203,7 @@ The goal is that a loader or indexing pipeline can ingest both Icecat and Open F
 | brand | string | Manufacturer (e.g., Apple, Lenovo) | Brand/Producer Name |
 | description | string | **Synthesis:** Marketing text + Key Technical Specifications | **Synthesis:** Ingredients + Key Nutritional Metadata |
 | price | float | **Heuristic:** Category baseline modified by Brand premium | **Estimated:** Unit pricing model based on category & weight |
-| currency | string | Fixed (EUR) | Fixed (EUR) |
+| currency | string | Fixed (EUR) | Fixed (USD by default; set in `config/pricing_buckets.json`) |
 | image_url | string | **High-Quality:** Selects the best available primary product photo | **Computed:** URL derived from product code and image metadata |
 | categories | list | Single-item list (Primary Icecat Category) | Flat list of category labels (broad to specific) |
 | category_path | list | _Not populated_ | **Hierarchical:** single root→leaf chain as cumulative `/`-joined strings, rebuilt from the OFF category taxonomy graph |

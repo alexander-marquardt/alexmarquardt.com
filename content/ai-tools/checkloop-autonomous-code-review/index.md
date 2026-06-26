@@ -108,7 +108,17 @@ Fable 5 isn't available to every account or region, so depending on it in the sh
 
 The `--model` flag overrides this per-check assignment for all checks. Use `--model opus` to force deep analysis everywhere, `--model claude-fable-5` to push every check to the most capable model (slowest and most expensive), or `--model sonnet` for the fastest possible pass.
 
-Plans are just TOML files — four ship pre-populated (basic, thorough, exhaustive, super-exhaustive), but you can write your own with whatever checks and model assignments fit your project. For example, a security-focused plan:
+### Per-check reasoning effort
+
+Model choice is one dial; **reasoning effort** is the other. Each check also carries an `effort` level (`low` / `medium` / `high` / `xhigh` / `max`, passed through to the `claude` CLI's `--effort` flag) that controls how much the model deliberates and how many tool calls it makes. Crucially, effort isn't monotonic — pushing everything to `max` tends to *overthink* and rarely beats `xhigh` for these task shapes — so the plans tune it per check instead of running everything at the CLI default:
+
+- **`medium`** for the mechanical, pattern-matching checks (readability, DRY, idiomatic, docs, types, deps, logging…). They don't need deep deliberation, and since they're the bulk of every run, this is where most of the token and time savings come from.
+- **`high`** for the deeper Opus checks (performance, edge cases, concurrency-test coverage, observability) and the initial `test-fix` pass.
+- **`xhigh`** for the correctness-critical and source-of-truth checks — `security`, `concurrency`, and the boundary cluster (`architecture-boundaries`, `derived-values`, `coherence`, `meta-review`) — where the extra deliberation is exactly what catches the subtle cases.
+
+The default isn't "max everything" because that's both more expensive and, counterintuitively, often *worse* — the boundary checks want deep reasoning, but a rename-or-format pass doesn't, and forcing it there just burns tokens. A global `--effort medium` gives a fast, cheap whole-suite pass; `--effort xhigh` pushes everything deep when you want it.
+
+Plans are just TOML files — four ship pre-populated (basic, thorough, exhaustive, super-exhaustive), but you can write your own with whatever checks, model assignments, and effort levels fit your project. For example, a security-focused plan:
 
 ```toml
 [tier]
@@ -118,22 +128,27 @@ description = "Deep security analysis"
 [[checks]]
 id = "test-fix"
 model = "sonnet"
+effort = "high"
 
 [[checks]]
 id = "security"
 model = "opus"
+effort = "xhigh"
 
 [[checks]]
 id = "concurrency"
 model = "opus"
+effort = "xhigh"
 
 [[checks]]
 id = "edge-cases"
 model = "opus"
+effort = "high"
 
 [[checks]]
 id = "test-validate"
 model = "sonnet"
+effort = "medium"
 ```
 
 ```bash

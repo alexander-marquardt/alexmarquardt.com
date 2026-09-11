@@ -16,7 +16,7 @@ For some query rewriting work I’m involved in, I needed an image-rich product 
 
 ## The harvesters
 
-To produce demo datasets, I built two open-source transformation pipelines. These tools convert messy product records into clean Elasticsearc-ready NDJSON:
+To produce demo datasets, I built two open-source transformation pipelines. These tools convert messy product records into clean Elasticsearch-ready NDJSON:
 
 * [**Icecat Harvester**](https://github.com/alexander-marquardt/icecat-harvester/): Downloads Icecat XML and normalizes electronics metadata.
 * [**Open Food Facts Extractor**](https://github.com/alexander-marquardt/open-food-facts-ndjson-extractor): Parses Open Food Facts JSONL and extracts grocery attributes and images.
@@ -53,40 +53,79 @@ This resulting data is ready to be indexed into a search engine like Elasticsear
   "id": "0008127000019",
   "title": "Extra virgin olive oil",
   "brand": "Athena Imports",
-  "description": "Extra virgin olive oil. Extra virgin olive oil Key specifications: Category: Plant based foods and beverages; Serving size: 15 ml; Nutri-Score: B; NOVA group: 2; Eco-Score: E; Dietary restrictions: vegan, vegetarian; Ingredients analysis: palm-oil-free, vegan, vegetarian; Energy (kcal/100g): 800 kcal; Fat (g/100g): 93.3 g; Saturated fat (g/100g): 13.3 g; Sugars (g/100g): 0 g; Salt (g/100g): 0 g; Protein (g/100g): 0 g; Countries: United States",
+  "description": "Extra virgin olive oil. Extra virgin olive oil",
   "image_url": "https://images.openfoodfacts.org/images/products/000/812/700/0019/front_en.5.400.jpg",
   "price": 14.29,
+  "margin": 22,
+  "popularity": 0,
   "currency": "USD",
-  "categories": [
-    "Plant based foods and beverages",
-    "Plant based foods",
-    "Fats"
+  "taxonomy_tags": [
+    "Plant-based foods and beverages",
+    "Plant-based foods",
+    "Fats",
+    "Vegetable fats",
+    "Olive tree products",
+    "Vegetable oils",
+    "Olive oils",
+    "Extra-virgin olive oils",
+    "Virgin olive oils"
   ],
   "category_path": [
     "Plant-based foods and beverages",
-    "Plant-based foods and beverages/Fats",
-    "Plant-based foods and beverages/Fats/Vegetable fats",
-    "Plant-based foods and beverages/Fats/Vegetable fats/Olive oils",
-    "Plant-based foods and beverages/Fats/Vegetable fats/Olive oils/Extra-virgin olive oils"
+    "Plant-based foods and beverages/Plant-based foods",
+    "Plant-based foods and beverages/Plant-based foods/Olive tree products",
+    "Plant-based foods and beverages/Plant-based foods/Olive tree products/Olive oils",
+    "Plant-based foods and beverages/Plant-based foods/Olive tree products/Olive oils/Virgin olive oils",
+    "Plant-based foods and beverages/Plant-based foods/Olive tree products/Olive oils/Virgin olive oils/Extra-virgin olive oils",
+    "Fats",
+    "Fats/Vegetable fats",
+    "Fats/Vegetable fats/Vegetable oils",
+    "Fats/Vegetable fats/Vegetable oils/Olive oils",
+    "Fats/Vegetable fats/Vegetable oils/Olive oils/Virgin olive oils",
+    "Fats/Vegetable fats/Vegetable oils/Olive oils/Virgin olive oils/Extra-virgin olive oils",
+    "Plant-based foods and beverages/Plant-based foods/Vegetable fats",
+    "Plant-based foods and beverages/Plant-based foods/Vegetable fats/Vegetable oils",
+    "Plant-based foods and beverages/Plant-based foods/Vegetable fats/Vegetable oils/Olive oils",
+    "Plant-based foods and beverages/Plant-based foods/Vegetable fats/Vegetable oils/Olive oils/Virgin olive oils",
+    "Plant-based foods and beverages/Plant-based foods/Vegetable fats/Vegetable oils/Olive oils/Virgin olive oils/Extra-virgin olive oils"
+  ],
+  "category_path_primary": [
+    "Plant-based foods and beverages",
+    "Plant-based foods and beverages/Plant-based foods",
+    "Plant-based foods and beverages/Plant-based foods/Olive tree products",
+    "Plant-based foods and beverages/Plant-based foods/Olive tree products/Olive oils",
+    "Plant-based foods and beverages/Plant-based foods/Olive tree products/Olive oils/Virgin olive oils",
+    "Plant-based foods and beverages/Plant-based foods/Olive tree products/Olive oils/Virgin olive oils/Extra-virgin olive oils"
   ],
   "attrs": {
     "Serving size": "15 ml",
     "Nutri-Score": "B",
     "NOVA group": "2",
     "Eco-Score": "E",
-    "Ingredients analysis": "palm-oil-free, vegan, vegetarian",
+    "Ingredients analysis": [
+      "palm-oil-free",
+      "vegan",
+      "vegetarian"
+    ],
     "Countries": "United States",
-    "Category": "Plant based foods and beverages",
+    "Category": "Plant-based foods and beverages",
     "Energy (kcal/100g)": "800 kcal",
     "Fat (g/100g)": "93.3 g",
     "Saturated fat (g/100g)": "13.3 g",
     "Sugars (g/100g)": "0 g",
     "Salt (g/100g)": "0 g",
     "Protein (g/100g)": "0 g",
-    "Dietary restrictions": "vegan, vegetarian",
+    "Dietary restrictions": [
+      "vegan",
+      "vegetarian"
+    ],
     "Price source": "estimated_unit_model",
-    "Pricing bucket": "oils_fats",
-    "Estimated unit price": "11.59 USD/l (15ml, bucket=oils_fats, scale=1.21, ratio=0.15)"
+    "Pricing bucket": "olive_oil",
+    "Estimated unit price": "28.68 USD/l (default 500ml (no package qty), source=none, bucket=olive_oil)",
+    "Margin source": "modelled_category_margin",
+    "Modelled margin": "22% (bucket=olive_oil base=22%)",
+    "Popularity source": "open_food_facts_unique_scans",
+    "Unique scans (Open Food Facts)": "0"
   },
   "attr_keys": [
     "Category",
@@ -97,42 +136,72 @@ This resulting data is ready to be indexed into a search engine like Elasticsear
     "Estimated unit price",
     "Fat (g/100g)",
     "Ingredients analysis",
+    "Margin source",
+    "Modelled margin",
     "NOVA group",
     "Nutri-Score",
+    "Popularity source",
     "Price source",
     "Pricing bucket",
     "Protein (g/100g)",
     "Salt (g/100g)",
     "Saturated fat (g/100g)",
     "Serving size",
-    "Sugars (g/100g)"
+    "Sugars (g/100g)",
+    "Unique scans (Open Food Facts)"
   ],
   "dietary_restrictions": [
     "vegan",
     "vegetarian"
-  ]
+  ],
+  "countries": "United States",
+  "ingredients_analysis": [
+    "palm-oil-free",
+    "vegan",
+    "vegetarian"
+  ],
+  "nutri_score": "B",
+  "eco_score": "E",
+  "nova_group": "2"
 }
 ```
 
-Note: `attrs["Dietary restrictions"]` reflects the raw, display-friendly value, while `dietary_restrictions` is a normalized array for efficient filtering/faceting.
+Note: `attrs` is one flattened blob, so the handful of facts worth reaching exactly — `dietary_restrictions`, `labels`, `allergens`, `ingredients_analysis`, `countries`, `nutri_score`, `eco_score` and `nova_group` — are also written as top-level fields of their own, verbatim from the matching `attrs` entry. A field is written only for a product that carries the attribute, so an absent field means the source has no such value rather than an empty one.
 
 ### Reconstructing a real category hierarchy
 
 A good e-commerce demo needs more than a flat bag of category labels — it needs a category *tree* you can drill into (Snacks → Salty snacks → Crisps). Open Food Facts ships `categories_tags` on every product, and at first glance it looks hierarchical. It isn't: those tags are the flattened *union of every ancestor category* drawn from the Open Food Facts category taxonomy, which is a directed acyclic graph where a single category can have several parents. Joining the tags with `/` mixes parallel roots and sibling branches and produces a path that doesn't exist.
 
-To get a real tree, the extractor loads the public Open Food Facts category taxonomy (the parent/child graph) and, for each product, walks a single canonical chain: it keeps the product's taxonomy-known tags, induces the subgraph of just that product's categories, picks the most specific leaf, and walks parents upward along the longest path to a root. The result is emitted as `category_path` — an array of cumulative `/`-joined strings:
+To get a real tree, the extractor loads the public Open Food Facts category taxonomy (the parent/child graph) and walks it. Once per run it gives every category one *primary* parent — the one on its shortest route to a taxonomy root, ties broken lexicographically — and enumerates every root-to-node path over the whole graph, so a category's addresses are a property of the taxonomy rather than of whichever product you happen to be looking at. For each product it then keeps the taxonomy-known tags, takes the most specific as the primary leaf, and walks from there up to a global root. Two fields come out, both arrays of cumulative `/`-joined strings: `category_path_primary`, the single address the product page leads with, and `category_path`, the union over every address the DAG puts that product at:
 
 ```text
 raw tags:   en:plant-based-foods-and-beverages, en:beverages, en:hot-beverages,
             en:plant-based-beverages, en:teas, en:tea-bags        (a flat DAG union)
 
-category_path:
-  [ "Beverages",
-    "Beverages/Hot beverages",
-    "Beverages/Hot beverages/Teas" ]                              (one clean chain)
+category_path_primary:                                  (the address it leads with)
+  [ "Beverages and beverages preparations",
+    "Beverages and beverages preparations/Beverage preparations",
+    "Beverages and beverages preparations/Beverage preparations/Tea leaves",
+    "Beverages and beverages preparations/Beverage preparations/Tea leaves/Tea bags" ]
+
+category_path:                              (12 values; a prefix already present is
+  [ "Beverages and beverages preparations",              not repeated)
+    "Beverages and beverages preparations/Beverage preparations",
+    "Beverages and beverages preparations/Beverage preparations/Tea leaves",
+    "Beverages and beverages preparations/Beverage preparations/Tea leaves/Tea bags",
+    "Beverages and beverages preparations/Beverages",
+    "Beverages and beverages preparations/Beverages/Hot beverages",
+    "Plant-based foods and beverages",
+    "Plant-based foods and beverages/Plant-based beverages",
+    "Plant-based foods and beverages/Plant-based beverages/Teas",
+    "Beverages and beverages preparations/Beverages/Hot beverages/Teas",
+    "Beverages and beverages preparations/Beverages/Plant-based beverages",
+    "Beverages and beverages preparations/Beverages/Plant-based beverages/Teas" ]
 ```
 
-This is the same cumulative-path shape that merchandising tools expect for breadcrumb navigation and drill-down category facets, and the display names are taken from the taxonomy, so non-English personas get localized category labels. The original flat `categories` list is still emitted alongside it.
+The primary leaf is `en:tea-bags` — the most specific tag — so the address the product leads with is its `Tea leaves/Tea bags` lineage rather than the `Teas` one. `en:hot-beverages` and `en:teas` are kept as alternate leaves because neither sits on that chain, and `en:teas` alone contributes three addresses: it has two parents, and one of those has two parents itself, so the fork one hop up multiplies through.
+
+This is the same cumulative-path shape that merchandising tools expect for breadcrumb navigation and drill-down category facets, and the display names are taken from the taxonomy, so non-English personas get localized category labels. The flat tag list is still emitted alongside it, as `taxonomy_tags`, rendered with the same taxonomy labels so the two fields join on string.
 
 ### Benefits
 
@@ -175,7 +244,7 @@ After parsing, filtering, and cleaning over 3.5 million source records, the resu
   "brand": "Lenovo",
   "description": "Minimal meets mighty... Thermally tuned via Legion Coldfront 2.0.",
   "price": 865.33,
-  "currency": "EUR",
+  "currency": "USD",
   "image_url": "https://images.icecat.biz/img/gallery_mediums/79117985_5269963235.jpg",
   "categories": ["Laptops"],
   "attrs": {
@@ -202,12 +271,13 @@ The goal is that a loader or indexing pipeline can ingest both Icecat and Open F
 | id | string | Unique Icecat Product ID | Padded GTIN-13 Barcode |
 | title | string | Full Marketing Title | English Product Name |
 | brand | string | Manufacturer (e.g., Apple, Lenovo) | Brand/Producer Name |
-| description | string | **Synthesis:** Marketing text + Key Technical Specifications | **Synthesis:** Ingredients + Key Nutritional Metadata |
+| description | string | **Synthesis:** Marketing text + Key Technical Specifications | **Prose only:** the product name followed by its source text (`generic_name`, else `ingredients_text`) |
 | price | float | **Heuristic:** Category baseline modified by Brand premium | **Estimated:** Unit pricing model based on category & weight |
-| currency | string | Fixed (EUR) | Fixed (USD by default; set in `config/pricing_buckets.json`) |
+| currency | string | Fixed (USD) | Fixed (USD by default; set in `config/pricing_buckets.json`) |
 | image_url | string | **High-Quality:** Selects the best available primary product photo | **Computed:** URL derived from product code and image metadata |
-| categories | list | Single-item list (Primary Icecat Category) | Flat list of category labels (broad to specific) |
-| category_path | list | _Not populated_ | **Hierarchical:** single root→leaf chain as cumulative `/`-joined strings, rebuilt from the OFF category taxonomy graph |
+| categories / taxonomy_tags | list | `categories`: single-item list (primary Icecat category) | `taxonomy_tags`: the product's own category tags, validated against the taxonomy and rendered with its display labels |
+| category_path | list | _Not populated_ | **Hierarchical:** every address the product sits at, as cumulative `/`-joined strings, rebuilt from the OFF category taxonomy graph |
+| category_path_primary | list | _Not populated_ | **Hierarchical:** the single root→leaf address the product leads with — always the head of `category_path` |
 | attrs | object | **Flattened:** Technical specs (e.g., `"RAM": "16GB"`) | **Flattened:** Nutritional/Labels (e.g., `"Nutri-Score": "A"`) |
 | attr_keys | list | List of keys in attrs for dynamic faceting | List of keys in attrs for dynamic faceting |
 
@@ -216,7 +286,7 @@ By converging on a single schema contract, the ingestion pipeline and demo UI ca
 
 - **Consistent faceting**: The attrs object is a flat dictionary. In Elasticsearch, this is typically mapped as a `flattened` field to support dynamic faceting without a mapping explosion.
 
-- **Searchable specs**: High-value technical data is injected into the description field. This ensures that a user searching for "Ryzen 7" or "Palm-oil free" finds the product via full-text search even if those specific attributes aren't explicitly boosted.
+- **Searchable specs**: On the Icecat side, high-value technical data is injected into the description field, so a user searching for "Ryzen 7" finds the product via full-text search even if that attribute isn't explicitly boosted. The Open Food Facts extractor used to append the same kind of block and no longer does — it was roughly three quarters of the field, and because BM25 normalizes by field length it down-weighted the real product prose it was glued to. There, the facts worth reaching exactly are top-level fields instead.
 
 - **Visual reliability**: Both pipelines discard any record missing a valid image_url. This reduces the chances of your demo showing a "broken image" icon.
 
@@ -275,6 +345,6 @@ This may be perfectly fine for research benchmarking, but it reintroduces the sa
 
 ## Conclusion
 
-If you want to build and demo e-commerce search, the blocker is often the dataset.Open Food Facts and Icecat are two sources that (a) contain the kinds of fields demos need, including images and metadata, and (b) have licensing frameworks that are clear enough to build on without feeling like you’re stepping into a gray area. The real work — and the real value — is in turning raw, awkward source formats into clean, stable NDJSON that is easy to index, easy to query, and easy to use in demos. Not more, not less.
+If you want to build and demo e-commerce search, the blocker is often the dataset. Open Food Facts and Icecat are two sources that (a) contain the kinds of fields demos need, including images and metadata, and (b) have licensing frameworks that are clear enough to build on without feeling like you’re stepping into a gray area. The real work — and the real value — is in turning raw, awkward source formats into clean, stable NDJSON that is easy to index, easy to query, and easy to use in demos. Not more, not less.
 
 If you’re doing relevance evaluation, WANDS is still in the picture. It’s a different tool for a different job. But for demo catalogs that look and feel real, Icecat and Open Food Facts are the two foundations I’m using today.

@@ -1,26 +1,47 @@
 {{- /*
-  Every image in one directory, read at build time. Takes a dict:
+  Every image at or below one directory, read at build time. Takes a dict:
 
     dir        the directory to read
     base       the URL those files are served from
     label      optional; the directory name, for a grid spanning several
     labelhref  optional; where that label links
+    prefix     internal; the path walked so far, used to name a nested file
 
   Returns a slice of {href, name, size, label, labelhref}. Nothing is listed
   in content: this reads the directory, so an image added to it appears on the
   next build with no edit anywhere.
+
+  **Recursive, and that is load-bearing.** A section that files its images in
+  subdirectories -- the industrial drawings are one per product LINE, under
+  `<product type>/<product id>/` -- holds no files of its own, so reading one
+  level deep returns an empty slice and the page renders "No images in this
+  directory yet." while a thousand files sit under it. The build still exits 0.
+  `asset-count.html` recurses for the same reason and has since before this
+  did, which is how the two came to disagree.
+
+  A nested file is named by its path below `dir`, not by its bare filename:
+  four hundred files called `card.png` are otherwise four hundred identical
+  captions.
 */ -}}
 {{- $dir := .dir -}}
 {{- $base := .base -}}
 {{- $label := .label | default "" -}}
 {{- $labelhref := .labelhref | default "" -}}
+{{- $prefix := .prefix | default "" -}}
 {{- $extensions := slice ".png" ".jpg" ".jpeg" ".gif" ".webp" ".svg" -}}
 {{- $items := slice -}}
 {{- range os.ReadDir $dir -}}
-  {{- if and (not .IsDir) (in $extensions (path.Ext .Name | lower)) -}}
+  {{- if .IsDir -}}
+    {{- $items = $items | append (partial "asset-files.html" (dict
+        "dir" (printf "%s/%s" $dir .Name)
+        "base" (printf "%s/%s" $base .Name)
+        "prefix" (printf "%s%s/" $prefix .Name)
+        "label" $label
+        "labelhref" $labelhref)) -}}
+  {{- else if in $extensions (path.Ext .Name | lower) -}}
     {{- $items = $items | append (dict
         "href" (printf "%s/%s" $base .Name)
-        "name" .Name
+        "name" (printf "%s%s" $prefix .Name)
         "size" .Size
         "label" $label
         "labelhref" $labelhref) -}}

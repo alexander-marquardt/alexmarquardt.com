@@ -81,7 +81,9 @@ def test_the_manifest_emits_image_id_and_the_importer_reads_that_key(manifest_ro
 
 def test_the_older_spelling_is_still_accepted():
     """Tolerance goes both ways: an older manifest still publishes."""
-    assert importer.image_ref({"image_ref": "washer_flat"}) == "washer_flat"
+    assert importer.image_ref({"image_ref": "washer_flat/RED-W940-0417"}) == (
+        "washer_flat/RED-W940-0417"
+    )
 
 
 def test_a_row_naming_its_drawing_under_no_known_key_says_so(manifest_rows):
@@ -95,19 +97,39 @@ def test_a_row_naming_its_drawing_under_no_known_key_says_so(manifest_rows):
 # --- the published layout ---------------------------------------------------
 
 
-def test_the_manifest_files_each_drawing_under_its_product_type(manifest_rows):
-    """One directory per product type, one file per profile inside it.
+def test_the_manifest_files_each_drawing_under_its_product_type_and_line(manifest_rows):
+    """One directory per product type, one per product line inside it.
 
     This is the structure the site's own pages are built from: the industrial
-    index lists the directories as categories and each category page lists the
-    files in it. Filed the other way -- ``card/`` and ``detail/`` holding every
-    product type -- the index would offer two categories named after image
-    sizes, which is what it did before.
+    index lists the product types as categories and each category page lists
+    the files under it. Filed the other way -- ``card/`` and ``detail/``
+    holding every drawing -- the index would offer two categories named after
+    image sizes, which is what it did before.
+
+    The nesting is what ``asset-files.html`` has to recurse for. A partial
+    reading one level deep finds no files in a product type's directory at all
+    and renders an empty gallery, with the build still exiting 0.
     """
     for row in manifest_rows:
-        product_type = row["product_type"]
-        assert row["path"] == f"{product_type}/card.png"
-        assert row["detail_path"] == f"{product_type}/detail.png"
+        assert row["path"] == f"{row['image_id']}/card.png"
+        assert row["detail_path"] == f"{row['image_id']}/detail.png"
+        assert row["image_id"].startswith(f"{row['product_type']}/")
+        assert len(Path(row["path"]).parts) == 3, "type / line / file"
+
+
+def test_the_manifest_is_one_row_per_product_line_not_per_type_or_per_sku(manifest_rows):
+    """The count is the assertion, and nothing else here would notice it move.
+
+    Ten rows is what this replaced -- one drawing per product type, so an
+    Osterlund HSS AlTiN mill and a competitor's carbide TiCN mill were the same
+    picture. One row per SKU would be the other mistake: the catalog's whole
+    variant-grouping story is that N SKUs are one product.
+    """
+    assert len(manifest_rows) > 100, "one drawing per product type is what this replaced"
+    assert len({row["image_id"] for row in manifest_rows}) == len(manifest_rows)
+    types = {row["product_type"] for row in manifest_rows}
+    assert 1 < len(types) < len(manifest_rows)
+    assert all(row["referenced_by"] > 1 for row in manifest_rows), "a line shares its drawing"
 
 
 def test_the_manifest_publishes_both_profiles_and_the_importer_writes_both(manifest_rows):
@@ -131,20 +153,39 @@ def test_every_published_path_is_relative_and_stays_under_the_destination(manife
 
 
 def _renderer_output(tmp_path: Path, rows: list[dict]) -> Path:
-    """A directory named the way ``sip-render generics --profile both`` names it.
+    """A directory laid out the way ``scripts/render_catalog.py`` lays one out.
 
-    The filenames come from the manifest's own paths -- ``<ref>_<profile>.png``
-    where the profile is the published file's stem -- so this does not hardcode
-    a second copy of the renderer's convention either.
+    The paths come from the manifest's own ``path`` and ``detail_path``, so
+    this does not hardcode a second copy of the renderer's convention either --
+    which is the whole reason the importer reads them rather than rebuilding
+    them.
     """
     images = tmp_path / "rendered"
     images.mkdir()
     for row in rows:
-        ref = importer.image_ref(row)
         for key in importer.PATH_KEYS:
-            profile = Path(row[key]).stem
-            (images / f"{ref}_{profile}.png").write_bytes(_PNG)
+            destination = images / row[key]
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(_PNG)
     return images
+
+
+def test_the_importer_still_finds_the_older_flat_render_layout(tmp_path, manifest_rows):
+    """Tolerance goes both ways, and the older spelling is what a stale tree has.
+
+    ``sip-render generics --profile both`` writes ``<ref>_<profile>.png`` in one
+    flat directory. The importer tries several spellings rather than assuming
+    one, and a rename on the renderer's side is otherwise found only by running
+    a publish end to end.
+    """
+    row = manifest_rows[0]
+    images = tmp_path / "flat"
+    ref = importer.image_ref(row)
+    (images / ref).parent.mkdir(parents=True, exist_ok=True)
+    legacy = images / f"{ref}_card.png"
+    legacy.parent.mkdir(parents=True, exist_ok=True)
+    legacy.write_bytes(_PNG)
+    assert importer._source_for(images, row, row["path"]) == legacy
 
 
 #: The smallest valid PNG: 1x1, fully transparent. The importer shells out to
@@ -221,8 +262,8 @@ def test_a_drawing_the_renderer_has_not_written_is_reported_not_guessed(
     """The publish continues and names what is missing, rather than dying or faking it."""
     images = _renderer_output(tmp_path, manifest_rows)
     absent = importer.image_ref(manifest_rows[0])
-    for stale in images.glob(f"{absent}_*.png"):
-        stale.unlink()
+    for key in importer.PATH_KEYS:
+        (images / manifest_rows[0][key]).unlink()
 
     root = tmp_path / "site"
     (root / importer.DEST_ROOT).mkdir(parents=True)
@@ -292,8 +333,8 @@ def test_the_fixture_is_not_hand_written(manifest_rows):
     evidence about the generator and go back to being this file's assumption
     about it, which is the defect.
     """
-    expected = {"image_id", "product_type", "path", "url", "detail_path", "detail_url",
-                "referenced_by"}
+    expected = {"image_id", "product_type", "drawing", "path", "url", "detail_path",
+                "detail_url", "referenced_by"}
     for row in manifest_rows:
         assert set(row) == expected
         assert row["referenced_by"] > 1, "a drawing is shared by a family"

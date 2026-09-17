@@ -31,8 +31,27 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install --upgrade pip pytest
 
-      - name: Install the image tools the importer shells out to
-        run: sudo apt-get update && sudo apt-get install -y pngquant oxipng
+      # pngquant is packaged; oxipng is not in Ubuntu's repositories, so it
+      # comes from its own release. Both are needed: without them the
+      # end-to-end importer tests skip themselves, which would leave this job
+      # green while testing none of the seam it exists for.
+      - name: Install pngquant
+        run: sudo apt-get update && sudo apt-get install -y pngquant
+
+      - name: Install oxipng
+        env:
+          OXIPNG_VERSION: "10.2.1"
+        run: |
+          set -euo pipefail
+          asset="oxipng-${OXIPNG_VERSION}-x86_64-unknown-linux-musl"
+          curl -fsSL -o /tmp/oxipng.tar.gz \
+            "https://github.com/shssoichiro/oxipng/releases/download/v${OXIPNG_VERSION}/${asset}.tar.gz"
+          tar -xzf /tmp/oxipng.tar.gz -C /tmp
+          sudo install -m 0755 "/tmp/${asset}/oxipng" /usr/local/bin/oxipng
+          oxipng --version
+
+      - name: Fail if the compression tools are missing
+        run: command -v pngquant && command -v oxipng
 
       - name: Run tests
         run: python -m pytest tests/ -v

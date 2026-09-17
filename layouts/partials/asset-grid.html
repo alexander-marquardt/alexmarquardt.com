@@ -1,9 +1,13 @@
 {{/*
   Renders a slice of image items as a thumbnail grid. Takes a dict:
 
-    items  slice of {href, name, size, label, labelhref}
+    items  slice of {href, name, size, label, labelhref, thumb}
            label/labelhref are set only for a grid spanning several
            directories, where a file's name alone does not say where it lives.
+           thumb is set only when the cell LINKS somewhere other than the
+           image it shows -- a cover grid links to a directory's page and
+           shows one image out of it -- and defaults to href, which is the
+           ordinary case of a thumbnail linking to its own full-size file.
 */}}
 {{ $items := .items }}
 {{ if $items }}
@@ -11,7 +15,7 @@
     {{ range $item := $items }}
       <li class="asset-cell">
         <a class="asset-thumb" href="{{ .href }}">
-          <img src="{{ .href }}" alt="{{ .name }}" loading="lazy" decoding="async">
+          <img src="{{ .thumb | default .href }}" alt="{{ .name }}" loading="lazy" decoding="async">
         </a>
         <span class="asset-name">
           {{ with $item.labelhref }}<a class="asset-label" href="{{ . }}">{{ $item.label }}</a>/{{ end }}<a href="{{ .href }}">{{ .name }}</a>

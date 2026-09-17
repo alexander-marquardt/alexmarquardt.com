@@ -54,4 +54,7 @@ industrial:
     the line it draws, not for any one SKU, and a line's four to twenty catalog
     records all resolve to the same URL. The directory names the product type,
     then the product line, and holds one file per size the image is displayed
-    at: `card.png` for a catalog listing, `detail.png` for a product page.
+    at: `card.png` for a catalog listing, `detail.png` for a product page. A
+    product type's page shows the `card` of every line under it, so a whole
+    category can be looked at on one screen; each thumbnail leads to that
+    line's own page, where both sizes are.

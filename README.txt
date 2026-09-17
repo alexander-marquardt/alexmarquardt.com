@@ -12,6 +12,14 @@
 #   a directory of images        -> one listing page
 #   a directory of directories   -> an index, plus one listing page each
 #
+# ...except that when every child of a directory is itself a directory of
+# PICTURES, the page shows one thumbnail per child -- the image named by
+# demoAssets.cover -- linking to that child's page, rather than a list of
+# links. These images exist to be looked at, and an index of a hundred product
+# lines makes browsing five hundred drawings five hundred clicks. The index
+# stays the answer where a child is a directory of DIRECTORIES, which has no
+# single picture that stands for it.
+#
 # The tree is read to the BOTTOM, not to a fixed depth, so a section filed
 # several levels deep -- the industrial drawings are one per product LINE,
 # under <product type>/<product id>/ -- gets a page at every level.

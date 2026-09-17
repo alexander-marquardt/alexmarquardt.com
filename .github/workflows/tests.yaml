@@ -1,0 +1,38 @@
+name: Tests
+
+# The site's own build is not what these guard. They cover the seam between
+# this repository and the catalog generator that feeds it: the importer reading
+# a manifest the generator writes. Both sides had passing tests while the
+# publish failed on the first row, because each tested its own assumption about
+# the other's shape, so the seam is tested here against the generator's real
+# output.
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: python -m pip install --upgrade pip pytest
+
+      - name: Install the image tools the importer shells out to
+        run: sudo apt-get update && sudo apt-get install -y pngquant oxipng
+
+      - name: Run tests
+        run: python -m pytest tests/ -v

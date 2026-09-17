@@ -34,6 +34,9 @@ template that produced it:
    locally while CI publishes it. ``Path.exists()`` returns True for both.
 3. **Every page lists what its directory holds** -- the entry count in the
    rendered HTML against the files on disk, which is the empty-listing check.
+   A page listing directories is counted against its children, and one showing
+   a small set in full against the images below it; which of the two a page
+   built is read off the page, not assumed from its depth.
 4. **No image moved.** The set of image files published under ``images/`` must
    equal the set in the static tree, byte-identical paths. The page hierarchy
    was moved to mirror the files precisely so that no image URL would change,
@@ -54,6 +57,14 @@ from pathlib import Path
 CELL = re.compile(r'class="?asset-cell"?')
 #: One rendered row in a category index in `list.html`.
 INDEX_ROW = re.compile(r'class="?asset-count"?')
+#: The two-level caption `asset-grid.html` renders only when a cell carries a
+#: `labelhref`. `list.html` passes one from exactly one branch -- the small-set
+#: branch, which shows every image BELOW a directory of directories rather than
+#: one cover per child -- so its presence identifies which listing was built.
+#: Matched rather than assumed, because the threshold that selects the branch
+#: lives in the layout and a copy of it here would be a second rule to keep in
+#: step with the first.
+CELL_LABEL = re.compile(r'class="?asset-label"?')
 #: What Hugo writes for an alias: a meta-refresh stub, not a listing.
 ALIAS = re.compile(r'http-equiv="?refresh"?', re.IGNORECASE)
 
@@ -160,7 +171,19 @@ def main(argv: list[str] | None = None) -> int:
         # A directory of directories gets an index listing its children; a
         # directory of files gets a gallery listing every image at or below it.
         listed = cells if cells else rows
-        expected = len(subdirs) if subdirs else on_disk
+        # ...except that a directory of directories small enough to take in at
+        # once is shown at once, as every image below it rather than one cover
+        # per child. That is a third shape, and expecting one entry per child
+        # for it fails a page that is listing MORE than it was asked to, not
+        # less. The shape is read off the built HTML -- only that branch
+        # captions a cell with the directory it came from -- so each shape is
+        # still checked against one exact number rather than the gate being
+        # relaxed to accept either.
+        shows_every_image = bool(subdirs) and bool(CELL_LABEL.search(html))
+        if shows_every_image:
+            expected = on_disk
+        else:
+            expected = len(subdirs) if subdirs else on_disk
         if not subdirs:
             leaf_cells += cells
         checked += 1

@@ -27,8 +27,8 @@ industrial:
     the products it depicts do not exist.
 
 
-    A file is named for the **image reference** the catalog uses, which is not
-    the referencing product's SKU about three times in four, and the directory
-    names the product **drawn** rather than the product referencing it. Both
-    follow from the reuse the catalog reproduces: one drawing serves many
-    records, and the reuse crosses product types.
+    A drawing is shared by a whole family rather than belonging to one
+    product, which is what a real supplier's catalog does — several sizes of
+    the same end mill are listed against the same picture. So a file is named
+    for what it draws, not for any one SKU, and many catalog records resolve
+    to the same URL. The directory names the product type **drawn**.

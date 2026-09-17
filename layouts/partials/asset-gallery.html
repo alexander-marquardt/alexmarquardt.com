@@ -1,5 +1,5 @@
 {{/* One directory's images, with a line saying how many and where from. */}}
-{{ $items := partial "asset-files.html" (dict "page" .) }}
+{{ $items := partial "asset-files.html" (dict "dir" .Params.assetdir "base" .Params.asseturl) }}
 {{ $bytes := 0 }}
 {{ range $items }}{{ $bytes = add $bytes .size }}{{ end }}
 

@@ -1,10 +1,8 @@
 {{ define "main" }}
   <article class="post-single">
     <header class="post-header">
-      {{ if .Parent.IsSection }}
-        {{ with .Parent }}
-          <p class="asset-breadcrumb"><a href="{{ .RelPermalink }}">&larr; {{ .Title }}</a></p>
-        {{ end }}
+      {{ if .Params.assetparent }}
+        <p class="asset-breadcrumb"><a href="{{ .Params.assetparent }}">&larr; {{ .Params.assetparentlabel }}</a></p>
       {{ end }}
       <h1 class="post-title">{{ .Title }}</h1>
       {{ with .Description }}<div class="post-description">{{ . }}</div>{{ end }}
@@ -12,14 +10,10 @@
     <div class="post-content">
       {{ .Content }}
 
-      {{ $children := .Pages }}
+      {{ $children := partial "asset-dirs.html" . }}
       {{ if $children }}
         {{ $total := 0 }}
-        {{ $inlineable := true }}
-        {{ range $children }}
-          {{ $total = add $total .Params.assetcount }}
-          {{ if .Pages }}{{ $inlineable = false }}{{ end }}
-        {{ end }}
+        {{ range $children }}{{ $total = add $total .count }}{{ end }}
 
         {{/* A set small enough to take in at once is shown at once. An index
              of ten links, each leading to a page holding a single thumbnail,
@@ -27,14 +21,15 @@
              Past this many the thumbnails are too many to load together and
              the index goes back to being a list of links. The sub-pages exist
              either way -- they are the URLs the images are filed under, and
-             each one is still linked from its caption. */}}
-        {{ if and $inlineable (le $total 40) }}
+             each caption links to them. */}}
+        {{ if le $total 40 }}
           {{ $items := slice }}
           {{ range $children }}
             {{ $items = $items | append (partial "asset-files.html" (dict
-                "page" .
-                "label" (path.Base .RelPermalink)
-                "labelhref" .RelPermalink)) }}
+                "dir" .assetdir
+                "base" .asseturl
+                "label" .name
+                "labelhref" .pagehref)) }}
           {{ end }}
           {{ partial "asset-grid.html" (dict "items" $items) }}
           <p class="asset-summary">
@@ -46,9 +41,9 @@
           <ul class="asset-index">
             {{ range $children }}
               <li>
-                <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-                <span class="asset-count">{{ .Params.assetcount }} image{{ if ne .Params.assetcount 1 }}s{{ end }}</span>
-                {{ with .Params.asseturl }}<code>{{ . }}/</code>{{ end }}
+                <a href="{{ .pagehref }}">{{ .label }}</a>
+                <span class="asset-count">{{ .count }} image{{ if ne .count 1 }}s{{ end }}</span>
+                <code>{{ .asseturl }}/</code>
               </li>
             {{ end }}
           </ul>

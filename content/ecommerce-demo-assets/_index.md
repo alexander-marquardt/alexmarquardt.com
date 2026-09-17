@@ -1,7 +1,6 @@
 ---
 title: "E-commerce Demo Assets"
 description: "Public image assets for e-commerce search demos and testing."
-url: "ecommerce-demo-assets"
 ---
 
 Publicly accessible images used for e-commerce search demos. They are served as
@@ -27,12 +26,16 @@ For example:
 
 ```
 /ecommerce-demo-assets/images/electronics/apple-iphone-001.png
-/ecommerce-demo-assets/images/industrial/end_mill_square/98WF97.png
 ```
 
-The industrial path carries a product type because the catalog's records
-reference each other's drawings: roughly three records in four point at an image
-filed under some other product's SKU, and the reuse crosses product types. The
-directory names the product **drawn**, never the product referencing it.
+Every listing below is read from the directory it describes when the site is
+built, so what you see there is what is actually hosted.
+
+The industrial path carries a product type because products in the same family
+share one drawing, as they do in a real supplier's catalog — several sizes of
+the same end mill are listed against the same picture. So a catalog record does
+not have an image of its own to point at: many records resolve to the same URL,
+and the directory names the product type **drawn** rather than any one product
+referencing it.
 
 ## Sections

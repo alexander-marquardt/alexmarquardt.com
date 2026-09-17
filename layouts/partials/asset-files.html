@@ -1,16 +1,19 @@
 {{- /*
-  Every image in the directory a page's `assetdir` param names, read at build
-  time. Returns a slice of {href, name, size}; takes the page, plus an
-  optional `label` for a grid that spans several directories.
+  Every image in one directory, read at build time. Takes a dict:
 
-  Nothing is listed in content: this reads the directory, so a drawing added
-  to it appears on the next build with no edit anywhere.
+    dir        the directory to read
+    base       the URL those files are served from
+    label      optional; the directory name, for a grid spanning several
+    labelhref  optional; where that label links
+
+  Returns a slice of {href, name, size, label, labelhref}. Nothing is listed
+  in content: this reads the directory, so an image added to it appears on the
+  next build with no edit anywhere.
 */ -}}
-{{- $page := .page -}}
+{{- $dir := .dir -}}
+{{- $base := .base -}}
 {{- $label := .label | default "" -}}
 {{- $labelhref := .labelhref | default "" -}}
-{{- $dir := $page.Params.assetdir -}}
-{{- $base := $page.Params.asseturl -}}
 {{- $extensions := slice ".png" ".jpg" ".jpeg" ".gif" ".webp" ".svg" -}}
 {{- $items := slice -}}
 {{- range os.ReadDir $dir -}}

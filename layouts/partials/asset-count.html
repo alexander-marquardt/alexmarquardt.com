@@ -1,0 +1,19 @@
+{{- /*
+  How many images a directory holds, counting its subdirectories too. Takes
+  the directory path.
+
+  Recursive because a section that files its images by category holds none
+  itself: counting one level deep reports every such section as empty, which
+  reads as "nothing here" rather than as a miscount.
+*/ -}}
+{{- $dir := . -}}
+{{- $extensions := slice ".png" ".jpg" ".jpeg" ".gif" ".webp" ".svg" -}}
+{{- $n := 0 -}}
+{{- range os.ReadDir $dir -}}
+  {{- if .IsDir -}}
+    {{- $n = add $n (partial "asset-count.html" (printf "%s/%s" $dir .Name)) -}}
+  {{- else if in $extensions (path.Ext .Name | lower) -}}
+    {{- $n = add $n 1 -}}
+  {{- end -}}
+{{- end -}}
+{{- return $n -}}

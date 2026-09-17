@@ -46,6 +46,19 @@ description = "Technical writing on search relevance, data pipelines, and distri
     "css/extended/links.css"
   ]
 
+  # Where the e-commerce demo assets live. Read by
+  # content/ecommerce-demo-assets/_content.gotmpl, which generates a page per
+  # image directory, and by layouts/partials/asset-dirs.html, which lists
+  # them. One source, so the two cannot drift apart.
+  #
+  # Kept last in [params]: a TOML sub-table captures every bare key that
+  # follows it, so putting this higher would move unrelated params into it.
+  [params.demoAssets]
+    root = "static/ecommerce-demo-assets/images"
+    url = "/ecommerce-demo-assets/images"
+    page = "/ecommerce-demo-assets/"
+    title = "E-commerce Demo Assets"
+
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]

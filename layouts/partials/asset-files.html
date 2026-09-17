@@ -11,13 +11,38 @@
   in content: this reads the directory, so an image added to it appears on the
   next build with no edit anywhere.
 
-  **Recursive, and that is load-bearing.** A section that files its images in
-  subdirectories -- the industrial drawings are one per product LINE, under
-  `<product type>/<product id>/` -- holds no files of its own, so reading one
-  level deep returns an empty slice and the page renders "No images in this
-  directory yet." while a thousand files sit under it. The build still exits 0.
-  `asset-count.html` recurses for the same reason and has since before this
-  did, which is how the two came to disagree.
+  **Recursive, because reading one level deep has failed here.** A section that
+  files its images in subdirectories -- the industrial drawings are one per
+  product LINE, under `<product type>/<product id>/` -- holds no files of its
+  own, so reading one level deep returns an empty slice and the page renders
+  "No images in this directory yet." while a thousand files sit under it. The
+  build still exits 0. `asset-count.html` recurses for the same reason and has
+  since before this did, which is how the two came to disagree.
+
+  **REMOVING THE RECURSION IS NOT A VALID CONTROL, and it has read as a pass
+  twice.** Measured on the current tree: deleting the recursive branch changes
+  ZERO bytes of built output and leaves `verify_rendered_listings.py` green.
+  Every directory this partial is now CALLED on holds its images directly --
+  `single.html` calls it on a product-line directory, and the small-set branch
+  of `ecommerce-demo-assets/list.html` calls it once per child, which is also a
+  product-line directory. The deep case, a product-type page, does not come
+  through here at all: it routes through the cover and index branches of
+  `list.html`, which get their counts from `asset-count.html`. So the recursion
+  guards a real failure mode that nothing currently reaches, and a probe that
+  removes it proves only that the gate was not asked a question.
+
+  Three probes that DO bite, each confirmed to change the built output before
+  its result was believed -- `hugo` exits 0 for all three:
+
+  | planted defect                        | built files changed | problems |
+  |---------------------------------------|---------------------|----------|
+  | leaf gallery truncated to first image |                 503 |      504 |
+  | index drops one child directory       |                  15 |       14 |
+  | explicit per-page `url` removed       |                 960 |      448 |
+
+  Reach for one of those. And whatever is planted, diff the built output first:
+  a control that cannot fail is indistinguishable from a gate that does not
+  bite, and this is the partial where that mistake gets made.
 
   A nested file is named by its path below `dir`, not by its bare filename:
   four hundred files called `card.png` are otherwise four hundred identical

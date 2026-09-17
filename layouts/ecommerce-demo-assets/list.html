@@ -13,15 +13,18 @@
       {{ $children := partial "asset-dirs.html" . }}
       {{ if $children }}
         {{ $total := 0 }}
-        {{ range $children }}{{ $total = add $total .count }}{{ end }}
+        {{ $leaves := true }}
+        {{ range $children }}
+          {{ $total = add $total .count }}
+          {{ if or .hasdirs (eq .cover "") }}{{ $leaves = false }}{{ end }}
+        {{ end }}
 
         {{/* A set small enough to take in at once is shown at once. An index
              of ten links, each leading to a page holding a single thumbnail,
              makes a reader click ten times to see what fits on one screen.
-             Past this many the thumbnails are too many to load together and
-             the index goes back to being a list of links. The sub-pages exist
-             either way -- they are the URLs the images are filed under, and
-             each caption links to them. */}}
+             Past this many the thumbnails are too many to load together. The
+             sub-pages exist either way -- they are the URLs the images are
+             filed under, and each caption links to them. */}}
         {{ if le $total 40 }}
           {{ $items := slice }}
           {{ range $children }}
@@ -37,6 +40,37 @@
             {{ len $children }} categor{{ if eq (len $children) 1 }}y{{ else }}ies{{ end }};
             each caption links its category and its file.
           </p>
+
+        {{ else if $leaves }}
+          {{/* Every child is a directory of PICTURES, so the honest listing of
+               this page is a picture per child rather than a link per child.
+               These images exist to be looked at: an index of a hundred
+               product lines means browsing five hundred drawings is five
+               hundred clicks, which is not publishing them.
+
+               One image per child, not all of them -- a child holds the same
+               drawing at every display size, and a grid showing each of them
+               twice says nothing the caption does not. The cell LINKS to the
+               child's own page, where the other sizes are.
+
+               This does not invert the general rule below. A child that is
+               itself a directory of directories has no single picture that
+               stands for it, and that is the case the index is right for. */}}
+          {{ $items := slice }}
+          {{ range $children }}
+            {{ $items = $items | append (dict
+                "href" .pagehref
+                "thumb" .cover
+                "name" .name
+                "size" .coversize) }}
+          {{ end }}
+          {{ partial "asset-grid.html" (dict "items" $items) }}
+          <p class="asset-summary">
+            {{ len $children }} {{ if eq (len $children) 1 }}directory{{ else }}directories{{ end }},
+            {{ $total }} image{{ if ne $total 1 }}s{{ end }} in total; one shown for each.
+            Each thumbnail links to that directory's page, which holds every size.
+          </p>
+
         {{ else }}
           <ul class="asset-index">
             {{ range $children }}

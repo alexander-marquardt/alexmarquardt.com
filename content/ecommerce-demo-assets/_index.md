@@ -19,7 +19,7 @@ the products it depicts do not exist.
 
 ```
 /ecommerce-demo-assets/images/<section>/<filename>
-/ecommerce-demo-assets/images/industrial/<product-type>/<image-ref>.png
+/ecommerce-demo-assets/images/industrial/<product-type>/<product-id>/<profile>.png
 ```
 
 For example:
@@ -31,11 +31,27 @@ For example:
 Every listing below is read from the directory it describes when the site is
 built, so what you see there is what is actually hosted.
 
-The industrial path carries a product type because products in the same family
-share one drawing, as they do in a real supplier's catalog — several sizes of
-the same end mill are listed against the same picture. So a catalog record does
-not have an image of its own to point at: many records resolve to the same URL,
-and the directory names the product type **drawn** rather than any one product
-referencing it.
+**The browse pages sit at the same paths as the files.** Strip the filename off
+any image URL and you get the page listing that directory; strip another
+segment and you get its parent, up to
+[/ecommerce-demo-assets/images/](/ecommerce-demo-assets/images/). The older
+page URLs, without `images/`, redirect to their new ones.
+
+The industrial path carries a product type and then a product line, because
+the products in one line share one drawing — as they do in a real supplier's
+catalog, where several sizes of the same end mill are listed against the same
+picture. So a catalog record does not have an image of its own to point at: a
+line's four to twenty records all resolve to the same URL.
+
+The drawing is not the same for every product of a type, though. **Every visual
+difference between two industrial drawings is a difference between two
+records** — the outline is the brand's colour, the fill is the coating's, the
+section is hatched for the material, and the stamp sets every published
+attribute verbatim. Nothing is styled from an identifier.
+
+```
+/ecommerce-demo-assets/images/industrial/end_mill_square/OST-K663-0001/card.png
+/ecommerce-demo-assets/images/industrial/end_mill_square/OST-K663-0001/detail.png
+```
 
 ## Sections

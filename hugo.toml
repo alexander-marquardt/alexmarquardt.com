@@ -58,6 +58,13 @@ description = "Technical writing on search relevance, data pipelines, and distri
     url = "/ecommerce-demo-assets/images"
     page = "/ecommerce-demo-assets/"
     title = "E-commerce Demo Assets"
+    # Which image stands for a whole directory when a page shows one thumbnail
+    # per child directory. The name without its extension, so `card` matches
+    # `card.png`. It is the GENERATOR's convention -- a drawing is published
+    # once per display size, `card` for a catalog listing and `detail` for a
+    # product page -- and naming it here rather than in a layout keeps one
+    # copy of it. A directory with no such file falls back to its first image.
+    cover = "card"
 
 [markup]
   [markup.goldmark]

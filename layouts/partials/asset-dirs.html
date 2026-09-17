@@ -1,7 +1,7 @@
 {{- /*
-  The image directories directly under a page's own, with the number of images
-  in each. Takes the page; returns a slice of
-  {name, label, pagehref, asseturl, assetdir, count}.
+  The image directories directly under a page's own. Takes the page; returns a
+  slice of {name, label, pagehref, asseturl, assetdir, count, hasdirs, cover,
+  coversize}.
 
   This walks the filesystem rather than reading the page's children, for the
   same reason the file listings do: the directory tree is the one source of
@@ -9,24 +9,66 @@
   page -- the site's taxonomy configuration makes every top-level section a
   `term` on some Hugo versions and a `section` on others, and a listing built
   from `.Pages` silently comes out EMPTY on the former.
+
+  `hasdirs` says whether a child holds further directories, which is what tells
+  a directory of PICTURES from a directory of more directories -- see
+  `ecommerce-demo-assets/list.html`, which shows the first as thumbnails and
+  the second as an index.
+
+  `cover` is the one image that stands for a child directory in such a grid:
+  the file whose name without its extension matches `demoAssets.cover`, or the
+  first image in the directory when there is none. The name is configured
+  rather than written here because it is the GENERATOR's convention -- a
+  drawing is published once per display size, `card` for a listing and `detail`
+  for a product page -- and a listing that hardcoded `card.png` would be a
+  second copy of that convention, free to drift from the one that produced the
+  files.
 */ -}}
 {{- $page := . -}}
 {{- $config := site.Params.demoAssets -}}
 {{- $dir := $page.Params.assetdir | default $config.root -}}
 {{- $base := $page.Params.asseturl | default $config.url -}}
+{{- $cover := $config.cover | default "" -}}
+{{- $extensions := slice ".png" ".jpg" ".jpeg" ".gif" ".webp" ".svg" -}}
 {{- $dirs := slice -}}
 {{- range os.ReadDir $dir -}}
   {{- if .IsDir -}}
     {{- $name := .Name -}}
     {{- $child := printf "%s/%s" $dir $name -}}
     {{- $count := partial "asset-count.html" $child -}}
+    {{- $hasdirs := false -}}
+    {{- $first := "" -}}
+    {{- $firstsize := 0 -}}
+    {{- $pick := "" -}}
+    {{- $picksize := 0 -}}
+    {{- range os.ReadDir $child -}}
+      {{- if .IsDir -}}
+        {{- $hasdirs = true -}}
+      {{- else if in $extensions (path.Ext .Name | lower) -}}
+        {{- if eq $first "" -}}
+          {{- $first = .Name -}}
+          {{- $firstsize = .Size -}}
+        {{- end -}}
+        {{- if and (ne $cover "") (eq (path.BaseName .Name) $cover) -}}
+          {{- $pick = .Name -}}
+          {{- $picksize = .Size -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if eq $pick "" -}}
+      {{- $pick = $first -}}
+      {{- $picksize = $firstsize -}}
+    {{- end -}}
     {{- $dirs = $dirs | append (dict
         "name" $name
         "label" ($name | replaceRE "[-_]" " " | title)
         "pagehref" (printf "%s%s/" $page.RelPermalink $name)
         "asseturl" (printf "%s/%s" $base $name)
         "assetdir" $child
-        "count" $count) -}}
+        "count" $count
+        "hasdirs" $hasdirs
+        "cover" (cond (eq $pick "") "" (printf "%s/%s/%s" $base $name $pick))
+        "coversize" $picksize) -}}
   {{- end -}}
 {{- end -}}
 {{- return $dirs -}}

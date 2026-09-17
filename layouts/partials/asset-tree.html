@@ -1,0 +1,40 @@
+{{- /*
+  Every image directory at or below one directory, depth first. Takes a dict:
+
+    dir   the directory to walk
+    rel   internal; the path walked so far, relative to the starting directory
+
+  Returns a slice of {rel, dir, name, hasdirs}, where `rel` is the path below
+  the starting point and `hasdirs` says whether that directory holds further
+  directories.
+
+  **Recursive, so the page tree cannot be shallower than the file tree.**
+  `_content.gotmpl` used to walk exactly two levels, which is a number that was
+  true when it was written and stopped being true when the industrial drawings
+  went to one per product line: `<product type>/<product id>/` is three. The
+  directories past the hardcoded depth then existed as files with no page above
+  them, so walking up from an image URL landed on a 404. Reading the tree to
+  the bottom is the fix, and it is the same fix `asset-files.html` and
+  `asset-count.html` already carry for the same reason.
+*/ -}}
+{{- $dir := .dir -}}
+{{- $rel := .rel | default "" -}}
+{{- $out := slice -}}
+{{- range os.ReadDir $dir -}}
+  {{- if .IsDir -}}
+    {{- $name := .Name -}}
+    {{- $childRel := cond (eq $rel "") $name (printf "%s/%s" $rel $name) -}}
+    {{- $childDir := printf "%s/%s" $dir $name -}}
+    {{- $hasdirs := false -}}
+    {{- range os.ReadDir $childDir -}}
+      {{- if .IsDir }}{{ $hasdirs = true }}{{ end -}}
+    {{- end -}}
+    {{- $out = $out | append (dict
+        "rel" $childRel
+        "dir" $childDir
+        "name" $name
+        "hasdirs" $hasdirs) -}}
+    {{- $out = $out | append (partial "asset-tree.html" (dict "dir" $childDir "rel" $childRel)) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $out -}}

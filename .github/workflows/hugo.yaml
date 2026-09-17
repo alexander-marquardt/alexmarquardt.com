@@ -24,10 +24,19 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      # The version lives in .hugo-version, read by both workflows and quoted
+      # in README.txt. It was written out in one workflow and nowhere else,
+      # which is how a contributor comes to build on whatever `brew` installed
+      # -- and a listing that renders on a newer Hugo and comes out EMPTY on
+      # the pinned one is a failure this site has actually shipped.
+      - name: Read the pinned Hugo version
+        id: hugo
+        run: echo "version=$(cat .hugo-version)" >> "$GITHUB_OUTPUT"
+
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: "0.153.4"
+          hugo-version: ${{ steps.hugo.outputs.version }}
           extended: true
 
       - name: Build

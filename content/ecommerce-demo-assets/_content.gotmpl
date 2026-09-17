@@ -1,5 +1,5 @@
 {{/*
-  Every page under /ecommerce-demo-assets/ is generated from the image
+  Every page under /ecommerce-demo-assets/images/ is generated from the image
   directories. Nothing here is a list of files and nothing here names a
   section: add a directory of images and its page appears, add images to one
   and its page grows.
@@ -9,11 +9,27 @@
   describes -- which is how the page this replaced came to list a fraction of
   what it claimed to cover.
 
-    a directory of images       -> one listing page
-    a directory of directories  -> an index, plus one listing page each
+  **The page path mirrors the file path.** A page is published at the URL its
+  own directory of images is served from, so stripping the filename off any
+  image URL lands on the page listing that directory, and stripping another
+  segment lands on its parent. Before this they were two hierarchies that
+  happened to share names: the files were under `images/` and the pages were
+  not, so `/ecommerce-demo-assets/images/industrial/` -- the obvious thing to
+  try from an image URL -- was a 404 while `/ecommerce-demo-assets/industrial/`
+  was a 200. Harmless with ten images; with five hundred product directories
+  somebody walks up a URL.
 
-  So the industrial drawings, which are filed by product type, get an index
-  and a page per type without either being declared.
+  Nothing about where the IMAGES live changes. They keep the paths they have,
+  which is the whole reason the pages moved rather than the files.
+
+  The old page URLs keep working as aliases, which is Hugo's redirect: a
+  published URL that starts 404ing is a broken link in somebody's notes, and
+  serving the same listing at two live URLs instead would be two pages to keep
+  in step.
+
+  The directory tree is read to the BOTTOM by `asset-tree.html`, not to a
+  fixed depth. A fixed depth is what broke here before -- two levels was true
+  when it was written, and `<product type>/<product id>/` is three.
 
   This decides only WHICH pages exist. What is on them is read from the same
   directories at render time by layouts/partials/asset-*.html -- counting here
@@ -28,38 +44,58 @@
      came from, which a directory listing cannot. */}}
 {{ $blurbs := $.Site.Data.asset_sections | default dict }}
 
-{{ range os.ReadDir $root }}
-  {{ if .IsDir }}
-    {{ $section := .Name }}
-    {{ $dir := printf "%s/%s" $root $section }}
-    {{ $label := $section | replaceRE "[-_]" " " | title }}
+{{/* The mirror's own root, so walking up from a section page lands somewhere
+     rather than on the bare `images/` 404 that started this. */}}
+{{ $.AddPage (dict
+  "kind" "section"
+  "path" "images"
+  "title" $config.title
+  "params" (dict
+    "assetdir" $root
+    "asseturl" $config.url
+    "assetparent" $config.page
+    "assetparentlabel" $config.title)) }}
 
-    {{ $subdirs := slice }}
-    {{ range os.ReadDir $dir }}
-      {{ if .IsDir }}{{ $subdirs = $subdirs | append .Name }}{{ end }}
-    {{ end }}
+{{ range partial "asset-tree.html" (dict "dir" $root) }}
+  {{ $rel := .rel }}
+  {{ $depth := len (split $rel "/") }}
+  {{ $label := .name | replaceRE "[-_]" " " | title }}
 
-    {{ $.AddPage (dict
-      "kind" (cond (gt (len $subdirs) 0) "section" "page")
-      "path" $section
-      "title" $label
-      "content" (dict "mediaType" "text/markdown" "value" (index $blurbs $section | default dict).blurb)
-      "params" (dict
-        "assetdir" $dir
-        "asseturl" (printf "%s/%s" $config.url $section)
-        "assetparent" $config.page
-        "assetparentlabel" $config.title)) }}
-
-    {{ range $subdirs }}
-      {{ $.AddPage (dict
-        "kind" "page"
-        "path" (printf "%s/%s" $section .)
-        "title" (. | replaceRE "[-_]" " " | title)
-        "params" (dict
-          "assetdir" (printf "%s/%s" $dir .)
-          "asseturl" (printf "%s/%s/%s" $config.url $section .)
-          "assetparent" (printf "%s%s/" $config.page $section)
-          "assetparentlabel" $label)) }}
-    {{ end }}
+  {{/* The parent page, for the breadcrumb. One segment up, or the mirror root. */}}
+  {{ $parentHref := printf "%s/" $config.url }}
+  {{ $parentLabel := $config.title }}
+  {{ if gt $depth 1 }}
+    {{ $parentRel := strings.TrimSuffix (printf "/%s" .name) $rel }}
+    {{ $parentHref = printf "%s/%s/" $config.url $parentRel }}
+    {{ $parentLabel = index (last 1 (split $parentRel "/")) 0 | replaceRE "[-_]" " " | title }}
   {{ end }}
+
+  {{/* The blurb is per SECTION -- the top level -- and says where a whole
+       collection came from. A category inside one inherits nothing, because a
+       sentence about the collection repeated on ten pages is ten copies to
+       keep true. */}}
+  {{ $blurb := "" }}
+  {{ if eq $depth 1 }}
+    {{ $blurb = (index $blurbs .name | default dict).blurb }}
+  {{ end }}
+
+  {{/* The URLs these pages had before they moved under `images/`. Only the
+       depths that existed then get one: a product-line directory is new, so
+       there is no old URL of it to keep alive. */}}
+  {{ $page := dict
+    "kind" (cond .hasdirs "section" "page")
+    "path" (printf "images/%s" $rel)
+    "title" $label
+    "content" (dict "mediaType" "text/markdown" "value" $blurb)
+    "url" (printf "%s/%s/" $config.url $rel)
+    "params" (dict
+      "assetdir" .dir
+      "asseturl" (printf "%s/%s" $config.url $rel)
+      "assetparent" $parentHref
+      "assetparentlabel" $parentLabel) }}
+  {{ if le $depth 2 }}
+    {{ $page = merge $page (dict "aliases" (slice (printf "%s%s/" $config.page $rel))) }}
+  {{ end }}
+
+  {{ $.AddPage $page }}
 {{ end }}

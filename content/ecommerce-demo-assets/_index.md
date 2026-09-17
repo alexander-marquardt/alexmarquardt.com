@@ -31,6 +31,12 @@ For example:
 Every listing below is read from the directory it describes when the site is
 built, so what you see there is what is actually hosted.
 
+**The browse pages sit at the same paths as the files.** Strip the filename off
+any image URL and you get the page listing that directory; strip another
+segment and you get its parent, up to
+[/ecommerce-demo-assets/images/](/ecommerce-demo-assets/images/). The older
+page URLs, without `images/`, redirect to their new ones.
+
 The industrial path carries a product type and then a product line, because
 the products in one line share one drawing — as they do in a real supplier's
 catalog, where several sizes of the same end mill are listed against the same

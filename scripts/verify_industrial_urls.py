@@ -15,6 +15,11 @@ Two set comparisons, both directions, because each catches a different defect:
   in full on every build, and usually means a stale import.
 
 Exit status is non-zero if either set is non-empty, so this can gate a commit.
+
+Both of a record's URLs are checked. A record carries ``image_url`` for the
+card a listing shows and ``image_detail_url`` for the product page, and
+checking only one of them leaves the other free to be dead in exactly the way
+this script exists to catch.
 """
 
 from __future__ import annotations
@@ -28,6 +33,16 @@ from pathlib import Path
 
 DEFAULT_PREFIX = "https://alexmarquardt.com/ecommerce-demo-assets/images/industrial/"
 STATIC_ROOT = Path("static/ecommerce-demo-assets/images/industrial")
+
+#: Every field of a catalog record that carries a published image URL. The
+#: generator emits one per profile; a record referencing an image carries both.
+#:
+#: This read ``image_urls``, a plural field the generator has never emitted, so
+#: the set of wanted URLs came out EMPTY. With nothing yet published that is
+#: two empty sets and a vacuous OK -- which is what it printed -- and with
+#: images published it would have called every one of them unreferenced. Either
+#: way it was reporting on a comparison it was not making.
+URL_KEYS = ("image_url", "image_detail_url")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -53,7 +68,7 @@ def main(argv: list[str] | None = None) -> int:
             continue
         record = json.loads(line)
         records += 1
-        urls = record.get("image_urls") or []
+        urls = [record[key] for key in URL_KEYS if record.get(key)]
         if urls:
             records_with_image += 1
         for url in urls:

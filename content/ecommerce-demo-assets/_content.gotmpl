@@ -1,0 +1,92 @@
+{{/*
+  Every page under /ecommerce-demo-assets/ is generated from the contents of
+  static/ecommerce-demo-assets/images/. Nothing below is a list of files, and
+  nothing below names a section: add a directory of images and its page
+  appears, add images to one and its page grows. That is the point -- these
+  listings were hand-written once, and a hand-written list of 594 drawings
+  that a generator adds to would be wrong the day after it was written.
+
+  A directory holding only files becomes one listing page. A directory holding
+  further directories becomes an index over them, with a listing page each --
+  which is how the industrial catalog, whose drawings are filed by product
+  type, gets an index and ten category pages without either being declared.
+*/}}
+
+{{ $root := "static/ecommerce-demo-assets/images" }}
+{{ $extensions := slice ".png" ".jpg" ".jpeg" ".gif" ".webp" ".svg" }}
+
+{{/* Optional per-directory prose, from data/asset_sections.yaml. A directory
+     with no entry there still gets its page; the blurb says where the images
+     came from, which a directory listing cannot. */}}
+{{ $blurbs := $.Site.Data.asset_sections | default dict }}
+
+{{ range os.ReadDir $root }}
+  {{ if .IsDir }}
+    {{ $section := .Name }}
+    {{ $dir := printf "%s/%s" $root $section }}
+
+    {{/* Split this directory into the images it holds and the directories it holds. */}}
+    {{ $files := slice }}
+    {{ $subdirs := slice }}
+    {{ range os.ReadDir $dir }}
+      {{ if .IsDir }}
+        {{ $subdirs = $subdirs | append .Name }}
+      {{ else if in $extensions (path.Ext .Name | lower) }}
+        {{ $files = $files | append .Name }}
+      {{ end }}
+    {{ end }}
+
+    {{ $label := $section | replaceRE "[-_]" " " | title }}
+
+    {{ if $subdirs }}
+      {{/* An index over categories, and one page per category. */}}
+      {{ $categories := slice }}
+      {{ $total := 0 }}
+      {{ range $subdirs }}
+        {{ $category := . }}
+        {{ $count := 0 }}
+        {{ range os.ReadDir (printf "%s/%s" $dir $category) }}
+          {{ if in $extensions (path.Ext .Name | lower) }}{{ $count = add $count 1 }}{{ end }}
+        {{ end }}
+        {{ $total = add $total $count }}
+        {{ $categories = $categories | append (dict
+            "name" $category
+            "label" ($category | replaceRE "[-_]" " " | title)
+            "count" $count) }}
+      {{ end }}
+
+      {{ $.AddPage (dict
+        "kind" "section"
+        "path" $section
+        "title" $label
+        "content" (dict "mediaType" "text/markdown" "value" (index $blurbs $section | default dict).blurb)
+        "params" (dict
+          "assetdir" $dir
+          "asseturl" (printf "/ecommerce-demo-assets/images/%s" $section)
+          "assetcount" $total
+          "assetcategories" $categories)) }}
+
+      {{ range $categories }}
+        {{ $.AddPage (dict
+          "kind" "page"
+          "path" (printf "%s/%s" $section .name)
+          "title" .label
+          "params" (dict
+            "assetdir" (printf "%s/%s" $dir .name)
+            "asseturl" (printf "/ecommerce-demo-assets/images/%s/%s" $section .name)
+            "assetcount" .count)) }}
+      {{ end }}
+
+    {{ else }}
+      {{ $.AddPage (dict
+        "kind" "page"
+        "path" $section
+        "title" $label
+        "content" (dict "mediaType" "text/markdown" "value" (index $blurbs $section | default dict).blurb)
+        "params" (dict
+          "assetdir" $dir
+          "asseturl" (printf "/ecommerce-demo-assets/images/%s" $section)
+          "assetcount" (len $files))) }}
+    {{ end }}
+  {{ end }}
+{{ end }}

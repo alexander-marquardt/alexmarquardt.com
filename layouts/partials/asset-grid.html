@@ -1,0 +1,25 @@
+{{/*
+  Renders a slice of image items as a thumbnail grid. Takes a dict:
+
+    items  slice of {href, name, size, label, labelhref}
+           label/labelhref are set only for a grid spanning several
+           directories, where a file's name alone does not say where it lives.
+*/}}
+{{ $items := .items }}
+{{ if $items }}
+  <ul class="asset-grid">
+    {{ range $item := $items }}
+      <li class="asset-cell">
+        <a class="asset-thumb" href="{{ .href }}">
+          <img src="{{ .href }}" alt="{{ .name }}" loading="lazy" decoding="async">
+        </a>
+        <span class="asset-name">
+          {{ with $item.labelhref }}<a class="asset-label" href="{{ . }}">{{ $item.label }}</a>/{{ end }}<a href="{{ .href }}">{{ .name }}</a>
+        </span>
+        <span class="asset-size">{{ partial "asset-bytes.html" .size }}</span>
+      </li>
+    {{ end }}
+  </ul>
+{{ else }}
+  <p><em>No images in this directory yet.</em></p>
+{{ end }}

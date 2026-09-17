@@ -1,0 +1,7 @@
+{{- /* A byte count in the unit that does not round it to zero. */ -}}
+{{- $b := float . -}}
+{{- if lt $b 1048576.0 -}}
+  {{ lang.FormatNumber 0 (div $b 1024.0) }} KB
+{{- else -}}
+  {{ lang.FormatNumber 1 (div $b 1048576.0) }} MB
+{{- end -}}

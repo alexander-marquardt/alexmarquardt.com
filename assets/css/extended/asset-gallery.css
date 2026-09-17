@@ -1,0 +1,93 @@
+/* Directory listings under /ecommerce-demo-assets/. */
+
+.asset-breadcrumb {
+  margin: 0 0 var(--gap, 24px) 0;
+  font-size: 0.9rem;
+}
+
+.asset-summary {
+  color: var(--secondary);
+  font-size: 0.9rem;
+}
+
+.asset-index {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+}
+
+.asset-index li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.asset-index a {
+  font-weight: 600;
+}
+
+.asset-count {
+  color: var(--secondary);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.asset-index code {
+  color: var(--secondary);
+  font-size: 0.8rem;
+  background: none;
+  padding: 0;
+}
+
+.asset-grid {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1.25rem;
+}
+
+.asset-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.asset-cell .asset-thumb {
+  display: block;
+  min-width: 0;
+}
+
+/* A fixed box so a portrait drawing and a square photo line up on one row,
+   and white behind it so a transparent PNG is legible in dark mode -- these
+   are line drawings on transparency, and on a dark page they vanish. */
+.asset-cell img {
+  width: 100%;
+  height: 170px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.asset-name {
+  font-size: 0.72rem;
+  line-height: 1.3;
+  word-break: break-all;
+}
+
+.asset-size {
+  font-size: 0.7rem;
+  color: var(--secondary);
+}
+
+/* The directory a thumbnail came from, on a grid that spans several. */
+.asset-label {
+  color: var(--secondary);
+}

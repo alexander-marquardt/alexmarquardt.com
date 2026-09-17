@@ -1,0 +1,26 @@
+{{- /*
+  Every image in the directory a page's `assetdir` param names, read at build
+  time. Returns a slice of {href, name, size}; takes the page, plus an
+  optional `label` for a grid that spans several directories.
+
+  Nothing is listed in content: this reads the directory, so a drawing added
+  to it appears on the next build with no edit anywhere.
+*/ -}}
+{{- $page := .page -}}
+{{- $label := .label | default "" -}}
+{{- $labelhref := .labelhref | default "" -}}
+{{- $dir := $page.Params.assetdir -}}
+{{- $base := $page.Params.asseturl -}}
+{{- $extensions := slice ".png" ".jpg" ".jpeg" ".gif" ".webp" ".svg" -}}
+{{- $items := slice -}}
+{{- range os.ReadDir $dir -}}
+  {{- if and (not .IsDir) (in $extensions (path.Ext .Name | lower)) -}}
+    {{- $items = $items | append (dict
+        "href" (printf "%s/%s" $base .Name)
+        "name" .Name
+        "size" .Size
+        "label" $label
+        "labelhref" $labelhref) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $items -}}

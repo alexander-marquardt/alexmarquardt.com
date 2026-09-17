@@ -1,0 +1,12 @@
+{{/* One directory's images, with a line saying how many and where from. */}}
+{{ $items := partial "asset-files.html" (dict "page" .) }}
+{{ $bytes := 0 }}
+{{ range $items }}{{ $bytes = add $bytes .size }}{{ end }}
+
+<p class="asset-summary">
+  {{ len $items }} image{{ if ne (len $items) 1 }}s{{ end }},
+  {{ partial "asset-bytes.html" $bytes }}.
+  Served from <code>{{ .Params.asseturl }}/</code>
+</p>
+
+{{ partial "asset-grid.html" (dict "items" $items) }}

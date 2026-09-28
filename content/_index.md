@@ -150,11 +150,11 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 
 # Data Generation
 
-- [Generating a realistic synthetic industrial product catalog for search demos](/data-generation/synthetic-industrial-product-catalog/) (Sep 28, 2026)
+- [Generating a synthetic industrial product catalog for search demos](/data-generation/synthetic-industrial-product-catalog/) (Sep 28, 2026)
 
-- [From messy product feeds to demo-ready grocery data: Open Food Facts](/data-generation/open-food-facts-grocery-demo-data/) (Jan 14, 2026)
+- [Building a grocery demo dataset from Open Food Facts](/data-generation/open-food-facts-grocery-demo-data/) (Jan 14, 2026)
 
-- [From messy product feeds to demo-ready electronics data: Icecat](/data-generation/icecat-electronics-demo-data/) (Jan 14, 2026)
+- [Building an electronics demo dataset from Icecat](/data-generation/icecat-electronics-demo-data/) (Jan 14, 2026)
 
 # Airbyte
 

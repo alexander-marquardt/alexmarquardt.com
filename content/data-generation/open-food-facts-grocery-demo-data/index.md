@@ -1,6 +1,6 @@
 ---
 showtoc: true
-title: "From messy product feeds to demo-ready grocery data: Open Food Facts"
+title: "Building a grocery demo dataset from Open Food Facts"
 date: 2026-01-14
 description: "Turn the Open Food Facts export into clean, image-rich NDJSON with a real category hierarchy, for e-commerce search demos and relevance work."
 slug: open-food-facts-grocery-demo-data

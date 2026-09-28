@@ -1,6 +1,6 @@
 ---
 showtoc: true
-title: "Generating a realistic synthetic industrial product catalog for search demos"
+title: "Generating a synthetic industrial product catalog for search demos"
 date: 2026-09-28
 description: "A deterministic generator for an industrial-supply catalog (cutting tools and fasteners) with realistic attribute messiness, standards-derived dimensions, and a generated technical drawing for every product line."
 slug: synthetic-industrial-product-catalog

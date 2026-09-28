@@ -1,6 +1,6 @@
 ---
 showtoc: true
-title: "From messy product feeds to demo-ready electronics data: Icecat"
+title: "Building an electronics demo dataset from Icecat"
 date: 2026-01-14
 description: "Turn Open Icecat XML data sheets into clean, image-rich NDJSON for electronics e-commerce search demos and relevance work."
 slug: icecat-electronics-demo-data

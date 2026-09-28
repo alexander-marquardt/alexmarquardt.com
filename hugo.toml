@@ -78,6 +78,7 @@ description = "Technical writing on search relevance, data pipelines, and distri
 
 [permalinks]
   elastic = "/elastic/:slug/"
+  data-generation = "/data-generation/:slug/"
   airbyte = "/airbyte/:slug/"
   mongodb = "/mongodb/:slug/"
   personal = "/personal/:slug/"

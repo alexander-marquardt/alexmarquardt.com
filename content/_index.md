@@ -50,8 +50,6 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 
 - [Why ecommerce search needs governance & how it improves retrieval | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-improve-retrieval) (Apr 9, 2026)
 
-- [Building clean and usable datasets for ecommerce data](/elastic/ecommerce-demo-data) (Jan 14, 2026)
-
 - [Influencing BM25 ranking with multiplicative boosting in Elasticsearch | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/bm25-ranking-multiplicative-boosting-elasticsearch) (Dec 22, 2025)
 
 - [Boosting e-commerce search by profit and popularity with the function score query in Elasticsearch | Elasticsearch Labs](https://www.elastic.co/search-labs/blog/function-score-query-boosting-profit-popularity-elasticsearch) (Dec 17, 2025)
@@ -149,6 +147,14 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 - [Using Elastic machine learning to detect anomalies in derivative values](/elastic/using-elastic-machine-learning-to-detect-anomalies-in-derivative-values/) (Apr 21, 2020)
 
 - [How to Debug Elasticsearch Source Code in IntelliJ IDEA | Elastic Blog](https://www.elastic.co/blog/how-to-debug-elasticsearch-source-code-in-intellij-idea) (Feb 14, 2019)
+
+# Data Generation
+
+- [Generating a realistic synthetic industrial product catalog for search demos](/data-generation/synthetic-industrial-product-catalog/) (Sep 28, 2026)
+
+- [From messy product feeds to demo-ready grocery data: Open Food Facts](/data-generation/open-food-facts-grocery-demo-data/) (Jan 14, 2026)
+
+- [From messy product feeds to demo-ready electronics data: Icecat](/data-generation/icecat-electronics-demo-data/) (Jan 14, 2026)
 
 # Airbyte
 

@@ -14,6 +14,9 @@ description = "Technical writing on search relevance, data pipelines, and distri
   logoDark = "alexmarquardt-dark.png"
   favicon = "/favicon.ico"
 
+  # Cloudflare Web Analytics site token (dash.cloudflare.com → Analytics & Logs → Web Analytics)
+  cloudflareAnalyticsToken = "5f042bbd81b1462cb21f6bf36f02fb7e"
+
   # REQUIRED for social cards
   env = "production"
   

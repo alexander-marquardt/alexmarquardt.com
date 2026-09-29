@@ -1,0 +1,6 @@
+{{- /* Cloudflare Web Analytics: only on production builds, so local `hugo server` visits aren't counted */ -}}
+{{- with site.Params.cloudflareAnalyticsToken }}
+{{- if hugo.IsProduction }}
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{ . }}"}'></script>
+{{- end }}
+{{- end }}

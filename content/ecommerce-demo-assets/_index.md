@@ -47,7 +47,8 @@ section is hatched for the material, and the stamp sets every published
 attribute verbatim. Nothing is styled from an identifier.
 
 The current generator draws **one drawing per SKU**, from that SKU's own
-dimensions, at one true scale per product type, and with no text in it. Those
+dimensions for its 17 depth types (the 50 breadth categories use fixed
+placeholder shapes), at one true scale per product type, and with no text in it. Those
 drawings are not hosted here: the generator builds them as a bundle that a
 demo serves itself. See
 [Generating a synthetic industrial product catalog](/data-generation/synthetic-industrial-product-catalog/#generated-technical-drawings)

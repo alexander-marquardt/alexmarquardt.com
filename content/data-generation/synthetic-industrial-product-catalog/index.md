@@ -2,7 +2,7 @@
 showtoc: true
 title: "Generating a synthetic industrial product catalog for search demos"
 date: 2026-09-28
-description: "A deterministic generator for an industrial-supply catalog (cutting tools and fasteners) with realistic attribute messiness, standards-derived dimensions, and a generated technical drawing for every SKU, drawn from that SKU's own published values."
+description: "A deterministic generator for an industrial-supply catalog (cutting tools and fasteners) with realistic attribute messiness, standards-derived dimensions, and a generated technical drawing for every SKU, drawn from that SKU's own published values for every depth product type."
 slug: synthetic-industrial-product-catalog
 ---
 
@@ -24,7 +24,7 @@ On the generated catalog, that is measurable. Of the end mills that carry a `3/8
 
 ## What it generates
 
-With the default configuration, the generator produces **5,295 product lines and 9,665 SKUs across 67 product types**, from 45 invented brands. Seventeen of those types are the catalog's *depth*: hundreds of lines each, with realistic attribute schemas, messiness and drawings. The other fifty are *breadth*: one line of one or two SKUs per category, there so that a query like `1/2 ball` has more of the category tree to land in than end mills, hex keys and bearings, and marked on every record (`spec_quality: "fast_and_cheap"`) so they can be told apart and removed.
+With the default configuration, the generator produces **5,295 product lines and 9,665 SKUs across 67 product types**, from 45 invented brands. Seventeen of those types are the catalog's *depth*: from 59 to 670 lines each, with realistic attribute schemas, messiness and drawings. The other fifty are *breadth*: one line of one to three SKUs per category, there so that a query like `1/2 ball` has more of the category tree to land in than end mills, hex keys and bearings, and marked on every record (`spec_quality: "fast_and_cheap"`) so they can be told apart and removed.
 
 | product type | product lines | SKUs |
 | :--- | ---: | ---: |
@@ -181,7 +181,7 @@ The first two are SKUs of one product line, a stainless M10 socket head cap scre
 
 Each drawing is a pure function of three things: the product type, the brand, and the SKU's published attributes. Nothing is styled from an identifier and nothing is random, so the same record always produces the same bytes. A drawing is built in three steps:
 
-1. **Attributes to geometry.** Every drawn product type has a figure function that reads the record's published values (thread size and length for a screw; diameter, length of cut and flute count for an end mill; bore, outside diameter and closure type for a bearing) and builds the part as shapes measured in inches. It reads those values through the same parsing code as the rest of the generator, so the drawing and the data cannot disagree about what a record says.
+1. **Attributes to geometry.** Each of the 17 depth types has a figure function that reads the record's published values (thread size and length for a screw; diameter, length of cut and flute count for an end mill; bore, outside diameter and closure type for a bearing) and builds the part as shapes measured in inches. Six of them read the record through the same geometry code as the generator's dimensioned renderer, and the rest mostly through its shared length parser. (The 50 breadth types are the exception; see below.)
 2. **Geometry to sheet.** The part is placed on a 200 × 300 sheet at its product type's scale.
 3. **Sheet to SVG.** A small SVG writer in the generator itself, about a hundred lines of plain Python, writes out the paths, circles and fills. No drawing or plotting library is involved. An earlier version of the generator drew with matplotlib, but its SVG carries metadata and glyph definitions that these drawings do not need. The hand-written output averages under 2 KB per drawing: the 9,665 drawings come to 19 MB, or about 2 MB as a compressed archive.
 
@@ -197,19 +197,19 @@ The specifications show up visually rather than as text. A longer length of cut 
 
 Each of the 45 brands owns one house style: an ink, a paper tint and a frame. A brand's drawings look like a set and two brands' drawings look different, which is the role a manufacturer's photography style plays in a real catalog. Rotation, tilt and random decoration were considered and rejected because they correspond to no product property. A reader who sees two tools drawn differently concludes the difference is real, and with the drawing driven by the record, that conclusion is correct.
 
-The default build has 9,085 distinct drawings for its 9,665 SKUs. Every repeat is the same brand drawing the same values in two different product lines: for example, the same 6000-size shielded chrome-steel bearing listed twice. An identical picture is the right answer there.
+The default build has 9,085 distinct drawings for its 9,665 SKUs. 536 of the 580 repeats are one brand drawing the same values in different product lines: for example, the same 6000-size double-shielded chrome-steel bearing listed in three lines. An identical picture is the right answer there. The other 44 are the breadth placeholders described below, whose shape ignores the size by design.
 
 ### The honesty rules
 
 The drawings follow a few rules, and the generator's tests check each one over the committed catalog:
 
 - **No text of any kind.** A drawing carries no dimension, callout, label, brand name or SKU. The words are already on the record (title, description, attributes), and repeating them in the picture would be redundant, and would also tie a drawing to wording that can change. The check is an allow-list of the SVG elements and attributes the figures emit, rather than a search for text, so a `<title>`, a comment, an embedded font or an external reference all fail it.
-- **One true scale per product type.** Every SKU of a type is drawn at the same scale, so any two parts of a type are in true proportion. The M4 and M20 washers above are drawn at 9 mm and 37 mm across, in exactly that ratio. A screw or bolt longer than its type's sheet is drawn broken, with its shank shortened between two drafting break lines, rather than shrunk.
+- **One true scale per product type.** Every SKU of a type is drawn at the same scale, so any two parts of a type are in true proportion. The M4 and M20 washers above are drawn at 9 mm and 37 mm across, in exactly that ratio. A screw or bolt longer than the largest part its type's scale was set for is drawn broken, with its shank shortened between two drafting break lines, rather than shrunk.
 - **A magnifier for tiny parts, never an enlargement in place.** A part too small to see at its type's scale is still drawn at that scale, near the bottom of the sheet, and a lens above it shows the same part enlarged. The lens is a magnifying glass where the glass can enlarge the part at least 2.5 times, and a larger, handle-less circle otherwise. In the default build, 1,167 SKUs get a lens: 155 the magnifying glass and 1,012 the handle-less circle.
 
   ![An M3 × 5 mm socket head cap screw, shown at true scale beneath a magnifying lens](images/socket-screw-m3-5mm-magnified.svg)
 
-- **The drawing cannot contradict the record.** Real catalogs omit attributes, and this one deliberately does too. When a drawn value is missing, unparseable or contradicts another value, that one value is drawn with a nominal proportion for its kind, and every value the record does publish consistently is still drawn exactly. Because the drawing carries no numbers, a nominal proportion never asserts a size that the record disputes. The manifest records, per SKU, whether the drawing came entirely from the `record`, was `partial`, or is `nominal`, so the share is reported rather than hidden.
+- **The drawing cannot contradict the record.** Real catalogs omit attributes, and this one deliberately does too. When a drawn value is missing, unparseable or contradicts another, the drawing falls back one step at a time: it first fills in only the missing values with nominal proportions; if a published value conflicts, it redraws the secondary dimensions from proportions; at worst it keeps only the primary size (a screw's thread size, an end mill's diameter) and draws the rest at the kind's nominal shape. Because the drawing carries no numbers, a nominal proportion never asserts a size that the record disputes. The manifest records, per SKU, whether the drawing came entirely from the `record`, was `partial`, or is `nominal`, so the share is reported rather than hidden.
 
 ### How many types are drawn from the record today
 
@@ -225,7 +225,7 @@ The 50 breadth categories are drawn as one of six fixed placeholder shapes: a sp
 
 ![The placeholder sphere used for every precision-ball SKU](images/breadth-ball-placeholder.svg)
 
-Moving a category from placeholder to drawn-from-the-record takes one new figure function for that type, not more data. More types will move across as the catalog grows. The [generator's README](https://github.com/alexander-marquardt/synthetic-industrial-products#images) has the code-level detail: the scale per type, the magnifier rule, and what the tests assert.
+Moving a category from placeholder to drawn-from-the-record takes a figure function for that type and realistic dimensions for it to draw from; a breadth record today publishes one cheaply chosen size. More types will move across as the catalog grows. The [generator's README](https://github.com/alexander-marquardt/synthetic-industrial-products#images) has the code-level detail: the scale per type, the magnifier rule, and what the tests assert.
 
 ### Getting the drawings
 

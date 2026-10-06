@@ -37,17 +37,21 @@ segment and you get its parent, up to
 [/ecommerce-demo-assets/images/](/ecommerce-demo-assets/images/). The older
 page URLs, without `images/`, redirect to their new ones.
 
-The industrial path carries a product type and then a product line, because
-the products in one line share one drawing — as they do in a real supplier's
-catalog, where several sizes of the same end mill are listed against the same
-picture. So a catalog record does not have an image of its own to point at: a
-line's four to twenty records all resolve to the same URL.
-
-The drawing is not the same for every product of a type, though. **Every visual
-difference between two industrial drawings is a difference between two
-records** — the outline is the brand's colour, the fill is the coating's, the
+The industrial drawings hosted here are a browsable sample from an earlier
+version of the generator, which drew **one drawing per product line**. That is
+why the path carries a product type and then a product line, and why each
+drawing has the line's published attributes printed beside the part. **Every
+visual difference between two of these drawings is a difference between two
+records**: the outline is the brand's colour, the fill is the coating's, the
 section is hatched for the material, and the stamp sets every published
 attribute verbatim. Nothing is styled from an identifier.
+
+The current generator draws **one drawing per SKU**, from that SKU's own
+dimensions, at one true scale per product type, and with no text in it. Those
+drawings are not hosted here: the generator builds them as a bundle that a
+demo serves itself. See
+[Generating a synthetic industrial product catalog](/data-generation/synthetic-industrial-product-catalog/#generated-technical-drawings)
+for how they are made and how to build them.
 
 ```
 /ecommerce-demo-assets/images/industrial/end_mill_square/OST-K663-0001/card.png

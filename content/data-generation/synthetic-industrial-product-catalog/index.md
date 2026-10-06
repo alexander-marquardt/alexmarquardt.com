@@ -2,7 +2,7 @@
 showtoc: true
 title: "Generating a synthetic industrial product catalog for search demos"
 date: 2026-09-28
-description: "A deterministic generator for an industrial-supply catalog (cutting tools and fasteners) with realistic attribute messiness, standards-derived dimensions, and a generated technical drawing for every product line."
+description: "A deterministic generator for an industrial-supply catalog (cutting tools and fasteners) with realistic attribute messiness, standards-derived dimensions, and a generated technical drawing for every SKU, drawn from that SKU's own published values."
 slug: synthetic-industrial-product-catalog
 ---
 
@@ -24,24 +24,30 @@ On the generated catalog, that is measurable. Of the end mills that carry a `3/8
 
 ## What it generates
 
-With the default configuration, the generator produces **500 product lines and 4,689 SKUs across 12 product types**, from ten invented brands:
+With the default configuration, the generator produces **5,295 product lines and 9,665 SKUs across 67 product types**, from 45 invented brands. Seventeen of those types are the catalog's *depth*: hundreds of lines each, with realistic attribute schemas, messiness and drawings. The other fifty are *breadth*: one line of one or two SKUs per category, there so that a query like `1/2 ball` has more of the category tree to land in than end mills, hex keys and bearings, and marked on every record (`spec_quality: "fast_and_cheap"`) so they can be told apart and removed.
 
 | product type | product lines | SKUs |
 | :--- | ---: | ---: |
-| `end_mill_square` | 95 | 748 |
-| `screw_socket_head` | 60 | 702 |
-| `drill_jobber` | 55 | 632 |
-| `bolt_hex` | 45 | 471 |
-| `end_mill_ball` | 55 | 445 |
-| `screw_flat_head` | 35 | 370 |
-| `screw_button_head` | 25 | 294 |
-| `tap_spiral_point` | 35 | 292 |
-| `washer_flat` | 30 | 247 |
-| `screw_low_head` | 20 | 190 |
-| `hammer_ball_pein` | 20 | 151 |
-| `abrasive_flap_disc` | 25 | 147 |
+| `nut_hex` | 662 | 1,264 |
+| `wheel_depressed_center` | 670 | 1,212 |
+| `bearing_radial_ball` | 660 | 1,126 |
+| `hex_key` | 630 | 1,120 |
+| `end_mill_square` | 498 | 947 |
+| `screw_socket_head` | 310 | 628 |
+| `drill_jobber` | 285 | 537 |
+| `end_mill_ball` | 286 | 522 |
+| `bolt_hex` | 234 | 428 |
+| `screw_flat_head` | 182 | 349 |
+| `tap_spiral_point` | 181 | 342 |
+| `abrasive_flap_disc` | 126 | 238 |
+| `washer_flat` | 135 | 233 |
+| `screw_button_head` | 130 | 217 |
+| `screw_low_head` | 104 | 186 |
+| `hammer_ball_pein` | 93 | 168 |
+| `kit_assortment` | 59 | 59 |
+| 50 breadth categories (ball stock, threaded rod, hose clamps, O-rings, …) | 50 | 89 |
 
-Across those types the catalog publishes **77 distinct attribute names**, with a category path for every product (for example `Milling > End Mills > Square End Mills`).
+Across those types the catalog publishes **90 distinct attribute names**, with a category path for every product (for example `Milling > End Mills > Square End Mills`).
 
 ### Product lines and SKUs
 
@@ -63,8 +69,8 @@ A single build writes the same generated products in two shapes, so any differen
 | :--- | :--- |
 | `nested.jsonl` | one document per product line, with its SKUs and key-value attributes nested |
 | `flat.jsonl` | one document per SKU, with attributes denormalised, plus sanitised per-attribute `facets` / `facets_num` fields |
-| `images.jsonl` | one row per drawing: its product type, the paths it is published at, and how many products reference it |
-| `render.jsonl` | the SKUs in the shape the per-record dimensioned renderer reads |
+| `images.jsonl` | one row per SKU drawing: its path, its URL, the sha256 of its bytes, and whether its geometry came from the record (`record`, `partial` or `nominal`) |
+| `render.jsonl` | the original twelve types' SKUs, in the shape an older, dimensioned renderer reads; the catalog's own drawings do not use it |
 | `stats.json` | what was generated, measured against the statistics it reproduces |
 
 Elasticsearch mappings for both shapes (`mapping.flat.json`, `mapping.nested.json`) ship alongside them. Here is one SKU from the flat shape, trimmed to its interesting fields:
@@ -161,34 +167,77 @@ The messiness is bounded by a few rules that keep the catalog usable. Every titl
 
 ## Generated technical drawings
 
-A demo catalog without images is not a demo catalog, and industrial product photography is exactly the content that cannot be borrowed. So the generator also draws the pictures.
+A demo catalog without images is not a demo catalog, and industrial product photography is exactly the content that cannot be borrowed. Photographs of a generated product cannot exist, since the product does not, and a picture taken from somewhere else would show a real product the record does not describe. So the generator also draws the pictures, and it draws them from the records.
 
-**Every product line has a generated technical drawing, and every SKU in the line shares it** — which is what real industrial catalogs do: a listing of four end mills from one series at four diameters shows the same picture four times. That gives 500 drawings for the 4,689 SKUs, each published at two sizes: a `card` profile (600 × 880) for catalog listings and a `detail` profile (1400 × 1400) for product pages.
+**Every SKU has a drawing of its own, drawn from that SKU's own published values.** The default build has 9,665 SKUs and 9,665 drawings. Two lengths of one socket head cap screw therefore look different, and a grouped product page can switch the picture when a shopper picks a different size. That is a deliberate departure from real distributor catalogs, which mostly show one photograph for a whole series. A generated drawing costs nothing per size, so there is no reason to copy that habit.
 
-![A generated drawing of a square end mill, with its published attributes set beside it](/ecommerce-demo-assets/images/industrial/end_mill_square/OST-K663-0001/detail.png)
+| M10 × 25 mm | M10 × 45 mm | M4 washer | M20 washer |
+| :---: | :---: | :---: | :---: |
+| ![Socket head cap screw, M10, 25 mm long](images/socket-screw-m10-25mm.svg) | ![The same screw at 45 mm long](images/socket-screw-m10-45mm.svg) | ![Flat washer, M4](images/flat-washer-m4.svg) | ![Flat washer, M20, from the same product line](images/flat-washer-m20.svg) |
 
-There are only twelve shapes, one per product type. What differs between two lines of the same type is the *marking*, and **every visual channel is a function of a published attribute**, never of the product id:
+The first two are SKUs of one product line, a stainless M10 socket head cap screw at two lengths; the second two are SKUs of one flat-washer line. Every drawing in this article is the generator's output, byte for byte, and each is under 3 KB of SVG.
+
+### What "parameterized" means here
+
+Each drawing is a pure function of three things: the product type, the brand, and the SKU's published attributes. Nothing is styled from an identifier and nothing is random, so the same record always produces the same bytes. A drawing is built in three steps:
+
+1. **Attributes to geometry.** Every drawn product type has a figure function that reads the record's published values (thread size and length for a screw; diameter, length of cut and flute count for an end mill; bore, outside diameter and closure type for a bearing) and builds the part as shapes measured in inches. It reads those values through the same parsing code as the rest of the generator, so the drawing and the data cannot disagree about what a record says.
+2. **Geometry to sheet.** The part is placed on a 200 × 300 sheet at its product type's scale.
+3. **Sheet to SVG.** A small SVG writer in the generator itself, about a hundred lines of plain Python, writes out the paths, circles and fills. No drawing or plotting library is involved. An earlier version of the generator drew with matplotlib, but its SVG carries metadata and glyph definitions that these drawings do not need. The hand-written output averages under 2 KB per drawing: the 9,665 drawings come to 19 MB, or about 2 MB as a compressed archive.
+
+The specifications show up visually rather than as text. A longer length of cut is drawn longer and a finer thread with more crests. A flat head is drawn as a cone and a button head as a dome. A sealed bearing is drawn closed, while an open one shows its balls. The other visual channels map to the record in the same way:
 
 | channel | driven by |
 | :--- | :--- |
-| outline colour | the brand |
-| fill tint | the coating or finish (TiAlN is violet-grey, TiN gold, black oxide dark) |
+| shape and proportions | the SKU's own dimensions |
+| flutes and thread crests | the published flute count and thread pitch |
+| fill tint | the finish (TiAlN is violet-grey, TiN gold, black oxide dark), otherwise the bare material's colour |
 | section hatch | the material, as engineering drawings already denote it |
-| flutes drawn | the published number of flutes |
-| flute and thread hand | the cutting or thread direction |
-| specification stamp | every published attribute, verbatim |
+| outline ink, paper tint, frame | the brand's house style |
 
-Rotation, tilt and random variation were considered and rejected: they correspond to no product property, and a reader who sees two tools drawn differently concludes the difference is real. With the drawing driven by the record, that conclusion is correct. The 500 lines produce 497 distinct drawings. The exceptions are three pairs of lines (two of flat washers, one of socket head cap screws) where both lines in a pair have the same brand and publish identical line-level attributes, so drawing each pair identically is the right answer.
+Each of the 45 brands owns one house style: an ink, a paper tint and a frame. A brand's drawings look like a set and two brands' drawings look different, which is the role a manufacturer's photography style plays in a real catalog. Rotation, tilt and random decoration were considered and rejected because they correspond to no product property. A reader who sees two tools drawn differently concludes the difference is real, and with the drawing driven by the record, that conclusion is correct.
 
-Just as important is what the drawings leave out. **No drawing carries a dimension, a callout or a SKU.** One drawing stands behind a whole product line whose sizes typically span a several-fold range, so a drawing that stated a size would be wrong for most of the products it appears against. The sizes live on the record and render beside the image, so the picture cannot contradict the data.
+The default build has 9,085 distinct drawings for its 9,665 SKUs. Every repeat is the same brand drawing the same values in two different product lines: for example, the same 6000-size shielded chrome-steel bearing listed twice. An identical picture is the right answer there.
 
-For detail views there is also a second renderer that draws **one record to scale from that record's own attribute values**, with every dimension on the page restating a value the record publishes. It refuses rather than guesses: a record whose dimensions are missing or contradict each other is not drawn to scale, because a defaulted dimension would produce a picture that disagrees with its own record.
+### The honesty rules
 
-### Publishing the drawings
+The drawings follow a few rules, and the generator's tests check each one over the committed catalog:
 
-The drawings are hosted on this site, under [E-commerce Demo Assets](/ecommerce-demo-assets/images/industrial/), where every product type has a browsable page of its lines' drawings. The URL of each drawing is derived from the product line it belongs to (`industrial/<product type>/<product line>/card.png`), and every record carries its `image_url` and `image_detail_url`.
+- **No text of any kind.** A drawing carries no dimension, callout, label, brand name or SKU. The words are already on the record (title, description, attributes), and repeating them in the picture would be redundant, and would also tie a drawing to wording that can change. The check is an allow-list of the SVG elements and attributes the figures emit, rather than a search for text, so a `<title>`, a comment, an embedded font or an external reference all fail it.
+- **One true scale per product type.** Every SKU of a type is drawn at the same scale, so any two parts of a type are in true proportion. The M4 and M20 washers above are drawn at 9 mm and 37 mm across, in exactly that ratio. A screw or bolt longer than its type's sheet is drawn broken, with its shank shortened between two drafting break lines, rather than shrunk.
+- **A magnifier for tiny parts, never an enlargement in place.** A part too small to see at its type's scale is still drawn at that scale, near the bottom of the sheet, and a lens above it shows the same part enlarged. The lens is a magnifying glass where the glass can enlarge the part at least 2.5 times, and a larger, handle-less circle otherwise. In the default build, 1,167 SKUs get a lens: 155 the magnifying glass and 1,012 the handle-less circle.
 
-Because a regeneration mints new product lines — and therefore new image URLs — publishing the drawings is part of regenerating the catalog rather than a separate errand. The build writes `images.jsonl`, a manifest of every image and the path it must be published at; the importer on the hosting side reads that manifest instead of re-deriving the paths; and a CI gate on the generator compares the complete set of files the manifest names against the files actually published, so a catalog whose images are not live yet cannot land. It compares the whole set rather than sampling it, because a sample of one image per product type can look healthy while almost every other URL is dead.
+  ![An M3 × 5 mm socket head cap screw, shown at true scale beneath a magnifying lens](images/socket-screw-m3-5mm-magnified.svg)
+
+- **The drawing cannot contradict the record.** Real catalogs omit attributes, and this one deliberately does too. When a drawn value is missing, unparseable or contradicts another value, that one value is drawn with a nominal proportion for its kind, and every value the record does publish consistently is still drawn exactly. Because the drawing carries no numbers, a nominal proportion never asserts a size that the record disputes. The manifest records, per SKU, whether the drawing came entirely from the `record`, was `partial`, or is `nominal`, so the share is reported rather than hidden.
+
+### How many types are drawn from the record today
+
+| drawing | product types | SKUs |
+| :--- | ---: | ---: |
+| drawn entirely from the record | 17 | 7,518 |
+| drawn from the record, with a nominal proportion for a missing or inconsistent value | (same 17) | 2,058 |
+| a fixed placeholder shape | 50 | 89 |
+
+All 17 depth types have a figure of their own: cutting tools, socket screws, bolts, nuts, washers, bearings, abrasive wheels and discs, hex keys, hammers and assortment kits. The `partial` drawings are mostly hex keys, drills, end mills and taps whose records leave out, or contradict, a secondary dimension such as a length or a shank diameter.
+
+The 50 breadth categories are drawn as one of six fixed placeholder shapes: a sphere, a cylinder, a block, a disc, a tube or a bracket. Each is coloured and hatched from the record's material and finish like any other drawing, but its geometry is identical whatever the record says, so a 1/8" ball and a 1/2" ball get the same picture. That is intentional. A placeholder makes no claim about size, whereas a drawing scaled from deliberately cheap filler data would claim a precision that the data does not have.
+
+![The placeholder sphere used for every precision-ball SKU](images/breadth-ball-placeholder.svg)
+
+Moving a category from placeholder to drawn-from-the-record takes one new figure function for that type, not more data. More types will move across as the catalog grows. The [generator's README](https://github.com/alexander-marquardt/synthetic-industrial-products#images) has the code-level detail: the scale per type, the magnifier rule, and what the tests assert.
+
+### Getting the drawings
+
+The drawings are not committed to the generator's repository. Each record carries a relative `image_url` (`/images/industrial/<product type>/<product line>/<sku>.svg`), and one command rebuilds every drawing from the committed catalog into a folder and a deterministic archive that a demo serves itself:
+
+```sh
+uv run sip-generate images --catalog golden-catalog --out out/images --archive out/images.tar.gz
+```
+
+It refuses to finish unless every drawing's sha256 equals the one `images.jsonl` records for it, so a bundle can never drift from the catalog it belongs to.
+
+The industrial drawings browsable under [E-commerce Demo Assets](/ecommerce-demo-assets/images/industrial/) on this site are from the generator's earlier version: one drawing per product line, with the line's attributes printed beside the part. They remain as a browsable sample and are not what the current catalog points at. To get the current drawings, build them with the command above.
 
 ## Using it
 
@@ -205,18 +254,13 @@ uv run sip-generate report                    # the measured-vs-target table onl
 Everything is parameterised, because the point of a synthetic catalog is to be dialled until something breaks:
 
 ```sh
-uv run sip-generate build --lines 900 --skus 6 24    # more, wider product lines
+uv run sip-generate build --lines 900               # a bigger or smaller catalog
 uv run sip-generate build --sparsity 0.4             # raggeder attribute coverage
 uv run sip-generate build --defects 0.0              # a catalog with no contradictions
 uv run sip-generate build --seed 7                   # a different catalog
 ```
 
-`--image-base-url` changes the host the image URLs point at, and the drawings themselves are rendered with:
-
-```sh
-uv run sip-render generics --out out                              # the twelve shapes, unmarked
-uv run python scripts/render_catalog.py out/catalog --out out/images   # every line, both profiles
-```
+`--image-base-url` changes where the records' image URLs point, and `sip-generate images` (above) renders the drawings themselves.
 
 If you just want the data, you do not need to run anything: the default build is committed to the repository under `golden-catalog/`, as plain NDJSON so that a change to the generator shows up as a readable diff. Loading the flat shape into Elasticsearch takes the committed mapping and a bulk request:
 
@@ -236,7 +280,7 @@ The repository also contains a verification script that loads both shapes into a
 
 ## What's next
 
-The current catalog is deliberately concentrated: twelve product types, most of them cutting tools and socket screws. I am planning to broaden it toward roughly 10,000 products spread over many more product types across the category tree — every one of them still with a generated drawing — and I will update this article when that lands.
+The catalog has grown from twelve product types to 67, and from one drawing per product line to one per SKU. For the drawings, 17 types are drawn from their records today and 50 still use placeholder shapes; each placeholder category that gets a figure of its own becomes a drawing that changes with its specifications, and more are coming. The generator can also build a catalog of about 100,000 SKUs (`--lines 39000` gives 100,299), with a drawing for every one of them, and I will update this article as those land.
 
 ## Conclusion
 

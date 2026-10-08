@@ -24,30 +24,43 @@ On the generated catalog, that is measurable. Of the end mills that carry a `3/8
 
 ## What it generates
 
-With the default configuration, the generator produces **5,295 product lines and 9,665 SKUs across 67 product types**, from 45 invented brands. Seventeen of those types are the catalog's *depth*: hundreds of lines each, with realistic attribute schemas, messiness and drawings. The other fifty are *breadth*: one line of one or two SKUs per category, there so that a query like `1/2 ball` has more of the category tree to land in than end mills, hex keys and bearings, and marked on every record (`spec_quality: "fast_and_cheap"`) so they can be told apart and removed.
+With the default configuration, the generator produces **6,327 product lines and 11,614 SKUs across 73 product types**, from 45 invented brands. Thirty of those types are the catalog's *depth*: dozens to hundreds of lines each, with realistic attribute schemas, messiness and drawings. The other 43 are *breadth*: one line of one to three SKUs per category, there so that a query like `1/2 ball` has more of the category tree to land in than end mills, hex keys and bearings, and marked on every record (`spec_quality: "fast_and_cheap"`) so they can be told apart and removed.
 
 | product type | product lines | SKUs |
 | :--- | ---: | ---: |
 | `nut_hex` | 662 | 1,264 |
 | `wheel_depressed_center` | 670 | 1,212 |
-| `bearing_radial_ball` | 660 | 1,126 |
+| `bearing_radial_ball` | 679 | 1,182 |
 | `hex_key` | 630 | 1,120 |
-| `end_mill_square` | 498 | 947 |
-| `screw_socket_head` | 310 | 628 |
-| `drill_jobber` | 285 | 537 |
-| `end_mill_ball` | 286 | 522 |
-| `bolt_hex` | 234 | 428 |
-| `screw_flat_head` | 182 | 349 |
-| `tap_spiral_point` | 181 | 342 |
-| `abrasive_flap_disc` | 126 | 238 |
-| `washer_flat` | 135 | 233 |
-| `screw_button_head` | 130 | 217 |
-| `screw_low_head` | 104 | 186 |
-| `hammer_ball_pein` | 93 | 168 |
+| `end_mill_square` | 498 | 918 |
+| `screw_socket_head` | 309 | 579 |
+| `end_mill_ball` | 286 | 568 |
+| `drill_jobber` | 286 | 530 |
+| `bolt_hex` | 235 | 487 |
+| `set_screws_hex_socket` | 260 | 485 |
+| `lock_nuts_nylon_insert` | 256 | 469 |
+| `screw_flat_head` | 180 | 337 |
+| `tap_spiral_point` | 179 | 329 |
+| `screw_button_head` | 130 | 251 |
+| `abrasive_flap_disc` | 129 | 232 |
+| `washer_flat` | 135 | 225 |
+| `screw_low_head` | 104 | 190 |
+| `hammer_ball_pein` | 98 | 184 |
+| `shackles` | 74 | 132 |
+| `roller_chain_sprockets` | 54 | 102 |
+| `roller_chain_links` | 52 | 94 |
+| `pillow_block_bearings` | 43 | 90 |
+| `turnbuckles` | 42 | 87 |
+| `retaining_rings_external` | 39 | 82 |
+| `key_stock` | 42 | 70 |
+| `roller_chain` | 40 | 68 |
+| `cotter_pins` | 39 | 67 |
+| `o_rings` | 38 | 66 |
+| `dowel_pins` | 36 | 60 |
 | `kit_assortment` | 59 | 59 |
-| 50 breadth categories (ball stock, threaded rod, hose clamps, O-rings, …) | 50 | 89 |
+| 43 breadth categories (ball stock, threaded rod, hose clamps, safety glasses, …) | 43 | 75 |
 
-Across those types the catalog publishes **90 distinct attribute names**, with a category path for every product (for example `Milling > End Mills > Square End Mills`).
+Across those types the catalog publishes **119 distinct attribute names**, with a category path for every product (for example `Milling > End Mills > Square End Mills`).
 
 ### Product lines and SKUs
 
@@ -169,13 +182,13 @@ The messiness is bounded by a few rules that keep the catalog usable. Every titl
 
 A demo catalog without images is not a demo catalog, and industrial product photography is exactly the content that cannot be borrowed. Photographs of a generated product cannot exist, since the product does not, and a picture taken from somewhere else would show a real product the record does not describe. So the generator also draws the pictures, and it draws them from the records.
 
-**Every SKU has a drawing of its own, drawn from that SKU's own published values.** The default build has 9,665 SKUs and 9,665 drawings. Two lengths of one socket head cap screw therefore look different, and a grouped product page can switch the picture when a shopper picks a different size. That is a deliberate departure from real distributor catalogs, which mostly show one photograph for a whole series. A generated drawing costs nothing per size, so there is no reason to copy that habit.
+**Every SKU has a drawing of its own, drawn from that SKU's own published values.** The default build has 11,614 SKUs and 11,614 drawings. Two lengths of one socket head cap screw therefore look different, and a grouped product page can switch the picture when a shopper picks a different size. That is a deliberate departure from real distributor catalogs, which mostly show one photograph for a whole series. A generated drawing costs nothing per size, so there is no reason to copy that habit.
 
 | M10 × 25 mm | M10 × 45 mm | M4 washer | M20 washer |
 | :---: | :---: | :---: | :---: |
 | ![Socket head cap screw, M10, 25 mm long](images/socket-screw-m10-25mm.svg) | ![The same screw at 45 mm long](images/socket-screw-m10-45mm.svg) | ![Flat washer, M4](images/flat-washer-m4.svg) | ![Flat washer, M20, from the same product line](images/flat-washer-m20.svg) |
 
-The first two are SKUs of one product line, a stainless M10 socket head cap screw at two lengths; the second two are SKUs of one flat-washer line. Every drawing in this article is the generator's output, byte for byte, and each is under 3 KB of SVG.
+The first two are SKUs of one product line, a stainless M10 socket head cap screw at two lengths; the second two are SKUs of one flat-washer line. Every drawing in this article is the generator's output, unedited, and each is under 3 KB of SVG.
 
 ### What "parameterized" means here
 
@@ -183,7 +196,7 @@ Each drawing is a pure function of three things: the product type, the brand, an
 
 1. **Attributes to geometry.** Every drawn product type has a figure function that reads the record's published values (thread size and length for a screw; diameter, length of cut and flute count for an end mill; bore, outside diameter and closure type for a bearing) and builds the part as shapes measured in inches. It reads those values through the same parsing code as the rest of the generator, so the drawing and the data cannot disagree about what a record says.
 2. **Geometry to sheet.** The part is placed on a 200 × 300 sheet at its product type's scale.
-3. **Sheet to SVG.** A small SVG writer in the generator itself, about a hundred lines of plain Python, writes out the paths, circles and fills. No drawing or plotting library is involved. An earlier version of the generator drew with matplotlib, but its SVG carries metadata and glyph definitions that these drawings do not need. The hand-written output averages under 2 KB per drawing: the 9,665 drawings come to 19 MB, or about 2 MB as a compressed archive.
+3. **Sheet to SVG.** A small SVG writer in the generator itself, about a hundred lines of plain Python, writes out the paths, circles and fills. No drawing or plotting library is involved; [How the drawings are made](#how-the-drawings-are-made) below shows how that works. A drawing averages about 2 KB: the 11,614 drawings come to 24 MB, or about 2.6 MB as a compressed archive.
 
 The specifications show up visually rather than as text. A longer length of cut is drawn longer and a finer thread with more crests. A flat head is drawn as a cone and a button head as a dome. A sealed bearing is drawn closed, while an open one shows its balls. The other visual channels map to the record in the same way:
 
@@ -197,7 +210,7 @@ The specifications show up visually rather than as text. A longer length of cut 
 
 Each of the 45 brands owns one house style: an ink, a paper tint and a frame. A brand's drawings look like a set and two brands' drawings look different, which is the role a manufacturer's photography style plays in a real catalog. Rotation, tilt and random decoration were considered and rejected because they correspond to no product property. A reader who sees two tools drawn differently concludes the difference is real, and with the drawing driven by the record, that conclusion is correct.
 
-The default build has 9,085 distinct drawings for its 9,665 SKUs. Every repeat is the same brand drawing the same values in two different product lines: for example, the same 6000-size shielded chrome-steel bearing listed twice. An identical picture is the right answer there.
+The default build has 11,163 distinct drawings for its 11,614 SKUs. Every repeat is one brand drawing the same values twice. Mostly that is one part listed in more than one product line (for example, the same 607-size double-shielded chrome-steel bearing appears in three), and in 29 cases it is two SKUs of one line whose drawn values are the same. An identical picture is the right answer there.
 
 ### The honesty rules
 
@@ -205,7 +218,7 @@ The drawings follow a few rules, and the generator's tests check each one over t
 
 - **No text of any kind.** A drawing carries no dimension, callout, label, brand name or SKU. The words are already on the record (title, description, attributes), and repeating them in the picture would be redundant, and would also tie a drawing to wording that can change. The check is an allow-list of the SVG elements and attributes the figures emit, rather than a search for text, so a `<title>`, a comment, an embedded font or an external reference all fail it.
 - **One true scale per product type.** Every SKU of a type is drawn at the same scale, so any two parts of a type are in true proportion. The M4 and M20 washers above are drawn at 9 mm and 37 mm across, in exactly that ratio. A screw or bolt longer than its type's sheet is drawn broken, with its shank shortened between two drafting break lines, rather than shrunk.
-- **A magnifier for tiny parts, never an enlargement in place.** A part too small to see at its type's scale is still drawn at that scale, near the bottom of the sheet, and a lens above it shows the same part enlarged. The lens is a magnifying glass where the glass can enlarge the part at least 2.5 times, and a larger, handle-less circle otherwise. In the default build, 1,167 SKUs get a lens: 155 the magnifying glass and 1,012 the handle-less circle.
+- **A magnifier for tiny parts, never an enlargement in place.** A part too small to see at its type's scale is still drawn at that scale, near the bottom of the sheet, and a lens above it shows the same part enlarged. The lens is a magnifying glass where the glass can enlarge the part at least 2.5 times, and a larger, handle-less circle otherwise. In the default build, 2,260 SKUs get a lens: 784 the magnifying glass and 1,476 the handle-less circle.
 
   ![An M3 × 5 mm socket head cap screw, shown at true scale beneath a magnifying lens](images/socket-screw-m3-5mm-magnified.svg)
 
@@ -215,13 +228,13 @@ The drawings follow a few rules, and the generator's tests check each one over t
 
 | drawing | product types | SKUs |
 | :--- | ---: | ---: |
-| drawn entirely from the record | 17 | 7,518 |
-| drawn from the record, with a nominal proportion for a missing or inconsistent value | (same 17) | 2,058 |
-| a fixed placeholder shape | 50 | 89 |
+| drawn entirely from the record | 30 | 9,186 |
+| drawn from the record, with a nominal proportion for a missing or inconsistent value | (same 30) | 2,353 |
+| a fixed placeholder shape | 43 | 75 |
 
-All 17 depth types have a figure of their own: cutting tools, socket screws, bolts, nuts, washers, bearings, abrasive wheels and discs, hex keys, hammers and assortment kits. The `partial` drawings are mostly hex keys, drills, end mills and taps whose records leave out, or contradict, a secondary dimension such as a length or a shank diameter.
+All 30 depth types have a figure of their own: cutting tools, socket, set and flat-head screws, bolts, plain and lock nuts, washers, ball and pillow-block bearings, abrasive wheels and discs, hex keys, hammers, roller chain and sprockets, pins, retaining rings, O-rings, key stock, shackles, turnbuckles and assortment kits. The `partial` drawings are mostly hex keys, drills, end mills, lock nuts and taps whose records leave out, or contradict, a secondary dimension such as a length or a shank diameter.
 
-The 50 breadth categories are drawn as one of six fixed placeholder shapes: a sphere, a cylinder, a block, a disc, a tube or a bracket. Each is coloured and hatched from the record's material and finish like any other drawing, but its geometry is identical whatever the record says, so a 1/8" ball and a 1/2" ball get the same picture. That is intentional. A placeholder makes no claim about size, whereas a drawing scaled from deliberately cheap filler data would claim a precision that the data does not have.
+The 43 breadth categories are drawn as one of six fixed placeholder shapes: a sphere, a cylinder, a block, a disc, a tube or a bracket. Each is coloured and hatched from the record's material and finish like any other drawing, but its geometry is identical whatever the record says, so a 1/8" ball and a 1/2" ball get the same picture. That is intentional. A placeholder makes no claim about size, whereas a drawing scaled from deliberately cheap filler data would claim a precision that the data does not have.
 
 ![The placeholder sphere used for every precision-ball SKU](images/breadth-ball-placeholder.svg)
 
@@ -238,6 +251,70 @@ uv run sip-generate images --catalog golden-catalog --out out/images --archive o
 It refuses to finish unless every drawing's sha256 equals the one `images.jsonl` records for it, so a bundle can never drift from the catalog it belongs to.
 
 The industrial drawings browsable under [E-commerce Demo Assets](/ecommerce-demo-assets/images/industrial/) on this site are from the generator's earlier version: one drawing per product line, with the line's attributes printed beside the part. They remain as a browsable sample and are not what the current catalog points at. To get the current drawings, build them with the command above.
+
+## How the drawings are made
+
+There is no SVG library or drawing tool behind these pictures, and nobody draws them by hand either. The *writer* is hand-written: a short Python module that knows how to print a rectangle, a circle and a path as SVG text. Every coordinate it prints is computed from the record's own numbers, so a longer screw produces a longer path and a wider washer a larger radius. This turned out to be a quick way to give a demo catalog real product pictures, and it is worth showing how it works.
+
+### Plain Python, standard library only
+
+The SVG writer is about a hundred lines. It keeps an ordered list of elements, registers each hatch pattern once in a `<defs>` block, and joins the lot into one string. The drawing code around it imports nothing from outside Python's standard library and the generator's own modules: `math` for the geometry, `dataclasses` for the shapes, and `xml.etree` for the check that reads each finished file back. (The package still installs matplotlib, because the older renderer described below uses it and the drawing code reuses that renderer's attribute readers, but matplotlib draws none of the SVG.)
+
+A figure library was the obvious alternative, and the generator's first version did use matplotlib. It is the wrong tool for this job for three reasons:
+
+- **Size.** A figure library's SVG carries metadata, clip-path ids and glyph definitions. A card came out at about 6 KB with live text, or about 26 KB with the text as glyph paths. The hand-written output is a few hundred bytes to a few KB.
+- **Determinism.** Every coordinate is printed with at most one decimal, attributes are written in a fixed order, and pattern definitions are sorted by id. The same record produces the same bytes on any machine, which is what lets the manifest pin each drawing by its sha256.
+- **No text.** The drawings carry no text at all. Emitting only seven element types (`svg`, `rect`, `defs`, `pattern`, `g`, `path`, `circle`) makes that rule checkable: the test is an allow-list of elements, attributes and value shapes, not a search for text.
+
+### From a record to a drawing
+
+A drawing is composed in four layers, each a small module:
+
+1. **A figure function per product type** reads the published values and returns shapes measured in inches: polygons, discs, bars, line sets and dots. Each shape has a role, such as the part itself, a plain face or a hole.
+2. **The sheet** places the figure on a 200 × 300 page at its product type's single scale, which is the usable sheet divided by the type's largest extent. It adds the magnifier when the part is too small to see, and draws the brand's frame.
+3. **The style** picks the colours. The brand sets the ink, the paper tint and the frame (twelve inks, six tints, four frames; no two brands share an ink and a frame). The finish sets the part's fill, or the bare material's colour if no finish is published. The material sets the section hatch, the way engineering drawings already denote it: plain lines at different angles for the steels, a cross-hatch for carbide, a stipple for sintered powder, dotted lines for the elastomers.
+4. **The writer** turns all of that into SVG.
+
+This is the complete figure function for a flat washer:
+
+```python
+def washer(record: Record) -> Drawn:
+    geom, source = _read(record, washer_geom.geometry_from_record, {}, WASHER_NOMINAL)
+    od, i_d, t = geom.outside_d.inches, geom.inside_d.inches, geom.thickness.inches
+    fig = Figure(size_in=od)
+    fig.disc((0.0, 0.0), od / 2)
+    fig.disc((0.0, 0.0), i_d / 2, "hole")
+    edge = od / 2 + 0.35 * od
+    fig.rect(-od / 2, edge, -i_d / 2, edge + t, "plain")
+    fig.rect(i_d / 2, edge, od / 2, edge + t, "plain")
+    return Drawn(fig, source)
+```
+
+`_read` takes the outside diameter, the inside diameter and the thickness from the record. It falls back to a nominal proportion only for a value that is missing or inconsistent, and it reports which happened as `source`. The function draws the face as two discs and the edge view as two bars. Everything else (scale, colour, hatch, frame, lens) comes from the shared layers. This is the face of the M20 washer from earlier, with line breaks added:
+
+```xml
+<pattern id="h45s8dc0392b" width="8" height="8" patternUnits="userSpaceOnUse">
+  <g stroke="#c0392b" fill="#c0392b" opacity=".45"><path d="M0 0V8" stroke-width=".5" transform="rotate(45 4 4)"/><circle cx="4" cy="0" r=".6"/></g></pattern>
+<circle cx="100" cy="115.7" r="79.6" fill="#eceff1" stroke="#c0392b" stroke-linejoin="round" stroke-width="2.3"/>
+<circle cx="100" cy="115.7" r="79.6" fill="url(#h45s8dc0392b)"/>
+<circle cx="100" cy="115.7" r="45.2" fill="#faf1e4" stroke="#c0392b" stroke-linejoin="round" stroke-width="2.3"/>
+```
+
+The pattern is the hatch for 18-8 stainless steel: a 45° line every 8 units, dotted, in the brand's red ink. The washer type is drawn at about 109 sheet units per inch, so a 37 mm outside diameter becomes a radius of 79.6 and the 21 mm bore a radius of 45.2. The bore is filled with the brand's paper tint, so it reads as a hole. The M4 washer, of the same brand and material, is the same elements with smaller radii.
+
+### SVG in, SVG out: no rasterizer
+
+Nothing in the current pipeline rasterizes an SVG. A record's `image_url` and `image_detail_url` both point at its SVG, and the browser draws it at whatever size the page needs. The generator ships no SVG-to-PNG converter, and none is needed.
+
+The PNG files come from the generator's older renderer, which is still in the repository: one drawing per product line, drawn with matplotlib's Agg backend and saved with `savefig` as a `card.png` and a `detail.png`, with the software metadata stripped so the bytes are reproducible. Those are the files under E-commerce Demo Assets mentioned above.
+
+### Why this is fast to extend, and why it suits demos
+
+A new product type needs one figure function and an entry giving the type's largest extent. The washer's function is ten lines; a screw, with its head styles, threads and break lines, is about a hundred. The sheet, scale, magnifier, house style, fills, hatching, the SVG writer, the allow-list check and the manifest all come with it. The previous revision of this article counted 17 types drawn from their records; there are now 30. Building all 11,614 drawings, and checking each one's digest against the catalog, takes about eight seconds on a laptop.
+
+For a demo, the property that matters most is that **the picture never contradicts the record**. It is computed from the same parsed values the search engine indexes, so when a shopper filters to a 45 mm screw, the picture shows a longer screw than the 25 mm one. These are schematics, not photographs, and they claim no more than the record does. A value the record leaves out is drawn at a nominal proportion and reported as `partial`, and a category without a figure gets a placeholder that claims no size at all.
+
+The same approach extends to parametric apparel drawings, with colour and pattern as fills.
 
 ## Using it
 
@@ -280,7 +357,7 @@ The repository also contains a verification script that loads both shapes into a
 
 ## What's next
 
-The catalog has grown from twelve product types to 67, and from one drawing per product line to one per SKU. For the drawings, 17 types are drawn from their records today and 50 still use placeholder shapes; each placeholder category that gets a figure of its own becomes a drawing that changes with its specifications, and more are coming. The generator can also build a catalog of about 100,000 SKUs (`--lines 39000` gives 100,299), with a drawing for every one of them, and I will update this article as those land.
+The catalog has grown from twelve product types to 73, and from one drawing per product line to one per SKU. For the drawings, 30 types are drawn from their records today and 43 still use placeholder shapes; each placeholder category that gets a figure of its own becomes a drawing that changes with its specifications, and more are coming. The generator can also build a catalog of more than 100,000 SKUs (`--lines 39000` gives 122,324), with a drawing for every one of them, and I will update this article as those land.
 
 ## Conclusion
 

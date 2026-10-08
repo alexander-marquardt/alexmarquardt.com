@@ -24,7 +24,7 @@ On the generated catalog, that is measurable. Of the end mills that carry a `3/8
 
 ## What it generates
 
-With the default configuration, the generator produces **6,327 product lines and 11,614 SKUs across 73 product types**, from 45 invented brands. Thirty of those types are the catalog's *depth*: dozens to hundreds of lines each, with realistic attribute schemas, messiness and drawings. The other 43 are *breadth*: one line of one to three SKUs per category, there so that a query like `1/2 ball` has more of the category tree to land in than end mills, hex keys and bearings, and marked on every record (`spec_quality: "fast_and_cheap"`) so they can be told apart and removed.
+With the default configuration, the generator produces **6,327 product lines and 11,614 SKUs across 73 product types**, from 45 invented brands. Every number in this article is for that default build. The live industrial search demo loads a larger build of the same generator, made with `--lines 39000` and the default seed: 122,324 SKUs. Thirty of the 73 types are the catalog's *depth*: dozens to hundreds of lines each, with realistic attribute schemas, messiness and drawings. The other 43 are *breadth*: one line of one to three SKUs per category, there so that a query like `1/2 ball` has more of the category tree to land in than end mills, hex keys and bearings, and marked on every record (`spec_quality: "fast_and_cheap"`) so they can be told apart and removed.
 
 | product type | product lines | SKUs |
 | :--- | ---: | ---: |
@@ -184,11 +184,11 @@ A demo catalog without images is not a demo catalog, and industrial product phot
 
 **Every SKU has a drawing of its own, drawn from that SKU's own published values.** The default build has 11,614 SKUs and 11,614 drawings. Two lengths of one socket head cap screw therefore look different, and a grouped product page can switch the picture when a shopper picks a different size. That is a deliberate departure from real distributor catalogs, which mostly show one photograph for a whole series. A generated drawing costs nothing per size, so there is no reason to copy that habit.
 
-| M10 × 25 mm | M10 × 45 mm | M4 washer | M20 washer |
+| M10 × 35 mm | M10 × 55 mm | M4 washer | M20 washer |
 | :---: | :---: | :---: | :---: |
-| ![Socket head cap screw, M10, 25 mm long](images/socket-screw-m10-25mm.svg) | ![The same screw at 45 mm long](images/socket-screw-m10-45mm.svg) | ![Flat washer, M4](images/flat-washer-m4.svg) | ![Flat washer, M20, from the same product line](images/flat-washer-m20.svg) |
+| ![Socket head cap screw, M10, 35 mm long](images/socket-screw-m10-35mm.svg) | ![The same screw at 55 mm long](images/socket-screw-m10-55mm.svg) | ![Flat washer, M4](images/flat-washer-m4.svg) | ![Flat washer, M20, from the same product line](images/flat-washer-m20.svg) |
 
-The first two are SKUs of one product line, a stainless M10 socket head cap screw at two lengths; the second two are SKUs of one flat-washer line. Every drawing in this article is the generator's output, unedited, and each is under 3 KB of SVG.
+The first two are SKUs of one product line, an 18-8 stainless M10 socket head cap screw at two lengths; the second two are SKUs of one 316 stainless flat-washer line. Every drawing in this article is the current generator's output, byte for byte (each one's sha256 is the one the committed catalog's image manifest records), and each is under 3 KB of SVG.
 
 ### What "parameterized" means here
 
@@ -293,14 +293,14 @@ def washer(record: Record) -> Drawn:
 `_read` takes the outside diameter, the inside diameter and the thickness from the record. It falls back to a nominal proportion only for a value that is missing or inconsistent, and it reports which happened as `source`. The function draws the face as two discs and the edge view as two bars. Everything else (scale, colour, hatch, frame, lens) comes from the shared layers. This is the face of the M20 washer from earlier, with line breaks added:
 
 ```xml
-<pattern id="h45s8dc0392b" width="8" height="8" patternUnits="userSpaceOnUse">
-  <g stroke="#c0392b" fill="#c0392b" opacity=".45"><path d="M0 0V8" stroke-width=".5" transform="rotate(45 4 4)"/><circle cx="4" cy="0" r=".6"/></g></pattern>
-<circle cx="100" cy="115.7" r="79.6" fill="#eceff1" stroke="#c0392b" stroke-linejoin="round" stroke-width="2.3"/>
-<circle cx="100" cy="115.7" r="79.6" fill="url(#h45s8dc0392b)"/>
-<circle cx="100" cy="115.7" r="45.2" fill="#faf1e4" stroke="#c0392b" stroke-linejoin="round" stroke-width="2.3"/>
+<pattern id="h135s8db0227a" width="8" height="8" patternUnits="userSpaceOnUse">
+  <g stroke="#b0227a" fill="#b0227a" opacity=".45"><path d="M0 0V8" stroke-width=".5" transform="rotate(135 4 4)"/><circle cx="4" cy="0" r=".6"/></g></pattern>
+<circle cx="100" cy="115.7" r="79.6" fill="#eceff1" stroke="#b0227a" stroke-linejoin="round" stroke-width="2.3"/>
+<circle cx="100" cy="115.7" r="79.6" fill="url(#h135s8db0227a)"/>
+<circle cx="100" cy="115.7" r="45.2" fill="#faf1e4" stroke="#b0227a" stroke-linejoin="round" stroke-width="2.3"/>
 ```
 
-The pattern is the hatch for 18-8 stainless steel: a 45° line every 8 units, dotted, in the brand's red ink. The washer type is drawn at about 109 sheet units per inch, so a 37 mm outside diameter becomes a radius of 79.6 and the 21 mm bore a radius of 45.2. The bore is filled with the brand's paper tint, so it reads as a hole. The M4 washer, of the same brand and material, is the same elements with smaller radii.
+The pattern is the hatch for 316 stainless steel: a 135° line every 8 units, dotted, in the brand's plum ink. The washer type is drawn at about 109 sheet units per inch, so a 37 mm outside diameter becomes a radius of 79.6 and the 21 mm bore a radius of 45.2. The bore is filled with the brand's paper tint, so it reads as a hole. The M4 washer, of the same brand and material, is the same elements with smaller radii.
 
 ### SVG in, SVG out: no rasterizer
 
@@ -312,7 +312,7 @@ The PNG files come from the generator's older renderer, which is still in the re
 
 A new product type needs one figure function and an entry giving the type's largest extent. The washer's function is ten lines; a screw, with its head styles, threads and break lines, is about a hundred. The sheet, scale, magnifier, house style, fills, hatching, the SVG writer, the allow-list check and the manifest all come with it. The previous revision of this article counted 17 types drawn from their records; there are now 30. Building all 11,614 drawings, and checking each one's digest against the catalog, takes about eight seconds on a laptop.
 
-For a demo, the property that matters most is that **the picture never contradicts the record**. It is computed from the same parsed values the search engine indexes, so when a shopper filters to a 45 mm screw, the picture shows a longer screw than the 25 mm one. These are schematics, not photographs, and they claim no more than the record does. A value the record leaves out is drawn at a nominal proportion and reported as `partial`, and a category without a figure gets a placeholder that claims no size at all.
+For a demo, the property that matters most is that **the picture never contradicts the record**. It is computed from the same parsed values the search engine indexes, so when a shopper filters to a 55 mm screw, the picture shows a longer screw than the 35 mm one. These are schematics, not photographs, and they claim no more than the record does. A value the record leaves out is drawn at a nominal proportion and reported as `partial`, and a category without a figure gets a placeholder that claims no size at all.
 
 The same approach extends to parametric apparel drawings, with colour and pattern as fills.
 

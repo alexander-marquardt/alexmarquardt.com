@@ -51,27 +51,52 @@ The fleet merges 600 to 870 PRs a week across the four repositories, the PR flow
 
 ## Why agents burn through tokens
 
-The cost follows from how an agent talks to the model, which isn't how most people picture it.
+Everything in this article follows from how an agent talks to the model. It takes three ideas: a token, a call, and the cache.
 
-A language model has no memory between calls. Each time the agent calls it, the whole conversation is sent again: the system prompt, the tool definitions, every message, every file the agent has read and every command output it has seen. The model reads all of that, then writes its answer one token at a time, and each new token is produced by running the model over everything before it, including the tokens it has just written. That's what "autoregressive" means, and [The Illustrated GPT-2](https://jalammar.github.io/illustrated-gpt2/) is a good visual explanation of it.
+### One call: the model writes its response one token at a time
 
-An agent works in a loop on top of that. The model asks for a tool (read this file, run these tests), the tool's output is appended to the conversation, and the whole conversation goes back to the model for the next step. So an agent that makes 200 tool calls sends its conversation 200 times, and the conversation gets longer every time.
+A *call* is one request to the model: the program sends text, and the model sends back one response. A *token* is a word or a piece of a word.
 
-A rough illustration: an agent that starts at 20k tokens and grows to 150k carries about 85k on an average call. Over 200 calls, that's about 17 million tokens processed, even though the final conversation is only 150k long. Double the calls, or double the average context, and you double the total.
+The model writes its response one token at a time. Each new token is predicted from everything before it: all the text it was sent, plus the tokens it has already written. The new token is then added to the input, and the next one is predicted from that. [The Illustrated GPT-2](https://jalammar.github.io/illustrated-gpt2/) shows this step by step.
 
-**Tokens used are roughly the number of calls times the context carried.** An agent at 300k tokens of context reads three times as many tokens per call as one at 100k, on every call it makes until it finishes.
+![Inside one call: the model predicts "Let", then "me", then "read", then "cart.py", each new token added to the input for the next one](images/one-call.svg)
 
-### Where the cache comes in
+Every new token depends on the entire history, but the model doesn't push the history through the network again for every token. When the call starts, it processes the whole input once and keeps the intermediate results for every token (the [KV cache](https://huggingface.co/blog/not-lain/kv-caching)). Each new token then goes through the network on its own, reading those stored results instead of recomputing them. The result is the same; it's just faster. That's why a call is billed once for its input, plus once for each token of its response.
 
-Consecutive calls share almost all of their content: call 101 is call 100 plus one more tool result. So the provider can keep the already-processed start of the conversation for a short while, which is [prompt caching](https://docs.claude.com/en/docs/build-with-claude/prompt-caching). Re-sending a cached prefix is billed at about a tenth of the normal input price. Writing a new prefix into the cache costs 1.25 times the normal price (or twice the price for a one-hour cache). The default cache lives for five minutes, and every use resets the clock.
+When the call ends, that stored work is thrown away. That matters below.
+
+### Many calls: the agent sends the whole conversation again, every time
+
+The model has no memory between calls. Each time, the program sends the whole conversation so far: the system prompt, the tool definitions, every message, and everything since. [Claude Code's own documentation](https://code.claude.com/docs/en/prompt-caching) says it directly: "The model doesn't remember anything between requests, so Claude Code re-sends the full context."
+
+In a chat, that happens once per message you type. You supply the next input, so there's one call per message.
+
+An agent supplies its own next input. The model can't open a file or run a test itself; it can only write text. So when it needs something, its response ends with a [tool request](https://docs.claude.com/en/docs/agents-and-tools/tool-use/overview) such as `Read(cart.py)` or `Bash(pytest)`. The agent program (Claude Code, here) carries it out on your computer and keeps what came back: the text of the file, or what the test run printed. That's the *tool result*. The program adds the response and the tool result to the conversation and makes the next call straight away, without waiting for you.
+
+![Across calls: four columns, one per call. Each column holds everything sent in that call; each call adds a response and a tool result on top, and the next call sends all of it again. Drawn for 200 calls, the columns become a chart whose area is all the input tokens.](images/agent-loop.svg)
+
+So one message from you ("fix this test") can turn into 50 or 200 calls, and each one re-sends everything so far. A rough illustration: an agent that starts at 20k tokens and grows to 150k carries about 85k on an average call. Over 200 calls, that's about 17 million input tokens, against perhaps 0.1 million tokens of responses, although the final conversation is only 150k long. Double the calls, or double the average context, and you double the total.
+
+**Tokens used are roughly the number of calls times the context carried.** An agent at 300k tokens of context reads three times as many tokens per call as one at 100k, on every call until it finishes.
+
+### The cache: keeping the work between calls
+
+Call 101 is call 100 plus one response and one tool result. Re-processing the first 99% from scratch would be wasteful, so the provider can keep that work, the KV cache from the previous call, for a while. That's [prompt caching](https://docs.claude.com/en/docs/build-with-claude/prompt-caching): the same stored work as inside a call, kept between calls.
+
+| | What's added each time | Is the earlier work reused? |
+|---|---|---|
+| Inside one call | one token | always (the KV cache) |
+| From one call to the next | a response and a tool result | only while the prompt cache is alive |
+
+The prices follow from that. Reading a cached prefix costs a tenth of the normal input price or less, depending on the model, because the work was already done. Writing a prefix into the cache costs 1.25 times the normal price for a five-minute cache, or twice the price for a one-hour cache. Every use resets the clock. Which lifetime a request gets depends on the tool and the plan: Claude Code gives the interactive session an hour on a subscription, while sub-agents and API-key use get five minutes.
 
 Three consequences shaped everything that follows:
 
-- **Cache reads dominate the token count.** They're 95 to 98% of all tokens in this fleet, because every call re-reads the conversation so far, and almost all of it comes from the cache.
-- **Cheap per token isn't cheap in total.** Even at a tenth of the price, cache reads were 48 to 60% of the weighted cost in my measurements. Carrying context is the bill.
-- **A cache miss is expensive.** If an agent sits idle for more than five minutes, its cache expires, and the next call pays the write price for the *entire* conversation, not just the new part.
+- **Cache reads dominate the token count.** They're 94 to 98% of all tokens in this fleet, because every call re-reads the conversation so far, and almost all of it comes from the cache.
+- **Cheap per token isn't cheap in total.** Weighted by price, cache reads were about three quarters of the cost before the changes in this article, and about half after.
+- **A cache miss is expensive.** If an agent sits idle past its cache lifetime, the next call pays the write price for the *entire* conversation, not just the new part.
 
-So there are really only two levers: fewer calls, and less context per call. The brief and the output are small by comparison. Almost every change in this article pulls one of those two levers, which is why I focused on context size rather than on making prompts shorter.
+So there are really only two levers: fewer calls, and less context per call. The brief and the responses are small by comparison. Almost every change in this article pulls one of those two levers, which is why I focused on context size rather than on making prompts shorter.
 
 ## The results
 
@@ -104,7 +129,7 @@ PRs also got about 2.4 times smaller, from a median of about 1,010 changed lines
 
 Two more figures put that in proportion:
 
-- **Cache reads are 95 to 98% of all tokens**, before and after. The agents mostly re-read what they already have.
+- **Cache reads are 94 to 98% of all tokens**, before and after. The agents mostly re-read what they already have.
 - **Output tokens per PR barely moved**: about 130k before and 140k after. The agents write about as much per change as they did before. What fell is what they read to get there.
 
 The coordinator's share of all tokens fell from 14% to 11%, and to 7% in W45.

@@ -11,7 +11,7 @@ description: "What ten weeks of measurement taught us about the token use of run
 
 For the last two months, most of the code on one of my projects has been written by AI agents. One coordinating session hands out work. Up to a dozen background agents each take one issue, write the change and its tests, and open a pull request. A separate, adversarial review agent has to approve every PR before it can merge.
 
-It works. But in the first weeks it used tokens in a way that was hard to reason about. A full weekly token allowance lasted about a day with four agents running. Our guesses about why were mostly wrong.
+It works. But in the first weeks it used tokens in a way that was hard to reason about. A full weekly token allowance lasted about a day with four agents running. Our guesses about why were mostly wrong. You pay by the token, so the goal was simple: more merged work for each dollar spent.
 
 This article covers the ten weeks from the end of August to early November:
 - how we measured where the tokens went;
@@ -37,7 +37,7 @@ At peak this produces the PR flow of a large engineering team: 600 to 870 merged
 
 The first thing we did was stop guessing. Every agent session writes a transcript, and every model request in it records its token usage. That usage is split into fresh input, cache writes, cache reads and output. A script over those transcripts, with no model calls, adds them up per request.
 
-The token kinds are not equal. A cache read is priced at about a tenth of fresh input, and output at about five times. So the shares in this section weigh each kind by its relative price. Raw counts would make cache reads look like everything, since they are 95 to 98% of all tokens. The results section counts raw tokens.
+The token kinds do not cost the same: a cache read costs much less than fresh input, and output costs more. Cache reads are 95 to 98% of all tokens, so raw counts would make them look like everything. The shares before the results section therefore count each kind by what it costs. The results section counts raw tokens.
 
 Two things about the method matter more than they look:
 
@@ -54,7 +54,7 @@ The first breakdown was full of surprises:
 
 The model that explains all of it is simple. Every request re-reads the whole conversation so far. **Tokens used are roughly the number of requests times the context carried.** An agent at 300k tokens of context reads three times as many tokens per call as one at 100k, for every remaining call it makes.
 
-The most counter-intuitive measurement came next. We measured how much of the carried context was ever used again. Almost all of it was: only 1.5 to 3% was never referenced again. The waste wasn't irrelevant content. It was *relevant* content carried across hundreds of requests. Re-reading a file once when it is needed is a cache write, weighted at about 1.25 times its size. Carrying it is a cache read, weighted at 0.1 times its size, on every request. After about a dozen requests, carrying loses.
+The most counter-intuitive measurement came next. We measured how much of the carried context was ever used again. Almost all of it was: only 1.5 to 3% was never referenced again. The waste wasn't irrelevant content. It was *relevant* content carried across hundreds of requests. Re-reading a file once when it is needed is one cache write. Carrying it is a cache read on every request: much cheaper each time, but repeated. After about a dozen requests, carrying loses.
 
 ## What we changed
 
@@ -76,11 +76,11 @@ This beats in-context compression because the summary is deliberate, short and a
 
 ### Keep the prompt cache warm
 
-A later audit found the next-largest drain. When an agent waited more than five minutes, for CI, a long test or a polling loop, its prompt cache expired. The next call then re-sent the whole context as a cache write. That happened about 800 times a day, and it was **about 31% of all agent token use**, weighted by price.
+A later audit found the next-largest drain. When an agent waited more than five minutes, for CI, a long test or a polling loop, its prompt cache expired. The next call then re-sent the whole context as a cache write. That happened about 800 times a day, and it was **about 31% of all agent usage**.
 
 The fix was mechanical. Wait helpers return before 270 seconds, and a guard refuses longer foreground waits. Cache expiry fell to 0.7%.
 
-One more finding from the same experiments: polling is not the waste it looks like. A poll inside the cache lifetime keeps the cache warm, and a cold restart uses about ten times the weighted tokens of a poll. The real lever is taking long waits out of an agent's life altogether.
+One more finding from the same experiments: polling is not the waste it looks like. A poll inside the cache lifetime keeps the cache warm, and a cold restart costs about ten times as much as a poll. The real lever is taking long waits out of an agent's life altogether.
 
 ### Stop loading what most agents don't need
 
@@ -162,7 +162,7 @@ The coordinator's share of all tokens fell from 14% to 11%, and to 7% in W45.
 
 Tokens per merged PR fell from W40 to W41 and have stayed at 17–28M since. That step was the move to short-lived agents with short handoffs and a context ceiling.
 
-The later fixes show up in the fresh tokens, the ones not read from cache. Cache writes per merged PR fell from 0.92M in W41 to 0.40M in W45, as the cache-lifetime fix and the smaller memory index took hold. Fresh tokens are a small share of the count, but a cache write is weighted at 12.5 times a cache read, so they matter more than their count suggests.
+The later fixes show up in the fresh tokens, the ones not read from cache. Cache writes per merged PR fell from 0.92M in W41 to 0.40M in W45, as the cache-lifetime fix and the smaller memory index took hold. Fresh tokens are a small share of the count, but each one costs far more than a cache read, so they matter more than their count suggests.
 
 W42 is the high point after the step, at 28M per PR. That was the week routine work ran on a smaller model. Implementation later moved back to the strongest model for quality, and the weeks after are lower. We did not isolate the cause. Harder work also pushed the other way: as the easy issues ran out, the remaining ones were larger and touched more of the system.
 

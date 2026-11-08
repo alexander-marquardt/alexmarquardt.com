@@ -9,12 +9,6 @@ categories: ["AI-Assisted Development"]
 description: "The methodology behind one developer running a fleet of Claude Code agents: written rules, deterministic tests, CI gates, independent review and an agent control plane. With the measurements: three million lines of code, and as many merged pull requests a month as a 200-person open-source project."
 ---
 
-## In short
-
-I work alone on a project, with a fleet of AI coding agents doing the implementation. In October, its main repository merged 1,695 pull requests, about as many as Grafana, whose pull requests that month came from 198 people. Across the project's four repositories, the agents merge about 690 pull requests a week, where a typical engineer merges about two.
-
-That is a large number, and it is not because I am unusually fast. It comes from a method: a set of rules, tests, gates and controls that let agents do the work of a large team without the codebase falling apart. This article shares that method, with the measurements behind it, how each was taken, and the objections they invite.
-
 ## The problem it solves
 
 Try this on a few large e-commerce sites. Search for:
@@ -28,6 +22,12 @@ The project solves that. It is an e-commerce query interpreter built on Elastics
 I have written about its design in [a series of articles on Elastic Search Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-control-plane-architecture). This article is about something else: the workflow that built it.
 
 <!-- SCREENSHOT: "red size 10 womens dress on sale" with its tiers, applied filters and the debug panel open -->
+
+## Who built it, and how
+
+I work alone on a project, with a fleet of AI coding agents doing the implementation. In October, its main repository merged 1,695 pull requests, about as many as Grafana, whose pull requests that month came from 198 people. Across the project's four repositories, the agents merge about 690 pull requests a week, where a typical engineer merges about two.
+
+That is a large number, and it is not because I am unusually fast. It comes from a method: a set of rules, tests, gates and controls that let agents do the work of a large team without the codebase falling apart. This article shares that method, with the measurements behind it, how each was taken, and the objections they invite.
 
 ## The numbers
 

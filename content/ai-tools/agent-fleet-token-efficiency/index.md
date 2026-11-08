@@ -41,34 +41,13 @@ This is one project, run by one person, with several changes landing at once. Wh
 
 The arithmetic is the same for one session as for a dozen agents. Without a fleet, these five steps cover most of it:
 
-- **Measure.** The script below sums each session's tokens from the transcripts Claude Code keeps under `~/.claude/projects/`, counting each request once.
+- **Measure.** [The script in the appendix](#appendix-a-script-to-sum-tokens-per-session) sums each session's tokens from the transcripts Claude Code keeps under `~/.claude/projects/`, counting each request once.
 - **One task per session.** Start fresh for the next task, with a short note of where you are; a long conversation re-reads everything on every call.
 - **Don't leave a session idle past its cache lifetime** (an hour for an interactive subscription session, five minutes for sub-agents and API use), and run anything slow in the background.
 - **Keep what loads into every session small**: only the rules that apply everywhere, with pointers to the rest.
 - **Make the codebase easy to navigate**: short module summaries, small files, comments that point to the details.
 
-```python
-import json, glob, os
-from collections import defaultdict
-
-# Sum token usage per Claude Code session, counting each request once.
-root = os.path.expanduser("~/.claude/projects")
-for path in sorted(glob.glob(f"{root}/**/*.jsonl", recursive=True), key=os.path.getmtime)[-10:]:
-    seen, tot = set(), defaultdict(int)
-    for line in open(path, errors="ignore"):
-        try: rec = json.loads(line)
-        except ValueError: continue
-        msg = rec.get("message") if isinstance(rec.get("message"), dict) else {}
-        u, rid = msg.get("usage"), rec.get("requestId")
-        if not u or rid in seen: continue
-        seen.add(rid)
-        for k in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens"):
-            tot[k] += u.get(k) or 0
-    if seen:
-        print(os.path.basename(path)[:36], "calls", len(seen), dict(tot))
-```
-
-My coordinating session, a few days old, shows about 3,600 calls, 534 million cache-read tokens and 2.3 million output tokens. The ratio between the last two is the subject of this article. The gates and the scheduling program below pay off only with many agents on a large, rule-heavy repository.
+On my coordinating session, a few days old, that script shows about 3,600 calls, 534 million cache-read tokens and 2.3 million output tokens. The ratio between the last two is the subject of this article. The gates and the scheduling program below pay off only with many agents on a large, rule-heavy repository.
 
 ## The setup
 
@@ -186,7 +165,7 @@ Claude Code keeps a complete transcript of every session under `~/.claude/projec
 }
 ```
 
-Tools such as [ccusage](https://github.com/ryoppippi/ccusage) read the same files. The folder is also a full record of every file and command output the agent saw, so treat it as sensitive.
+Tools such as [ccusage](https://github.com/ryoppippi/ccusage) read the same files, and [the appendix](#appendix-a-script-to-sum-tokens-per-session) has a short script that does it. The folder is also a full record of every file and command output the agent saw, so treat it as sensitive.
 
 Two details of the method matter more than they look:
 
@@ -294,3 +273,28 @@ The implementation job is now most of agent token use, and in one 24-hour sample
 Volume brings its own problem. At this PR volume, the bottleneck moves from writing code to landing it: a merge queue tests PRs in groups against the latest main, and one failing PR drops its whole group. That deserves its own article.
 
 Measure tokens per merged PR, enforce a context ceiling, and take the long waits out of an agent's life. Everything else in this article was worth less than those three.
+
+## Appendix: a script to sum tokens per session
+
+It reads the ten most recent session transcripts under `~/.claude/projects/` and prints each session's calls and tokens, counting each request once.
+
+```python
+import json, glob, os
+from collections import defaultdict
+
+# Sum token usage per Claude Code session, counting each request once.
+root = os.path.expanduser("~/.claude/projects")
+for path in sorted(glob.glob(f"{root}/**/*.jsonl", recursive=True), key=os.path.getmtime)[-10:]:
+    seen, tot = set(), defaultdict(int)
+    for line in open(path, errors="ignore"):
+        try: rec = json.loads(line)
+        except ValueError: continue
+        msg = rec.get("message") if isinstance(rec.get("message"), dict) else {}
+        u, rid = msg.get("usage"), rec.get("requestId")
+        if not u or rid in seen: continue
+        seen.add(rid)
+        for k in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens"):
+            tot[k] += u.get(k) or 0
+    if seen:
+        print(os.path.basename(path)[:36], "calls", len(seen), dict(tot))
+```

@@ -10,7 +10,7 @@ categories: ["AI-Assisted Development"]
 description: "How one developer directs a fleet of Claude Code agents that merged 1,652 pull requests in a month, and the method that keeps it under control: written rules, tests that outnumber product code three to one, CI gates, independent review and an agent control plane."
 ---
 
-In October, the main repository of the project I work on merged 1,652 pull requests. That is in the range of the busiest open-source repositories on GitHub: that month Home Assistant merged 3,763 from 394 people, and CPython 1,607 from 184. Here one person directs the work, and a fleet of coding agents writes the code. This article is about the rules, tests, gates and control plane that keep that rate from turning into chaos, with the measurements behind them and the objections they invite.
+In October, the main repository of the project I work on merged 1,652 pull requests. That is in the range of the busiest open-source repositories on GitHub: that month Microsoft's VS Code merged 2,549 from 97 people, and CPython, the main implementation of Python, 1,607 from 184. Here one person directs the work, and a fleet of coding agents writes the code. This article is about the rules, tests, gates and control plane that keep that rate from turning into chaos, with the measurements behind them and the objections they invite.
 
 ## The problem it solves
 
@@ -80,7 +80,6 @@ Here is October 2026 for my main repository and for some of the best-known open-
 
 | Repository | Merged PRs, October | People authoring them | Median PR size (changed lines) |
 |---|---|---|---|
-| home-assistant/core | 3,763 | 394 | 54 |
 | microsoft/vscode | 2,549 | 97 | 168 |
 | python/cpython | 1,607 | 184 | 31 |
 | rust-lang/rust | 845 | 234 | 78 |

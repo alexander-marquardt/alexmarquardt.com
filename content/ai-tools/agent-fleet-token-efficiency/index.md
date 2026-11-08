@@ -63,12 +63,13 @@ Changed lines are additions plus deletions, from all four repositories. A few PR
 
 I report token use relative to a baseline rather than as absolute counts. In the table, each token column is an index: 100 is its value over the four weeks before the changes, W36–W39, taken together. A value of 25 means a quarter of the baseline's tokens for the same unit of work; 135 means 35% more. "All tokens in the week" is every token used by the coordinator and every agent that week, across all four repositories; the other token columns divide it by merged PRs or changed lines. The [script in the appendix](#appendix-a-script-to-sum-tokens-per-session) measures your own absolute figures.
 
-| Week | Merged PRs (all / main repo) | All tokens in the week (index) | Tokens per main-repo PR (index) | Tokens per merged PR, all repos (index) | Median PR size (lines) | Tokens per changed line (index) |
+| Week | Merged PRs (all / main repo) | All tokens in the week (vs baseline = 100) | Tokens per main-repo PR (vs baseline = 100) | Tokens per merged PR, all repos (vs baseline = 100) | Median PR size (lines) | Tokens per changed line (vs baseline = 100) |
 |---|---|---|---|---|---|---|
 | W36 | 195 / 195 | 109 | 76 | 86 | 915 | 99 |
 | W37 | 153 / 153 | 90 | 80 | 90 | 998 | 96 |
 | W38 | 113 / 96 | 72 | 101 | 97 | 1,132 | 85 |
 | W39 | 151 / 100 | 129 | 175 | 131 | 1,078 | 114 |
+| **Baseline: W36–W39 together** | **612 / 544** | **100** | **100** | **100** | | **100** |
 | W40 (changes begin) | 196 / 171 | 115 | 91 | 90 | 1,132 | 68 |
 | W41 | 632 / 508 | 68 | 18 | 16 | 489 | 25 |
 | W42 | 871 / 522 | 135 | 35 | 24 | 467 | 36 |
@@ -223,7 +224,7 @@ Most of that work moved into a small program:
 
 The coordinator's own numbers fell in two steps, coinciding with the short-lived agents in W41 and with the program taking over the work in W44 and W45:
 
-| Week | Coordinator calls per merged PR | Coordinator tokens per merged PR (index, baseline W36–W40 = 100) | Coordinator share of all tokens |
+| Week | Coordinator calls per merged PR | Coordinator tokens per merged PR (vs baseline W36–W40 = 100) | Coordinator share of all tokens |
 |---|---|---|---|
 | W36–W40 | 26–41 | 100 (78–122 by week) | 11–21% |
 | W41 | 23.5 | 19 | 18% |

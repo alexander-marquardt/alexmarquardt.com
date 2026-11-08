@@ -1,6 +1,6 @@
 ---
 showtoc: true
-title: "How to develop software at high velocity with a fleet of AI coding agents"
+title: "One developer, a fleet of Claude Code agents, 1,652 merged PRs in a month"
 date: 2026-11-08
 draft: false
 slug: one-developer-coding-agent-fleet

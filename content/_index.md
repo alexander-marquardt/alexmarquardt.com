@@ -14,7 +14,7 @@ I am a Senior Principal Architect working on GenAI and Search at [Elastic](https
 More details: [About the Author](/about/) · [Professional Record](/professional/) · [Personal](/personal/) · [LinkedIn](https://www.linkedin.com/in/alexandermarquardt/)
 
 # AI Tools
-- [How to develop software at high velocity with a fleet of AI coding agents](/ai-tools/one-developer-coding-agent-fleet/) (Nov 8, 2026)
+- [One developer, a fleet of Claude Code agents, 1,652 merged PRs in a month](/ai-tools/one-developer-coding-agent-fleet/) (Nov 8, 2026)
 - [Where a fleet of coding agents spends its tokens: ten weeks of transcripts, and what each fix recovered](/ai-tools/agent-fleet-token-efficiency/) (Nov 8, 2026)
 - [CheckLoop: Autonomous Multi-Pass AI Code Review](/ai-tools/checkloop-autonomous-code-review) (Mar 7, 2026)
 

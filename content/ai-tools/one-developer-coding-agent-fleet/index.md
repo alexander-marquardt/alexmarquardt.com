@@ -1,6 +1,6 @@
 ---
 showtoc: true
-title: "One developer, 1,652 merged pull requests in a month: what it takes to run coding agents at that rate"
+title: "How to develop software at high velocity with a fleet of AI coding agents"
 date: 2026-11-08
 draft: false
 slug: one-developer-coding-agent-fleet

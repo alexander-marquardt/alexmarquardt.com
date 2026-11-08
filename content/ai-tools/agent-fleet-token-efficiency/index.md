@@ -1,6 +1,6 @@
 ---
 showtoc: true
-title: "How I reduced Claude Code's tokens per line of code by 3.3x"
+title: "How I cut Claude Code's tokens per line of code to under a third"
 date: 2026-11-07
 draft: true
 slug: agent-fleet-token-efficiency

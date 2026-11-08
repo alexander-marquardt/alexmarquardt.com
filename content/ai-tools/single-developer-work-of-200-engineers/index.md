@@ -123,10 +123,13 @@ Give a dozen AI agents write access to a repository and the default outcome is c
 
 `CONTRIBUTING.md` is the contract every agent works under: 350 lines, pointing into 66 topic files (about 36,000 lines). It covers architecture boundaries, naming, error handling, testing, documentation and review.
 
-Two things make it work rather than become a wall of text nobody reads:
+Three things make it work rather than become a wall of text nobody reads:
 
+- **An agent reads only the part it needs.** The rules are split into topic files so that an agent changing a test reads the testing rules, instead of reading tens of thousands of lines of instructions to find the relevant one. Every line an agent reads costs tokens and competes for its attention.
 - **Each rule cites the incident that produced it**, by issue number. An agent tempted to break a rule can read exactly what went wrong last time.
 - **The file loaded into every agent call is capped in size.** The root guide that every agent reads on every model call is held to 2,133 bytes by a CI check. Everything else is a pointer. A guide that grows without limit gets skimmed; one that cannot grow stays read.
+
+The same idea applies to the code and the documentation. Each package has a code map, generated from its module docstrings: one line per module, saying what it does, its main public names and the routes it serves. An agent looking for where to change something searches the map instead of reading the code to find out. The documentation is split the same way, by topic and by reader, and its claims are tested against the code (below), so an agent can trust the page it opens instead of checking it against the source.
 
 Decisions live in the repository, not in chat. When I rule on how something should behave, the ruling is quoted verbatim in the issue, with its date, and the work traces back to it. An agent never has to guess what I meant three weeks ago.
 

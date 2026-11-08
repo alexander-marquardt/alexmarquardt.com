@@ -30,7 +30,7 @@ I have written about its design in [a series of articles on Elastic Search Labs]
 
 ## Who built it, and how
 
-The project started as a small piece of code, about 4,000 lines: a percolator-based query rewriter that [Sidecar](https://sidecar.software/) developed for Elastic under a small, short-term contract (described in [this Search Labs article](https://www.elastic.co/search-labs/blog/elasticsearch-percolator-search-governance)). Since then it has been built into a full e-commerce search solution, and more than 99% of today's code was written by AI coding agents under my direction, using the workflow this article describes. I have worked on it alone since August. Across the project's four repositories, the agents merge about 690 pull requests a week, where a typical engineer merges about two.
+The project started as a small piece of code, about 4,000 lines: a percolator-based query rewriter that [Sidecar](https://sidecar.software/) developed for Elastic under a small, short-term contract (described in [this Search Labs article](https://www.elastic.co/search-labs/blog/elasticsearch-percolator-search-governance)). Since then it has been built into a full e-commerce search solution, and more than 99% of today's code was written by AI coding agents under my direction, using the workflow this article describes. I have worked on it essentially alone since February 2026. Across the project's four repositories, the agents merge about 690 pull requests a week, where a typical engineer merges about two.
 
 The product itself, backend and frontend, is about 620,000 lines of code. The main repository holds about 3 million, and most of the difference is tests: 2.1 million lines of them. That is not an accident. When agents write the code, the tests are what tell me it still works, so a large test suite that gives the same answer every time is the first requirement of working this way.
 
@@ -72,7 +72,7 @@ The 620,000 lines are not one parser. They hold the query engine, a merchandiser
 | Test cases, frontend | 12,467, plus 144 end-to-end spec files |
 | CI | 58 workflows, 136 jobs |
 | Merges later reverted | 0.2 to 0.7% |
-| Commit authors | 1 person (3,032 of 3,048 commits on `main` since August; the other 16 are Dependabot) |
+| Commit authors | 1 person (3,032 of the 3,048 commits in `main`'s history, which starts in August; the other 16 are Dependabot) |
 
 ### Scale, compared
 

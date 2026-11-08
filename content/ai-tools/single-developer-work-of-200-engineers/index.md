@@ -11,7 +11,7 @@ description: "How one developer runs a fleet of Claude Code agents that merges a
 
 ## The problem it solves
 
-Try this on a few large e-commerce sites. Search for:
+Try this search on a few large e-commerce sites:
 
 > size 10 womens dress on sale under $40
 

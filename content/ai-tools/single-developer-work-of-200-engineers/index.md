@@ -15,7 +15,7 @@ Try this search on a few large e-commerce sites:
 
 > size 10 womens dress on sale under $40
 
-You will not find many that get it right. The usual results treat the query as a bag of words: size 10 shoes, women's trousers, dresses that are not on sale or cost more than $40, or nothing at all. Few work out that "size 10" is a size, "womens dress" is a category, "on sale" is a promotion and "under $40" is a price limit, and then act on each one.
+You will not find many that get it right. You will often see results that treat the query as a bag of words: size 10 shoes, women's trousers, dresses that are not on sale or cost more than $40, or nothing at all. Few work out that "size 10" is a size, "womens dress" is a category, "on sale" is a promotion and "under $40" is a price limit, and then act on each one.
 
 This article is about the development of an e-commerce query interpretation layer, built on top of Elasticsearch, that solves this problem. It reads what the shopper typed and turns it into filters: for the above query, size 10, the category Women's › Dresses and a price of up to $40. The shopper does not have to find and click a single filter. The layer is demonstrated on a synthetic catalogue of about 380,000 SKUs across retail and industrial departments.
 

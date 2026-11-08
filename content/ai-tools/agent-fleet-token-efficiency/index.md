@@ -182,7 +182,7 @@ A second measurement, from one day's transcripts, showed where the waste was. Of
 
 When an agent's work is not finished, it does not continue in an ever-growing conversation. The code goes to a pushed branch, and the plan goes to a status comment on the PR with the next steps, links and the head commit. A fresh agent starts from that handoff, which is under 30 lines.
 
-A `PreToolUse` hook enforces it for every sub-agent. Before each tool call it reads the agent's current context size from its transcript. At 150k tokens it adds a note: at the next commit, push, post the status comment and end. At 200k it refuses every tool call except the `git` and `gh` commands a handoff needs, and the refusal text carries the handoff steps. A minimal version of the hook, with tests, is in [agent-fleet-kit](https://github.com/alexander-marquardt/agent-fleet-kit).
+A `PreToolUse` hook enforces it for every sub-agent. Before each tool call it reads the agent's current context size from its transcript. At 150k tokens it adds a note: at the next commit, push, post the status comment and end. At 200k it refuses every tool call except the `git` and `gh` commands a handoff needs, and the refusal text carries the handoff steps. A minimal version of the hook, rewritten from the private setup with tests, is in [agent-fleet-kit](https://github.com/alexander-marquardt/agent-fleet-kit).
 
 On the first day, median context per request fell for every kind of agent: implementation from 331k to 143k tokens, review from 149k to 90k. The share of agents that ever passed 150k fell from 73% to 25%.
 

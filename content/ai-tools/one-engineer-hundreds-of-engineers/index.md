@@ -17,6 +17,14 @@ A typical engineer merges about two pull requests a week. Even the top tier of p
 
 I know how that sounds. This article gives the numbers, says exactly how each one was measured and compared, answers the obvious objections, and then describes the system that makes it possible. The system is the interesting part: it is what stops a fleet of AI agents from turning a codebase into a pile of plausible-looking mush.
 
+## What the code is
+
+The project is a search interpretation layer for e-commerce, built on Elasticsearch. It reads what a shopper types, such as "blue trainers size 9 under $50", works out which words are a colour, a size, a price limit, a brand or a category, and turns them into a structured query: filters, category routing, boosts and synonyms, served in tiers from best match to related. Every decision it makes is explained in a debug payload, so a merchandiser can see why a product is where it is.
+
+A second application, Studio, is where merchandisers edit the vocabularies and rules that drive it and inspect any search. It is demonstrated on a synthetic catalogue of about 380,000 SKUs across retail and industrial departments, produced by the data generator in one of the other repositories.
+
+<!-- SCREENSHOT: a search with its tiers, applied filters and the debug panel open -->
+
 ## The numbers
 
 ### The size of the codebase
@@ -54,7 +62,20 @@ Of the main repository's code, 70% is tests: 3.4 lines of test for every line of
 | Merges later reverted | 0.2 to 0.7% |
 | Commit authors | 1 person (3,023 of 3,039 commits on `main` since August; the other 16 are Dependabot) |
 
-### How that compares with a normal team
+### How that compares with a well-known project
+
+[Grafana](https://github.com/grafana/grafana) is one of the busiest open-source repositories on GitHub. Here is October 2026 for both, measured the same way from the GitHub API (merged pull requests; bots excluded from the author count):
+
+| Repository | Merged PRs, October | People authoring them | Median PR size (changed lines) |
+|---|---|---|---|
+| grafana/grafana | 1,706 | 198 | 122 |
+| My main repository | 1,652 | 1 | 492 |
+
+The same number of merged pull requests as Grafana's 198 contributors, each four times larger, from one person. And that is one of my four repositories.
+
+The author count includes occasional outside contributors, so Grafana's core team is smaller than 198. It is still a large, well-run engineering organisation, and the comparison is pull request for pull request.
+
+### How that compares with published benchmarks
 
 The comparison uses merged pull requests per engineer per week, because it is the most widely published productivity benchmark:
 

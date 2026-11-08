@@ -17,9 +17,9 @@ Try this on a few large e-commerce sites. Search for:
 
 You will not find many that get it right. The usual results treat the query as a bag of words: red shoes, size 10 trousers, dresses that are not on sale, or nothing at all. Few work out that "red" is a colour, "size 10" is a size, "womens dress" is a category and "on sale" is a promotion, and then act on each one.
 
-The project solves that. It is an e-commerce query interpreter built on Elasticsearch. For that query it recognises the colour Red, size 10 (including size ranges such as 9–10 that contain it), the category Women's › Dresses and the On sale promotion, applies each as a filter or a boost as the merchandiser has configured it, and searches only the words that are left. Results come in tiers, from exact matches to related products, and every decision is explained, so a merchandiser can see why a product is where it is. A second application, Studio, is where merchandisers edit the vocabularies and rules behind it. It is demonstrated on a synthetic catalogue of about 380,000 SKUs across retail and industrial departments.
+This article is about the development of a layer that solves that problem: an e-commerce query interpretation layer built on top of Elasticsearch. For that query, the layer recognises the colour Red, size 10 (including size ranges such as 9–10 that contain it), the category Women's › Dresses and the On sale promotion, applies each as a filter or a boost as the merchandiser has configured it, and searches only the words that are left. Results come in tiers, from exact matches to related products, and every decision is explained, so a merchandiser can see why a product is where it is. A second application, Studio, is where merchandisers edit the vocabularies and rules behind it. It is demonstrated on a synthetic catalogue of about 380,000 SKUs across retail and industrial departments.
 
-I have written about its design in [a series of articles on Elastic Search Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-control-plane-architecture). This article is about something else: the workflow that built it.
+I have written about its design in [a series of articles on Elastic Search Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-control-plane-architecture). Those articles cover what it does. This one covers how it was built: the workflow behind it.
 
 ![Search results for "red size 10 womens dress on sale": size 10, Womens › Dresses and Red applied as filters to the Best matches, 10 Best and 1,118 Relevant products, with category counts in the sidebar](images/red-size-10-womens-dress-on-sale.png)
 
@@ -27,7 +27,7 @@ I have written about its design in [a series of articles on Elastic Search Labs]
 
 ## Who built it, and how
 
-I work alone on a project, with a fleet of AI coding agents doing the implementation. In October, its main repository merged 1,695 pull requests, about as many as Grafana, whose pull requests that month came from 198 people. Across the project's four repositories, the agents merge about 690 pull requests a week, where a typical engineer merges about two.
+I build this query interpretation layer alone, with a fleet of AI coding agents doing the implementation. In October, its main repository merged 1,695 pull requests, about as many as Grafana, whose pull requests that month came from 198 people. Across the project's four repositories, the agents merge about 690 pull requests a week, where a typical engineer merges about two.
 
 That is a large number, and it is not because I am unusually fast. It comes from a method: a set of rules, tests, gates and controls that let agents do the work of a large team without the codebase falling apart. This article shares that method, with the measurements behind it, how each was taken, and the objections they invite.
 

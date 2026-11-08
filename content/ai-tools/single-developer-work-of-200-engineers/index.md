@@ -52,7 +52,7 @@ The main repository, measured at its current `main` (8 November 2026), in physic
 
 Three repositories sit beside it: a synthetic data generator (209,000 lines of code, 72,000 of them tests), a configuration and data repository (about a million lines, mostly data) and the agent-control repository described below (77,000 lines of code and tests).
 
-Of the main repository's code, 70% is tests: 3.4 lines of test for every line of product code. With AI agents writing the code, that is not overhead. An agent will confidently change code it does not fully understand, and the tests catch it on every pull request, before I look at it. Without them, the rate of work below would be a rate of breakage. Section 2 covers how the tests are kept trustworthy.
+Of the main repository's code, 70% is tests: 3.4 lines of test for every line of product code. With AI agents writing the code, that is not overhead. An agent will confidently change code it does not fully understand, and the tests catch it on every pull request, before I look at it. Section 2 covers how the tests are kept trustworthy.
 
 ### The rate of work
 

@@ -127,7 +127,9 @@ Across all four repositories, tokens per merged PR fell 5.5x. But the mix of rep
 
 The 3.5x charges every token, including those spent in the other three repositories, to main-repository PRs alone. That overstates the cost per PR after the change, so 3.5x is a floor. The per-line figure, 3.3x, is far less sensitive to the mix and agrees with it. W45 is partial: the complete weeks W41–W44 alone give 3.4x.
 
-PRs also got about 2.4 times smaller, from a median of about 1,010 changed lines to about 420. One task per agent produces smaller PRs, which are easier to review; the per-line figure accounts for that.
+PRs also got smaller. The median fell from about 1,010 changed lines to about 420, and the average, with each PR capped at 5,000 lines, from about 1,400 to about 850. One task per agent produces smaller PRs, which are easier to review.
+
+Smaller PRs alone would lower tokens per PR without any real gain, so the figure that settles it is tokens per changed line, which does not depend on how the work is split into PRs. It fell 3.3x: the same amount of changed code now takes less than a third of the tokens. Smaller PRs come on top of that, which is why tokens per merged PR across all repositories fell further, 5.5x.
 
 ### What changed, and what I cannot separate
 

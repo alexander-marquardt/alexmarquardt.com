@@ -124,7 +124,7 @@ In the early months there were few written rules and few deterministic tests, an
 
 The workflow evolved from those failures, and it still improves the same way: a failure does not just get a fix, it gets a change to the system, so that the error, and its whole class of errors, cannot happen again. Each failure above followed the same path. The agent fixed the instance. The lesson went into the written guidance, with the issue number, so the next agent could read what went wrong. Then the guidance became a test or a CI check, because a written rule is followed most of the time and a check is followed every time. Tests now run on recorded responses instead of hand-written mocks; a bare skip is refused by CI; a missing mapping is an error, not a fallback; a weekly scan looks for suppressions already on `main`; and hooks refuse any write outside an agent's own clone. The guide itself was split into topic files behind a small root guide whose size is capped, so an agent reads only the part its task needs. The sections below are where those checks ended up.
 
-### 1. The rules are written down, and every rule has its incident
+#### 1. The rules are written down, and every rule has its incident
 
 `CONTRIBUTING.md` is the contract every agent works under: 350 lines, pointing into 66 topic files (about 36,000 lines). It covers architecture boundaries, naming, error handling, testing, documentation and review.
 
@@ -138,7 +138,7 @@ The same idea applies to the code and the documentation. Each package has a code
 
 Decisions live in the repository, not in chat. When I rule on how something should behave, the ruling is quoted verbatim in the issue, with its date, and the work traces back to it. An agent never has to guess what I meant three weeks ago.
 
-### 2. Deterministic tests, on recorded data
+#### 2. Deterministic tests, on recorded data
 
 The rule is simple: **tests run on fixed data in the repository.** When a behaviour depends on a live system, the agent records the live response as a fixture and tests against that. No test reaches a shared cluster, so a test that passed yesterday passes today for the same code.
 
@@ -150,7 +150,7 @@ Tests are also held to account:
 - Documentation claims are tested against the code. A "claim test" compares a docs page with what the code does, and is proven to bite by planting false sentences and checking that it catches them.
 - A flaky test is a severity-1 bug, not something to retry.
 
-### 3. CI is the boss, and the gates are tested too
+#### 3. CI is the boss, and the gates are tested too
 
 136 CI jobs run on every pull request. Some are ordinary (unit tests, type checks, end-to-end tests). Many exist because an agent once did something a human reviewer would have caught by instinct:
 
@@ -162,13 +162,13 @@ Tests are also held to account:
 
 The gates themselves get attacked. On one day, four separate reviews each found a new gate blind to a different spelling of the thing it was meant to catch (`./tests/` instead of `tests/`, a folded YAML value, a shell array). In one case 10 of 12 deliberately planted evasions got through. Since then, every new gate is run against a standard kit of evasions before review. An agent will find the gap in your gate. It is not malicious; it is optimising. The gate has to be built for that.
 
-### 4. Every change is reviewed by an agent whose job is to say no
+#### 4. Every change is reviewed by an agent whose job is to say no
 
 Every substantial change is reviewed twice against an adversarial review checklist: once by its author before opening the PR, and once by an independent reviewer agent before merging. The reviewer posts a verdict. Nothing merges without a verdict at the reviewed commit and green CI.
 
 Review agents are separate from implementing agents, with their own instructions and a narrower set of tools. The author's confidence carries no weight.
 
-### 5. A control plane for the agents, under version control
+#### 5. A control plane for the agents, under version control
 
 The agents themselves are run by code, not by me typing prompts. That code lives in its own repository, separate from the product, so process changes never tangle with product changes:
 
@@ -180,11 +180,11 @@ The agents themselves are run by code, not by me typing prompts. That code lives
 
 The control plane has been redesigned twice, the second time from scratch. The first two versions grew by patching: a watcher here, a re-send there. When it became clear that patches were adding failure modes faster than they removed them, I stopped patching and had it redesigned as a minimal allocator over one table. That is the rule now: a stall gets fixed today and gets a deterministic rule with a test, so it cannot recur.
 
-### 6. Issues are written so an agent can finish them
+#### 6. Issues are written so an agent can finish them
 
 Every issue title says what should happen and what happens now: "X should do Y; currently it does Z." The body states the consequence, the trigger, who is affected, and a "Done when" list that traces back to the request it came from. An agent picks up an issue cold, with no conversation history, and knows when it is finished.
 
-### 7. What I actually do
+#### 7. What I actually do
 
 I decide what the product should do. I test it the way a customer would, and when something is wrong I say so in plain words, often with a screenshot. Those words become an issue with my sentence quoted in it. I make the rulings that the rules cannot: when two good designs conflict, which one wins.
 

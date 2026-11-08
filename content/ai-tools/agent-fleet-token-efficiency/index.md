@@ -13,7 +13,7 @@ description: "Why coding agents use so many tokens, how to measure it from the t
 
 Coding agents use a lot of tokens. When I started running four parallel agents on one project, a week's token budget lasted about a day. Ten weeks and six changes later, tokens per changed line of code are down 3.3x. I spent the saving on doing more, not on making the budget last: the agents now merge 4.4 times as many PRs a week, on 19% fewer tokens.
 
-This article shows where the tokens went, how I measured that from the transcripts Claude Code already keeps on disk, and which changes paid off and which did not. [The previous article](/ai-tools/one-developer-coding-agent-fleet/) describes the project itself and how its code is kept under control.
+This article shows where the tokens went, how I measured that from the transcripts Claude Code already keeps on disk, and which changes paid off and which did not. [A companion article](/ai-tools/one-developer-coding-agent-fleet/) describes the project itself and how its code is kept under control.
 
 Measured over ten weeks of transcripts:
 
@@ -200,7 +200,7 @@ The index now holds 8 universal lines, and the rest moved to secondary indexes a
 
 ## 4. Turn rules into code
 
-[The previous article](/ai-tools/one-developer-coding-agent-fleet/) describes the CI gates as a way to keep the codebase sound. Here is their effect on tokens.
+[The companion article](/ai-tools/one-developer-coding-agent-fleet/) describes the CI gates as a way to keep the codebase sound. Here is their effect on tokens.
 
 In the first weeks, every incident produced a new rule in a prompt. The rules were followed most of the time, but across hundreds of agents a day, most of the time means several failures a day, and every agent pays to read every rule on every call.
 

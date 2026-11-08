@@ -212,7 +212,7 @@ I described the same idea for query execution in an [earlier article](https://ww
 
 ## 5. Let a program take load off the AI
 
-The largest checklist was running the fleet itself. At first a model did it: reading the queue, choosing the next task, writing each brief, launching agents and checking on them every hour. That is many model calls for work that needs no judgment, and a model doing bookkeeping skips a step now and then or stops when something blocks it. One night a single permission prompt in that session stopped every check for seven and a half hours.
+Turning rules into code took care of how the software is built. Running the fleet was a different job, and at first a model did all of it: the coordinating session read the queue of GitHub issues, chose the next one, wrote each brief, launched the agents and checked on them every hour. That is many model calls for work that needs no judgment, and a model doing bookkeeping skips a step now and then or stops when something blocks it. One night a single permission prompt in that session stopped every check for seven and a half hours.
 
 Most of that work moved into a small program:
 

@@ -21,7 +21,9 @@ The project solves that. It is an e-commerce query interpreter built on Elastics
 
 I have written about its design in [a series of articles on Elastic Search Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-control-plane-architecture). This article is about something else: the workflow that built it.
 
-<!-- SCREENSHOT: "red size 10 womens dress on sale" with its tiers, applied filters and the debug panel open -->
+![Search results for "red size 10 womens dress on sale": size 10, Womens › Dresses and Red applied as filters to the Best matches, 10 Best and 1,118 Relevant products, with category counts in the sidebar](images/red-size-10-womens-dress-on-sale.png)
+
+*The query above on the demo catalogue. Size 10 (plus the related value 9–10), Women's › Dresses and Red become filters on the ten Best matches; "on sale" is a boost, as configured; the words left, "red womens dress", are searched. The 1,118 Relevant products below the Best tier are the looser matches.*
 
 ## Who built it, and how
 

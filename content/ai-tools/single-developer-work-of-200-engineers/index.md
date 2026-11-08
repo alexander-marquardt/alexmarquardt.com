@@ -189,7 +189,7 @@ I also design the system described above, and every time it fails, I change it s
 
 None of this is free. A fleet of agents running around the clock uses a lot of tokens, and at the start a week's token budget lasted about a day. Six changes later, each changed line of code takes 3.3 times fewer tokens, and the agents merge 4.4 times as many pull requests a week on 19% fewer tokens. The [next article](/ai-tools/agent-fleet-token-efficiency/) shows how: where the tokens went, how I measured it from the transcripts already on disk, and what each change brought.
 
-What still breaks: rework. About one fix round per merged PR is too many, and it is where the next round of improvements goes. Agents still occasionally solve the wrong problem confidently, which is why the rulings are quoted and the agent reviews are adversarial.
+What still breaks: rework. About one fix round per merged PR is too many, and it is where the next round of improvements goes. Agents still occasionally solve the wrong problem confidently, which is why each issue quotes my ruling word for word, and the agent reviews are adversarial.
 
 ## Why this should matter to anyone running engineering
 

@@ -11,7 +11,7 @@ description: "Why coding agents use so many tokens, how to measure it from the t
 
 ## Summary
 
-I have a project with a significant amount of code written by AI agents. [The previous article](/ai-tools/one-engineer-hundreds-of-engineers/) describes how it is built and kept under control. With four agents running, a full weekly token allowance lasted about a day.
+I have a project with a significant amount of code written by AI agents. [The previous article](/ai-tools/single-developer-work-of-200-engineers/) describes how it is built and kept under control. With four agents running, a full weekly token allowance lasted about a day.
 
 Six changes later, the same work takes 3.3 to 5.5 times fewer tokens, so at the old pace that allowance would last three to five and a half days instead of one. Output did not fall to get there: each week the agents now merge more PRs and change more lines than before. This article explains where the tokens went, how I fixed it, and what each change brought, including the changes that brought nothing.
 

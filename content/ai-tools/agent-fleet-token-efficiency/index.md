@@ -51,7 +51,7 @@ On my coordinating session, a few days old, that script shows about 3,600 calls 
 
 One coordinating session watches the work. Up to a dozen background agents on a single cloud VM each take one GitHub issue, write the change and its tests in their own clone, and open a pull request. A separate review agent, told to look for reasons *not* to merge, must approve every PR at its current head commit, and the PR then lands through a merge queue with green CI.
 
-The main repository is a multi-service search product, mostly Python and TypeScript, with about 1,400 product-code files, about 600 of scripts and tooling, and 136 CI jobs. The agents also work in three smaller repositories: a data generator, a configuration-and-data repository and the agent-control repository. The fleet now merges 590 to 870 PRs a week across the four.
+The main repository is a multi-service search solution, mostly Python and TypeScript, with about 1,400 files of solution code, about 600 of scripts and tooling, and 136 CI jobs. The agents also work in three smaller repositories: a data generator, a configuration-and-data repository and the agent-control repository. The fleet now merges 590 to 870 PRs a week across the four.
 
 ## The results
 

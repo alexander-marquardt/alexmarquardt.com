@@ -20,7 +20,7 @@ Try this search on a few large e-commerce sites:
 
 You will not find many that get it right. You will often see results that treat the query as a bag of words: size 10 shoes, women's trousers, dresses that are not on sale or cost more than $40, or nothing at all. Few work out that "size 10" is a size, "womens dress" is a category, "on sale" is a promotion and "under $40" is a price limit, and then act on each one.
 
-This article is about the development of an e-commerce query interpretation layer, built on top of Elasticsearch, that solves this problem. It reads what the shopper typed and turns it into filters: for the above query, size 10, the category Women's › Dresses and a price of up to $40. The shopper does not have to find and click a single filter. The layer is demonstrated on a synthetic catalogue of about 380,000 SKUs across retail and industrial departments.
+This article is about the development of an e-commerce query interpretation layer, built on top of Elasticsearch, that solves this problem. It reads what the shopper typed and turns it into filters: for the above query, size 10, the category Women's › Dresses and a price of up to $40. The shopper does not have to find and click a single filter. The layer is demonstrated on a synthetic catalogue of about 380,000 SKUs across retail and industrial departments, and on a grocery catalogue built from Open Food Facts. How each is made is described in [Generating a synthetic industrial product catalog for search demos](/data-generation/synthetic-industrial-product-catalog/) and [Building a grocery demo dataset from Open Food Facts](/data-generation/open-food-facts-grocery-demo-data/), the background for anyone who wants to check the results described here.
 
 I have written about its design in [a series of articles on Elastic Search Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-control-plane-architecture). Those articles cover what it does. This one covers how it was built: the workflow behind it.
 
@@ -65,14 +65,14 @@ That is far more than the 4,000-line query rewriter the project started from. It
 |---|---|
 | Merged pull requests, main repository, October 2026 | 1,652 (about 373 a week) |
 | Merged pull requests, all four repositories, ISO weeks 41–44 (5 October to 1 November) | 2,760 (about 690 a week) |
-| Merged pull requests, main repository, April to 8 November 2026 | about 6,200 |
+| Merged pull requests, main repository, April to 8 November 2026 | 6,234: April 195, May 340, June 1,026, July 1,351, August 614, September 547, October 1,652, 1–8 November 509 |
 | Lines added / deleted, main repository, October (excluding recorded data) | 1,189,000 / 348,000 |
 | Median pull request size, main repository, October | 492 changed lines (the 420 in [the companion article](/ai-tools/agent-fleet-token-efficiency/) is the median over all four repositories, weeks 41–45) |
 | Test functions, backend | 27,635 |
 | Test cases, frontend | 12,467, plus 144 end-to-end spec files |
 | CI | 58 workflows, 136 jobs |
 | Merges later reverted | 0.2 to 0.7% |
-| Commit authors | 1 person (3,032 of the 3,048 commits in `main`'s current history, which starts on 7 August; the other 16 are Dependabot. The pull requests merged before August are counted from GitHub's PR records.) |
+| Authors, main repository, all time | Pull requests: 6,225 of the 6,295 merged are mine, 36 are from other developers (May to July 2026) and 34 from Dependabot. Commits in `main`: 7,229 of 7,537 are mine, 274 are from other developers (September 2025 to July 2026) and 34 from Dependabot. |
 
 ### Scale, compared
 

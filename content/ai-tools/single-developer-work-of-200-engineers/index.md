@@ -29,6 +29,8 @@ I have written about its design in [a series of articles on Elastic Search Labs]
 
 I build this query interpretation layer alone, with a fleet of AI coding agents doing the implementation. In October, its main repository merged 1,695 pull requests, about as many as Grafana, whose pull requests that month came from 198 people. Across the project's four repositories, the agents merge about 690 pull requests a week, where a typical engineer merges about two.
 
+The product itself, backend and frontend, is about 620,000 lines of code. The main repository holds about 3 million, and most of the difference is tests: 2.1 million lines of them. That is not an accident. When agents write the code, the tests are what tell me it still works, so a large test suite that gives the same answer every time is the first requirement of working this way.
+
 That is a large number, and it is not because I am unusually fast. It comes from a method: a set of rules, tests, gates and controls that let agents do the work of a large team without the codebase falling apart. This article shares that method, with the measurements behind it, how each was taken, and the objections they invite.
 
 ## The numbers
@@ -50,7 +52,7 @@ The main repository, measured at its current `main` (8 November 2026), in physic
 
 Three repositories sit beside it: a synthetic data generator (209,000 lines of code, 72,000 of them tests), a configuration and data repository (about a million lines, mostly data) and the agent-control repository described below (77,000 lines of code and tests).
 
-Of the main repository's code, 70% is tests: 3.4 lines of test for every line of product code. That is deliberate, and it is the first half of how this works. More on that below.
+Of the main repository's code, 70% is tests: 3.4 lines of test for every line of product code. With AI agents writing the code, that is not overhead. An agent will confidently change code it does not fully understand, and the tests catch it on every pull request, before I look at it. Without them, the rate of work below would be a rate of breakage. Section 2 covers how the tests are kept trustworthy.
 
 ### The rate of work
 

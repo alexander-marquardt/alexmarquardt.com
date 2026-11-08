@@ -15,7 +15,7 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 
 # AI Tools
 - [One developer, a fleet of Claude Code agents, 1,652 merged PRs in a month](/ai-tools/one-developer-coding-agent-fleet/) (Nov 8, 2026)
-- [Where a fleet of coding agents spends its tokens: ten weeks of transcripts, and what each fix recovered](/ai-tools/agent-fleet-token-efficiency/) (Nov 8, 2026)
+- [Where a fleet of Claude Code agents spends its tokens, and how I cut it 3.3x](/ai-tools/agent-fleet-token-efficiency/) (Nov 8, 2026)
 - [CheckLoop: Autonomous Multi-Pass AI Code Review](/ai-tools/checkloop-autonomous-code-review) (Mar 7, 2026)
 
 # Ecommerce videos

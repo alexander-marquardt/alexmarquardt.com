@@ -20,12 +20,12 @@ Measured over ten weeks of transcripts:
 - **The same code takes less than a third of the tokens.** Tokens per changed line fell 3.3x, or about 2.5x weighted by the price of each kind of token. This is the headline figure because it does not depend on how the work is split into PRs.
 - **PRs also got smaller, so tokens per PR fell further.** The average PR went from about 1,400 to 850 changed lines (1.65x smaller), because each agent now does one task. With the 3.3x per line, that makes tokens per merged PR about 5.5x lower (3.3 × 1.65).
 - **Merged PRs per week rose 4.4x**, on 19% fewer tokens a week.
-- **Reverts stayed rare** (0.2 to 0.7% of merges), but rework per PR did not fall.
+- **Reverts stayed rare** (0.2 to 0.7% of merges), but rework per PR rose slightly, from 0.8 to about 1 fix round per merged PR.
 
 Most of the tokens are not the code the agents write but the context they send. The model keeps nothing between calls, so each call sends the whole conversation again, and an agent makes many calls per task. The total is proportional to the number of calls times the average context per call. Every change that helped made one of those two smaller. What I changed, and what each change brought (the terms are explained in the sections below):
 
 1. **Measure from the transcripts**, per merged PR, not per hour. It found the levers, including the largest, which my own tuning had missed for weeks: cache expiry while agents waited, 31% of agent usage.
-2. **End each agent after one task**, with a written handoff and a hook-enforced context ceiling. The big step, together with change 3: median context per request, across all kinds of agent, fell from 218k to 101k tokens on the first day.
+2. **End each agent after one task**, with a written handoff and a hook-enforced context ceiling. Together with change 3, this was the big step. On the ceiling's first day, median context per request, across all kinds of agent, fell from 218k to 101k tokens.
 3. **Keep the prompt cache warm**, and load less into every agent. Cache expiry fell from 31% of agent usage to 0.7%.
 4. **Turn rules into code**, so the model does not have to remember them. No separate number.
 5. **Let a program take load off the AI** for the routine work of running the fleet. The coordinator's tokens per merged PR fell to 7% of their baseline.
@@ -45,7 +45,7 @@ The arithmetic is the same for one session as for a dozen agents. Without a flee
 - **Keep what loads into every session small**: only the rules that apply everywhere, with pointers to the rest.
 - **Make the codebase easy to navigate**: short module summaries, small files, comments that point to the details.
 
-On my coordinating session, a few days old, that script shows about 3,600 calls and more than 200 cache-read tokens for every output token. That ratio is the subject of this article. The gates and the scheduling program below pay off only with many agents on a large, rule-heavy repository.
+On the session from which I run the fleet (the coordinator, described next), a few days old, that script shows about 3,600 calls and more than 200 cache-read tokens for every output token. That ratio is the subject of this article. The gates and the scheduling program below pay off only with many agents on a large, rule-heavy repository.
 
 ## The setup
 
@@ -55,13 +55,13 @@ The main repository is a multi-service search solution, mostly Python and TypeSc
 
 ## The results
 
-The figures come from one script over every transcript since September. Every token counts once: fresh input, cache writes, cache reads and output. The script was checked against an independent count I made at the start, for 15 September to 3 October, and agreed within 2.3%. Weeks are ISO weeks, Monday to Sunday: W36 starts on 31 August, W41 on 5 October, and W45 is partial, to 7 November.
+The figures come from one script over every transcript since September. Every token counts once: fresh input, cache writes, cache reads and output (the cache terms are explained in ["Why agents use so many tokens"](#why-agents-use-so-many-tokens)). The script was checked against an independent count I made at the start, for 15 September to 3 October, and agreed within 2.3%. Weeks are ISO weeks, Monday to Sunday: W36 starts on 31 August, W41 on 5 October, and W45 is partial, to 7 November.
 
 Changed lines are additions plus deletions, from all four repositories. A few PRs a week regenerate data files and change tens of thousands of lines, so for tokens per line, a PR counts at most 5,000 lines.
 
 I report token use relative to a baseline rather than as absolute counts, by choice: the ratios transfer to any budget, the counts do not. In the table, each token column is an index: 100 is its value over the four weeks before the changes, W36–W39, taken together. A value of 25 means a quarter of the baseline's tokens for the same unit of work; 135 means 35% more. "All tokens in the week" is every token used by the coordinator and every agent that week, across all four repositories; the other token columns divide it by merged PRs or changed lines. The [script in the appendix](#appendix-a-script-to-sum-tokens-per-session) measures your own absolute figures.
 
-| Week | Merged PRs (all / main repo) | All tokens in the week (vs baseline = 100) | Tokens per main-repo PR (vs baseline = 100) | Tokens per merged PR, all repos (vs baseline = 100) | Median PR size (lines) | Tokens per changed line (vs baseline = 100) |
+| Week | Merged PRs (all / main repo) | All tokens in the week (vs baseline = 100) | Tokens per main-repository PR (vs baseline = 100) | Tokens per merged PR, all repos (vs baseline = 100) | Median PR size (lines) | Tokens per changed line (vs baseline = 100) |
 |---|---|---|---|---|---|---|
 | W36 | 195 / 195 | 109 | 76 | 86 | 915 | 99 |
 | W37 | 153 / 153 | 90 | 80 | 90 | 998 | 96 |
@@ -77,7 +77,7 @@ I report token use relative to a baseline rather than as absolute counts, by cho
 
 **Before** (W36–W39): the baseline, 100 in every token column, at about 150 merged PRs a week.
 
-**After** (W41–W45), against that baseline: tokens per main-repo PR at 29 (3.5x fewer), per merged PR across all repositories at 18 (5.5x fewer), per changed line at 30.6 (3.3x fewer), and all tokens in the week at 81 (19% fewer), at about 680 merged PRs a week.
+**After** (W41–W45), against that baseline: tokens per main-repository PR at 29 (3.5x fewer), per merged PR across all repositories at 18 (5.5x fewer), per changed line at 30.6 (3.3x fewer), and all tokens in the week at 81 (19% fewer), at about 680 merged PRs a week.
 
 ### Why the headline is per line, not per PR
 
@@ -87,25 +87,27 @@ Raw tokens count a cache read the same as an output token, although a cache read
 
 PRs did get smaller. The median, across all four repositories, fell from about 1,010 changed lines to about 420 (the main repository alone was 492 in October), and the average, with each PR capped at 5,000 lines, from about 1,400 to about 850. One task per agent produces smaller PRs, which are easier to review. That is why the per-PR figures fell further than the per-line one.
 
-The 5.5x across all four repositories also includes a shift in the mix: the main repository was 89% of merged PRs before and 56% after, and PRs in the smaller repositories are smaller (configuration and data changes). The 3.5x avoids that by charging every token, including those spent in the other three repositories, to main-repository PRs alone, which overstates the cost per PR after the change. W45 is partial: the complete weeks W41–W44 alone give 3.4x for tokens per main-repository PR.
+Part of the smaller PR size is a shift in the mix: the main repository was 89% of merged PRs before and 56% after, and PRs in the smaller repositories are smaller (configuration and data changes). So the 5.5x partly reflects what was merged, not only how it was done. The 3.5x avoids that by charging every token, including those spent in the other three repositories, to main-repository PRs alone. That overstates the cost per PR after the change, so 3.5x is the conservative figure. W45 is partial: the complete weeks W41–W44 alone give 3.4x for tokens per main-repository PR.
 
 ### What changed, and what I cannot separate
 
 Almost all of the drop happened between W40 and W41. Two changes landed together: short-lived agents with a hook-enforced context ceiling, and a cap on waits that stopped cache expiry. I did not run them separately, so I cannot divide the step between them. The direct evidence is the context distribution: on the first day of the ceiling, the median context per agent request fell from 218k to 101k tokens.
 
-The model mix changed too, but earlier. By W40, 92% of tokens were already on the newer generation of Claude Opus, the largest model, and tokens per main-repo PR were still near the old level, so the generation change alone did not produce the step. In W41 a smaller model also took 27% of tokens, and 69% in W42.
+The model mix changed too, but earlier. By W40, 92% of tokens were already on the newer generation of Claude Opus, the largest model, and tokens per main-repository PR were still near the old level, so the generation change alone did not produce the step. In W41 a smaller model also took 27% of tokens, and 69% in W42.
 
 Per changed line, W40 was already at 68, so part of the per-line drop belongs to that week, when the newer model generation arrived and PRs were larger. The step from 68 to 25 is the one I attribute to the ceiling and the wait cap.
 
-The later weeks moved for reasons I also did not isolate. W42 and W43, the highest weeks after the step, are the weeks a smaller model carried more than half the tokens; implementation then went back to the strongest model for quality. As the easy issues ran out, the remaining ones were larger, which pushes the per-PR figure up. Cache writes per merged PR more than halved from W41 to W45, as the later cache fixes took hold.
+The later weeks moved for reasons I also did not isolate. W42 and W43, the weeks with the highest tokens per PR after the step, are the weeks a smaller model carried more than half the tokens; implementation then went back to the strongest model for quality. As the easy issues ran out, the remaining ones were larger, which pushes the per-PR figure up. Cache writes per merged PR more than halved from W41 to W45, as the later cache fixes took hold.
 
 ### What did not change, or got worse
 
-- **What the agents write did not fall.** Output tokens are everything the model writes, and code is only a small part of it. Measured from the transcripts, about half of the output is the model reasoning before it acts, about a third is the commands it runs (tests, git, searches), and about a tenth is the file edits themselves; replies, PR comments and handoff notes are under a tenth together. Much of that is a fixed cost per task: understanding the issue, running the tests, opening the PR. Smaller PRs pay it more often. So output per PR stayed about the same (up 9%) while each PR carried about 40% fewer changed lines (about 1,400 down to 850), which means the agents now write about 1.8 times as many output tokens per changed line. The saving came from the context the agents re-read, not from what they write.
+- **What the agents write did not fall.** Output tokens are everything the model writes, and code is only a small part of it. Measured from the transcripts, about half of the output is the model reasoning before it acts, about a third is the commands it runs (tests, git, searches), and about a tenth is the file edits themselves; replies, PR comments and handoff notes are under a tenth together. Much of that is a fixed cost per task: understanding the issue, running the tests, opening the PR.
 - **Reverts** rose from 0–1 a week to 2–4 a week in W42–W44, 0.2 to 0.7% of merges at four times the volume.
 - **Fix rounds per merged PR rose**, from 0.80 to 0.9–1.0. A fix round is one pass of: a reviewer blocks the PR, an agent fixes what it found, and the PR is reviewed again. My weekly token reports put this rework at about 20% of agent tokens.
 - **Reviews started on PRs whose CI had already failed.** A reviewer that finds CI red can only block the PR and say so, which CI had already said, so the round is wasted. By mid-October this was 26% of the findings that blocked a PR, up from 15%. The program that now runs the fleet (change 5) checks CI before it starts a review and sends a red PR straight to a fix round.
 - **The fixed context of an agent's first turn grew** from 9.9k to 14k tokens over the same period: the system prompt, tool definitions and rules every agent starts with. Most of it is now read from the cache, so the part written fresh each time fell (change 3).
+
+Smaller PRs pay that fixed cost more often. So output per PR stayed about the same (up 9%) while each PR carried about 40% fewer changed lines (about 1,400 down to 850), which means the agents now write about 1.8 times as many output tokens per changed line. The saving came from the context the agents re-read, not from what they write.
 
 Tokens per PR fell; rework per PR did not. That is where the next round of work is.
 
@@ -121,7 +123,7 @@ The model writes its response one token at a time. Each new token is predicted f
 
 ![Inside one call: the model predicts "Let", then "me", then "read", then "cart.py". Each prediction reads the whole history so far, and each new token is added to the history before the next token is predicted](images/one-call.svg)
 
-Done literally, that would be slow. A 500-token response to a 100k-token input would push those 100k tokens through the network 500 times. So, for efficiency, the model does not push the whole history through the network again for every token. When the call starts, it processes the input once and keeps the intermediate results for every token (the [KV cache](https://huggingface.co/blog/not-lain/kv-caching)). Each new token then goes through the network on its own and attends to those stored results, so it is still predicted from the whole history. The output is the same as recomputing everything, only faster. A call is accordingly billed once for its input, plus once for each token of its response. When the call ends, the stored work is discarded. Keep that in mind: an agent makes many calls, and each one starts again from nothing unless the provider kept that work (the cache, below).
+Done literally, that would be slow. A 500-token response to a 100k-token input would push those 100k tokens through the network 500 times. So, for efficiency, the model does not push the whole history through the network again for every token. When the call starts, it processes the input once and keeps the intermediate results for every token (the [KV cache](https://huggingface.co/blog/not-lain/kv-caching)). Each new token then goes through the network on its own and looks up those stored results, so it is still predicted from the whole history. The output is the same as recomputing everything, only faster. A call is accordingly billed once for its input, plus once for each token of its response. When the call ends, the stored work is discarded. Keep that in mind: an agent makes many calls, and each one starts again from nothing unless the provider kept that work (the cache, below).
 
 ### Many calls: the agent sends the whole conversation again, every time
 
@@ -144,7 +146,7 @@ Call 101 is call 100 plus one response and one tool result. The provider can kee
 | Inside one call | one token | always (the KV cache) |
 | From one call to the next | a response and a tool result | only while the prompt cache is alive |
 
-Reading a cached prefix costs a tenth of the normal input price or less, depending on the model. Writing a prefix into the cache costs 1.25 times the normal price for a five-minute cache, or twice the price for a one-hour cache, and every use resets the clock. In Claude Code the main interactive session can get a one-hour cache; sub-agents, where most of this fleet's tokens go, get five minutes.
+Reading the cached part of a prompt (its prefix: the conversation from the start up to where it last changed) costs a tenth of the normal input price or less, depending on the model. Writing that part into the cache costs 1.25 times the normal price for a five-minute cache, or twice the price for a one-hour cache, and every use resets the clock. In Claude Code the main interactive session can get a one-hour cache; sub-agents, where most of this fleet's tokens go, get five minutes.
 
 Three consequences shaped everything that follows:
 
@@ -174,7 +176,7 @@ Two details of the method matter more than they look:
 1. **Count each request once.** One request appears as several records, one per content block, each with a copy of the usage. My first daily script counted every record, and its figure was about a third too high.
 2. **Divide by work done, not by time.** Tokens per hour is a budget signal; tokens per merged PR is the efficiency signal. On the first day of the context ceiling, hourly token use did not move, but merged PRs per hour went from 0.57 to 2.06. The saving went into throughput.
 
-The first breakdown, weighted by price, from one day's transcripts: the brief was 0.6% of use, file reads about 27%, the agents' own messages, written once and then re-sent with every later call, about 26%, and the system prompt and tool definitions about 15%. The rest was other tool results, such as command output, and the conversation's own messages.
+The first breakdown, weighted by price (that is what "use" and "usage" mean in this article, as against raw token counts), from one day's transcripts: the brief was 0.6% of use, file reads about 27%, the agents' own messages, written once and then re-sent with every later call, about 26%, and the system prompt and tool definitions about 15%. The rest, about 30%, was other tool results, mostly command output.
 
 A second measurement, from one day's transcripts, showed where the waste was. Of the context an agent carried, only 1.5 to 3% was never referenced again. The waste was not irrelevant content; it was relevant content carried across hundreds of calls. Reading a file again when it is needed costs one cache write. Carrying it costs a cache read on every call, cheaper each time but repeated. If the content is needed again only once, carrying it costs more than reading it again after about a dozen calls.
 
@@ -255,11 +257,11 @@ I cannot give a separate number for these; their effect is spread across every r
 
 | Change | Effect | How I know |
 |---|---|---|
-| Shorter briefs | Never mattered: the brief was 0.6% of use | One day |
+| Shorter briefs | Never mattered: the brief was 0.6% of use | Measured, one day's transcripts |
 | Blind head-and-tail cap on tool output | Did not work: cut text the agent needed about half the time | Estimated |
 | Per-command output digests, refusing whole-file reads of big files | 5–10%; shipped, not measured separately | Estimated |
 | A lower handoff ceiling (90–110k) | 3–12%; below 50k a handoff costs more than it saves | Estimated |
-| A mechanical gate before review | 71% of the review findings that blocked a PR were mechanical, yet only about 3% of tokens would be saved | Estimated |
+| A mechanical gate before review | 71% of the review findings that blocked a PR were mechanical, yet only about 3% of tokens would be saved; the cheap part, checking CI before a review starts, was adopted (change 5) | Estimated |
 | No re-review after a pure merge of main | Under 1.5%: most re-reviews follow a real fix | Estimated |
 | A helper that reads several file ranges in one call | Built, but in one sample of long runs two thirds of read turns still followed another read | One sample: low adoption |
 | A per-job read budget with a pointer to a symbol read | Too new to measure | Not yet measured |

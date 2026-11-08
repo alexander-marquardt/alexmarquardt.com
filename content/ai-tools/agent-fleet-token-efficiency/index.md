@@ -1,6 +1,6 @@
 ---
 showtoc: true
-title: "Where a fleet of Claude Code agents spends its tokens, and how I cut it 3.3x"
+title: "The same work on a third of the tokens: tuning a fleet of coding agents"
 date: 2026-11-08
 draft: false
 slug: agent-fleet-token-efficiency

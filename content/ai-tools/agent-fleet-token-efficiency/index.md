@@ -1,12 +1,12 @@
 ---
 showtoc: true
-title: "Six changes that cut Claude Code token use per merged pull request 3.5x"
+title: "How I reduced Claude Code's tokens per line of code by 3.3x"
 date: 2026-11-07
 draft: true
 slug: agent-fleet-token-efficiency
 tags: ["ai", "agents", "developer-tooling", "claude", "token-efficiency"]
 categories: ["AI-Assisted Development"]
-description: "Why coding agents use so many tokens, how to measure it from the transcripts already on your disk, and the changes that cut tokens per merged pull request 3.5x on a project with a significant amount of AI-written code."
+description: "Why coding agents use so many tokens, how to measure it from the transcripts already on your disk, and the changes that cut tokens per changed line of code 3.3x on a project with a significant amount of AI-written code."
 ---
 
 ## Summary
@@ -17,12 +17,12 @@ Six changes later, the same work takes 3.3 to 5.5 times fewer tokens, so at the 
 
 Measured over ten weeks and about 1.36 million model requests:
 
-- **Tokens per merged pull request in the main repository fell 3.5x**, from about 133 million to about 38 million.
-- **Per changed line, they fell 3.3x**, from about 85,000 to about 26,000.
+- **Tokens per changed line fell 3.3x**, from about 85,000 to about 26,000.
+- **Per merged pull request in the main repository, they fell 3.5x**, from about 133 million to about 38 million, partly because PRs got smaller.
 - **Merged PRs per week rose 4.4x**, on 19% fewer tokens a week.
 - **Reverts stayed rare** (0.2 to 0.7% of merges), but rework per PR did not fall.
 
-Across all four repositories the agents work in, the drop is 5.5x per merged PR. The headline uses the smaller number; [the results](#the-results) say why.
+Across all four repositories the agents work in, the drop is 5.5x per merged PR. The headline uses tokens per changed line, because tokens per PR also fall when PRs simply get smaller; [the results](#the-results) say more.
 
 The cost comes from one fact: the model has no memory, so every call re-sends the whole conversation, and the tokens used are roughly the number of calls times the context carried. Everything that helped reduced one of those two factors. What I changed, and what each change brought:
 
@@ -121,15 +121,13 @@ Changed lines are additions plus deletions, from all four repositories. A few PR
 
 **After** (W41–W45): 38M tokens per main-repo PR, 21M per merged PR across all repositories, 26k per changed line. About 680 merged PRs and 15 billion tokens a week.
 
-### Why the headline is 3.5x and not 5.5x
+### Why the headline is per line, not per PR
 
-Across all four repositories, tokens per merged PR fell 5.5x. But the mix of repositories changed: the main repository was 89% of merged PRs before and 56% after, and PRs in the smaller repositories are smaller (configuration and data changes). Part of the 5.5x is that shift, not efficiency.
+Smaller PRs alone would lower tokens per PR without any real gain. Tokens per changed line do not depend on how the work is split into PRs, so they are the headline figure. They fell 3.3x: the same amount of changed code now takes less than a third of the tokens.
 
-The 3.5x charges every token, including those spent in the other three repositories, to main-repository PRs alone. That overstates the cost per PR after the change, so 3.5x is a floor. The per-line figure, 3.3x, is far less sensitive to the mix and agrees with it. W45 is partial: the complete weeks W41–W44 alone give 3.4x.
+PRs did get smaller. The median fell from about 1,010 changed lines to about 420, and the average, with each PR capped at 5,000 lines, from about 1,400 to about 850. One task per agent produces smaller PRs, which are easier to review. That is why the per-PR figures fell further than the per-line one.
 
-PRs also got smaller. The median fell from about 1,010 changed lines to about 420, and the average, with each PR capped at 5,000 lines, from about 1,400 to about 850. One task per agent produces smaller PRs, which are easier to review.
-
-Smaller PRs alone would lower tokens per PR without any real gain, so the figure that settles it is tokens per changed line, which does not depend on how the work is split into PRs. It fell 3.3x: the same amount of changed code now takes less than a third of the tokens. Smaller PRs come on top of that, which is why tokens per merged PR across all repositories fell further, 5.5x.
+The 5.5x across all four repositories also includes a shift in the mix: the main repository was 89% of merged PRs before and 56% after, and PRs in the smaller repositories are smaller (configuration and data changes). The 3.5x avoids that by charging every token, including those spent in the other three repositories, to main-repository PRs alone, which overstates the cost per PR after the change. W45 is partial: the complete weeks W41–W44 alone give 3.4x.
 
 ### What changed, and what I cannot separate
 

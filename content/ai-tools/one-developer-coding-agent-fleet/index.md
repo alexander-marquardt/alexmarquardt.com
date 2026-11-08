@@ -1,13 +1,16 @@
 ---
 showtoc: true
-title: "How a Single Developer Can Do the Work of 200 Engineers"
+title: "One developer, 1,652 merged pull requests in a month: what it takes to run coding agents at that rate"
 date: 2026-11-08
 draft: false
-slug: single-developer-work-of-200-engineers
+slug: one-developer-coding-agent-fleet
+aliases: ["/ai-tools/single-developer-work-of-200-engineers/"]
 tags: ["ai", "agents", "developer-tooling", "claude", "engineering-productivity"]
 categories: ["AI-Assisted Development"]
-description: "How one developer runs a fleet of Claude Code agents that merges as many pull requests a month as a 200-person open-source project, and the methodology that keeps it under control: written rules, tests that outnumber product code three to one, CI gates, independent review and an agent control plane."
+description: "How one developer directs a fleet of Claude Code agents that merged 1,652 pull requests in a month, and the method that keeps it under control: written rules, tests that outnumber product code three to one, CI gates, independent review and an agent control plane."
 ---
+
+In October, the main repository of the project I work on merged 1,652 pull requests. That is in the range of the busiest open-source repositories on GitHub: that month Home Assistant merged 3,763 from 394 people, and CPython 1,607 from 184. Here one person directs the work, and a fleet of coding agents writes the code. This article is about the rules, tests, gates and control plane that keep that rate from turning into chaos, with the measurements behind them and the objections they invite.
 
 ## The problem it solves
 
@@ -27,11 +30,11 @@ I have written about its design in [a series of articles on Elastic Search Labs]
 
 ## Who built it, and how
 
-I work on this query interpretation layer alone, with a fleet of AI coding agents doing the implementation. In October, its main repository merged 1,652 pull requests, about as many as Grafana, whose pull requests that month came from 198 people. Across the project's four repositories, the agents merge about 690 pull requests a week, where a typical engineer merges about two.
+I have worked on this query interpretation layer alone since August, with a fleet of AI coding agents doing the implementation; a colleague contributed in its first months. Across the project's four repositories, the agents merge about 690 pull requests a week, where a typical engineer merges about two.
 
 The product itself, backend and frontend, is about 620,000 lines of code. The main repository holds about 3 million, and most of the difference is tests: 2.1 million lines of them. That is not an accident. When agents write the code, the tests are what tell me it still works, so a large test suite that gives the same answer every time is the first requirement of working this way.
 
-That is a large number, and it is not because I am unusually fast. It comes from a method: a set of rules, tests, gates and controls that let agents do the work of a large team without the codebase falling apart. This article shares that method, with the measurements behind it, how each was taken, and the objections they invite.
+The rate comes from a method: a set of rules, tests, gates and controls that let agents do the work of a large team without the codebase falling apart. The rest of this article describes it, with the measurements behind it and how each was taken.
 
 ## The numbers
 
@@ -54,6 +57,8 @@ Three repositories sit beside it: a synthetic data generator (209,000 lines of c
 
 Of the main repository's code, 70% is tests: 3.4 lines of test for every line of product code. With AI agents writing the code, that is not overhead. An agent will confidently change code it does not fully understand, and the tests catch it on every pull request, before I look at it. Part 2 below covers how the tests are kept trustworthy.
 
+The 620,000 lines are not one parser. They hold the query engine, a merchandiser's interface (the screenshot above) with editors for its rules, vocabularies and data, the indexing and data-management services, an API for integrating it into an application server, and the demo storefront. Agent-written code is also more verbose than a senior engineer's; the file-size caps, the duplicate-passage check and the code maps described below exist to keep that in check, not to pretend it is absent. If your instinct is that this could be smaller, I share it. What matters to me is whether a fresh agent can find and change a behaviour, not the line count.
+
 ### The rate of work
 
 | Measure | Value |
@@ -62,58 +67,43 @@ Of the main repository's code, 70% is tests: 3.4 lines of test for every line of
 | Merged pull requests, all four repositories, weeks 41–44 | about 690 a week |
 | Merged pull requests, main repository, April to 8 November 2026 | about 6,200 |
 | Lines added / deleted, main repository, October (excluding recorded data) | 1,189,000 / 348,000 |
-| Median pull request size, main repository, October | 492 changed lines |
-| Issues filed / closed, main repository | 8,181 / 6,429 |
+| Median pull request size, main repository, October | 492 changed lines (the companion article's 420 is all four repositories, W41–W45) |
 | Test functions, backend | 27,635 |
 | Test cases, frontend | 12,467, plus 144 end-to-end spec files |
 | CI | 58 workflows, 136 jobs |
 | Merges later reverted | 0.2 to 0.7% |
 | Commit authors | 1 person (3,032 of 3,048 commits on `main` since August; the other 16 are Dependabot) |
 
-### How that compares with a well-known project
+### Scale, compared
 
-[Grafana](https://github.com/grafana/grafana) is one of the busiest open-source repositories on GitHub. Here is October 2026 for both, measured the same way from the GitHub API (merged pull requests; bots excluded from the author count):
+Here is October 2026 for my main repository and for some of the best-known open-source repositories on GitHub, measured the same way from the GitHub API on 8 November (merged pull requests; bots excluded from the author count):
 
 | Repository | Merged PRs, October | People authoring them | Median PR size (changed lines) |
 |---|---|---|---|
-| grafana/grafana | 1,706 | 198 | 122 |
+| home-assistant/core | 3,763 | 394 | 54 |
+| microsoft/vscode | 2,549 | 97 | 168 |
+| python/cpython | 1,607 | 184 | 31 |
+| rust-lang/rust | 845 | 234 | 78 |
+| kubernetes/kubernetes | 570 | 169 | 132 |
 | My main repository | 1,652 | 1 | 492 |
 
-About the same number of merged pull requests as Grafana's 198 contributors, each four times larger, from one person.
+About 700 of CPython's merged PRs are automated backports; the 900 written by people came from 183 of them.
 
-My pull requests are opened by agents under my GitHub account, so my author count is the number of people directing the work. Grafana's author count includes occasional outside contributors, so its core team is smaller than 198. It is still a large, well-run engineering organisation, and the comparison is pull request for pull request.
+The comparison is of merged-PR throughput only, the one number all of these repositories expose. Their pull requests carry products with millions of users and a release process; mine carry a product in its first year. My pull requests are opened by agents under my GitHub account, so my author count is the number of people directing the work. Their author counts include occasional outside contributors, so their core teams are smaller.
 
-### How that compares with published benchmarks
-
-The comparison uses merged pull requests per engineer per week, because it is the most widely published productivity benchmark:
-
-- [Graphite](https://graphite.dev/research) puts the median active developer at **2 merged PRs a week**.
-- [LinearB's benchmarks](https://linearb.io/engineering-benchmarks/) put the elite tier at **above 2.0** merged PRs per developer per week.
-
-So 2 a week is both a typical engineer and the start of the elite tier.
-
-| My output | Engineers at 2 merged PRs a week |
-|---|---|
-| Main repository only, October (373/week) | 186 |
-| All four repositories (690/week) | 345 |
-
-The more conservative figure, the main repository only, is 186.
-
-And that comparison flatters the benchmark, not me. [Graphite's median pull request is 47 changed lines](https://graphite.dev/research/median-pr_size). Mine, in the main repository in October, is 492, ten times larger. If PR size were normalised, the numbers above would grow, not shrink.
+Against the most widely published productivity benchmark, about 2 merged PRs per engineer per week ([Graphite](https://graphite.dev/research) puts the median active developer there, and [LinearB's benchmarks](https://linearb.io/engineering-benchmarks/) start the elite tier at above 2.0), the main repository's 373 a week is the output of about 186 engineers. The benchmark's [median PR is 47 changed lines](https://graphite.dev/research/median-pr_size); mine in October is 492. Normalising by size would raise the ratio, not lower it.
 
 ## Fair objections
 
-**"Pull requests are a vanity metric. Split the work finer and the count goes up."** True in general, which is why the PR size matters. These PRs are nine times the industry median, not smaller. The companion article on token use makes the same point from the other side: tokens per changed line, not per PR, is the honest efficiency figure.
+**"Pull requests are a vanity metric. Split the work finer and the count goes up."** True in general, which is why the PR size matters. These PRs are ten times the industry median, not smaller. The companion article on token use makes the same point from the other side: tokens per changed line, not per PR, is the honest efficiency figure.
 
 **"Lines of code are meaningless."** Agreed. That is why the headline uses merged PRs, each of which passed review and CI, and the line counts are only there to show scale and how much of it is tests.
 
 **"70% of it is tests. That's padding."** It is the opposite. Tests are what let one person trust code they did not type. Every test runs on recorded data in the repository, so it gives the same answer every time. Without that, the rate above would be a rate of producing bugs.
 
-**"Then the quality must be bad."** 0.2 to 0.7% of merges are later reverted. Every PR is reviewed by a separate agent whose job is to find what is wrong with it, and must pass 136 CI jobs before it merges. The product is demonstrated live. The weak spot is rework, not breakage: about one fix round per merged PR, which I measure and am working to reduce.
+**"Then the quality must be bad."** The product has no production users yet; it is demonstrated live on the synthetic catalogue. So the quality evidence is what I can measure: 0.2 to 0.7% of merges are later reverted, every PR is reviewed by a separate agent whose job is to find what is wrong with it, and every PR must pass 136 CI jobs before it merges. A measure of how many real shopper queries the layer interprets correctly, tracked over time, is the one I do not have yet, and the next thing to build. The weak spot is rework, not breakage: about one fix round per merged PR, which I measure and am working to reduce.
 
-**"An engineer does more than merge PRs: design, review, triage, operations."** So does this system. Review is done by agents. Triage is done by agents: 8,181 issues filed, each new one labelled with a severity, a product lane and an audience. Operations are done by agents: a watchdog checks the fleet every 15 minutes. What remains for me is the part that cannot be delegated: what the product should do, and judging whether it does it.
-
-**"So you're saying engineers are obsolete."** No. I am saying the job has changed, from writing code to designing the system that writes, checks and merges it, and making the product decisions it cannot make. The rest of this article is what that system looks like.
+**"An engineer does more than merge PRs: design, review, triage, operations."** So does this system. Review is done by agents. Triage is done by agents: each new issue is labelled with a severity, a product lane and an audience. Operations are done by agents: a watchdog checks the fleet every 15 minutes. What remains for me is the part that cannot be delegated: what the product should do, and judging whether it does it.
 
 ## Why it does not fall apart
 
@@ -127,7 +117,7 @@ Three things make it work rather than become a wall of text nobody reads:
 
 - **An agent reads only the part it needs.** The rules are split into topic files so that an agent changing a test reads the testing rules, instead of reading tens of thousands of lines of instructions to find the relevant one. Every line an agent reads costs tokens and competes for its attention.
 - **Each rule cites the incident that produced it**, by issue number. An agent tempted to break a rule can read exactly what went wrong last time.
-- **The file loaded into every agent call is capped in size.** The root guide that every agent reads on every model call is held to 2,133 bytes by a CI check. Everything else is a pointer. A guide that grows without limit gets skimmed; one that cannot grow stays read.
+- **The file loaded into every agent call is capped in size.** The root guide that every agent reads on every model call is held to about 2 KB by a CI check (the cap can only go down). Everything else is a pointer. A guide that grows without limit gets skimmed; one that cannot grow stays read.
 
 The same idea applies to the code and the documentation. Each package has a code map, generated from its module docstrings: one line per module, saying what it does, its main public names and the routes it serves. An agent looking for where to change something searches the map instead of reading the code to find out. The documentation is split the same way, by topic and by reader, and its claims are tested against the code (below), so an agent can trust the page it opens instead of checking it against the source.
 
@@ -170,7 +160,7 @@ The agents themselves are run by code, not by me typing prompts. That code lives
 - **An allocator** runs the agent slots on a cloud VM from a single queue. Work is drawn by priority and by weighted lanes (product areas, CI throughput, reviews of old PRs). Urgent work goes to the front of the queue, never around it.
 - **A watchdog** runs every 15 minutes with no AI involved. It checks for stalls, red CI on `main`, PRs that have stopped moving, and jobs that failed.
 - **An oversight loop** checks the watchdog: each run records whether something was caught by a trigger, found clean, or missed. A miss files its own fix.
-- **Stop the line.** A red `main` or a stuck PR is fixed before new work starts, on a clock. It comes from *jidoka* in the [Toyota Production System](https://global.toyota/en/company/vision-and-philosophy/production-system/): any worker who sees a defect stops the whole production line, so the defect is fixed where it starts instead of being built into every car after it. It matters more with agents than with people, because agents will happily build on top of a broken base.
+- **Stop the line.** A red `main` or a stuck PR is fixed before new work starts, on a clock. It is *jidoka* from the [Toyota Production System](https://global.toyota/en/company/vision-and-philosophy/production-system/): stop the line at the defect, because every agent after it will build on the broken base.
 - **One folder per agent.** Every agent develops in its own clone of the repository, on its own branch, so a dozen agents work at once without touching each other's files. The checkout I demo from is never written to by an agent: hooks refuse any write outside the agent's own clone.
 
 The control plane has been redesigned twice, the second time from scratch. The first two versions grew by patching: a watcher here, a re-send there. When it became clear that patches were adding failure modes faster than they removed them, I stopped patching and had it redesigned as a minimal allocator over one table. That is the rule now: a stall gets fixed today and gets a deterministic rule with a test, so it cannot recur.
@@ -187,12 +177,12 @@ I also design the system described above, and every time it fails, I change it s
 
 ## What it costs, and what still breaks
 
-None of this is free. A fleet of agents running around the clock uses a lot of tokens, and at the start a week's token budget lasted about a day. Six changes later, each changed line of code takes 3.3 times fewer tokens, and the agents merge 4.4 times as many pull requests a week on 19% fewer tokens. The [next article](/ai-tools/agent-fleet-token-efficiency/) shows how: where the tokens went, how I measured it from the transcripts already on disk, and what each change brought.
+None of this is free. A fleet of agents uses a lot of tokens, and at the start a week's token budget lasted about a day. Six changes later, each changed line of code takes 3.3 times fewer tokens (about 2.5 times fewer, weighted by the price of each kind of token), and the agents merge 4.4 times as many pull requests a week on 19% fewer tokens. Rework is about a fifth of agent tokens, and those figures include it. The [next article](/ai-tools/agent-fleet-token-efficiency/) shows how: where the tokens went, how I measured it from the transcripts already on disk, and what each change brought.
 
 What still breaks: rework. About one fix round per merged PR is too many, and it is where the next round of improvements goes. Agents still occasionally solve the wrong problem confidently, which is why each issue quotes my ruling word for word, and the agent reviews are adversarial.
 
 ## Why this should matter to anyone running engineering
 
-The bottleneck is no longer typing code. It is specifying what should be built, checking that it was built correctly, and keeping a codebase coherent while it changes at hundreds of pull requests a week. Giving individual engineers an AI autocomplete gives a modest speed-up. The step change comes from building the system around the agents: written rules with their reasons, deterministic tests, CI that enforces what reviewers used to remember, independent review, and a control plane that runs the fleet.
+The bottleneck is no longer typing code. It is specifying what should be built, checking that it was built correctly, and keeping a codebase coherent while it changes at hundreds of pull requests a week. An assistant in each engineer's editor speeds up typing. The step change comes from building the system around the agents: written rules with their reasons, deterministic tests, CI that enforces what reviewers used to remember, independent review, and a control plane that runs the fleet.
 
-None of the pieces is exotic. Each one is something a good engineering team already knows it should do, applied without exception because agents, unlike people, will not fill the gaps with judgement. With them in place, one developer now does on this project what used to take a large team, and the numbers above show how that was measured.
+None of the pieces is exotic. Each one is something a good engineering team already knows it should do, applied without exception because agents, unlike people, will not fill the gaps with judgement. With them in place, one developer directs, on this project, a volume of merged work that is usually the output of a large team, and the numbers above show how that was measured.

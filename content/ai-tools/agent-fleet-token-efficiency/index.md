@@ -101,7 +101,7 @@ The later weeks moved for reasons I also did not isolate. W42 and W43, the highe
 
 ### What did not change, or got worse
 
-- **What the agents write did not fall.** Output tokens per PR rose about 9%, while the average PR shrank by about 40%, from about 1,400 to 850 changed lines. So for each changed line, the agents now write about 1.8 times as much as before. As far as I can tell, the extra is mostly not code: it is the handoffs that short-lived agents write, status comments, and the rework counted below. The whole saving came from the context the agents re-read, not from what they write.
+- **What the agents write did not fall.** Output tokens are everything the model writes, and code is only a small part of it. Measured from the transcripts, about half of the output is the model reasoning before it acts, about a third is the commands it runs (tests, git, searches), and about a tenth is the file edits themselves; replies, PR comments and handoff notes are under a tenth together. Much of that is a fixed cost per task: understanding the issue, running the tests, opening the PR. Smaller PRs pay it more often. So output per PR stayed about the same (up 9%) while each PR carried about 40% fewer changed lines (about 1,400 down to 850), which means the agents now write about 1.8 times as many output tokens per changed line. The saving came from the context the agents re-read, not from what they write.
 - **Reverts** rose from 0–1 a week to 2–4 a week in W42–W44, 0.2 to 0.7% of merges at four times the volume.
 - **Fix rounds per merged PR rose**, from 0.80 to 0.9–1.0, and the weekly reports put rework at about 20% of agent tokens.
 - **"CI is red" review findings** rose from 15% to 26% of blocking findings after the cache fix.

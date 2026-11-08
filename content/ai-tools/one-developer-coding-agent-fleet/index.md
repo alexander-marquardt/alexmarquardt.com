@@ -192,7 +192,7 @@ I also design the system described above, and every time it fails, I change it s
 
 ## What it costs, and what still breaks
 
-None of this is free. A fleet of agents uses a lot of tokens, and at the start a week's token budget lasted about a day. Six changes later, each changed line of code takes 3.3 times fewer tokens (about 2.5 times fewer, weighted by the price of each kind of token), and the agents merge 4.4 times as many pull requests a week on 19% fewer tokens. Rework is about a fifth of agent tokens, and those figures include it. The [next article](/ai-tools/agent-fleet-token-efficiency/) shows how: where the tokens went, how I measured it from the transcripts already on disk, and what each change brought.
+None of this is free. A fleet of agents uses a lot of tokens, and at the start a week's token budget lasted about a day. Six changes later, each changed line of code takes 3.3 times fewer tokens (about 2.5 times fewer, weighted by the price of each kind of token), and the agents merge 4.4 times as many pull requests a week on 19% fewer tokens. Rework is about a fifth of agent tokens, and those figures include it. The [next article](/ai-tools/agent-fleet-token-efficiency/) shows how: where the tokens went, how I measured it from the transcripts already on disk, and what each change brought. The two hooks that did the most, and the measuring script, are public in [agent-fleet-kit](https://github.com/alexander-marquardt/agent-fleet-kit).
 
 What still breaks: rework. About one fix round per merged PR is too many, and it is where the next round of improvements goes. Agents still occasionally solve the wrong problem confidently, which is why each issue quotes my ruling word for word, and the agent reviews are adversarial.
 

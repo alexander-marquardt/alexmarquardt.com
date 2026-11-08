@@ -182,7 +182,7 @@ A second measurement, from one day's transcripts, showed where the waste was. Of
 
 When an agent's work is not finished, it does not continue in an ever-growing conversation. The code goes to a pushed branch, and the plan goes to a status comment on the PR with the next steps, links and the head commit. A fresh agent starts from that handoff, which is under 30 lines.
 
-A `PreToolUse` hook enforces it for every sub-agent. Before each tool call it reads the agent's current context size from its transcript. At 150k tokens it adds a note: at the next commit, push, post the status comment and end. At 200k it refuses every tool call except the `git` and `gh` commands a handoff needs, and the refusal text carries the handoff steps.
+A `PreToolUse` hook enforces it for every sub-agent. Before each tool call it reads the agent's current context size from its transcript. At 150k tokens it adds a note: at the next commit, push, post the status comment and end. At 200k it refuses every tool call except the `git` and `gh` commands a handoff needs, and the refusal text carries the handoff steps. A minimal version of the hook, with tests, is in [agent-fleet-kit](https://github.com/alexander-marquardt/agent-fleet-kit).
 
 On the first day, median context per request fell for every kind of agent: implementation from 331k to 143k tokens, review from 149k to 90k. The share of agents that ever passed 150k fell from 73% to 25%.
 
@@ -192,7 +192,7 @@ A written handoff beats in-context compaction for three reasons I can check: it 
 
 When an agent waited more than five minutes, for CI, a long test or a polling loop, its cache expired and the next call wrote the whole context again. In one day's measurement that happened hundreds of times and was **about 31% of all agent usage**.
 
-Wait helpers now return before 270 seconds, and a guard refuses longer foreground waits. Cache expiry fell to 0.7% of agent usage. Polling turned out not to be the waste it looks like: a poll inside the cache lifetime keeps the cache warm, and a cold restart costs about ten times as much as a poll.
+Wait helpers now return before 270 seconds, and a guard refuses longer foreground waits (a minimal version is in [agent-fleet-kit](https://github.com/alexander-marquardt/agent-fleet-kit) too). Cache expiry fell to 0.7% of agent usage. Polling turned out not to be the waste it looks like: a poll inside the cache lifetime keeps the cache warm, and a cold restart costs about ten times as much as a poll.
 
 The second fix was in what every agent loads. Each agent's first message carried an always-loaded memory index of about 90 lines, appended to the first user message, after the last cache breakpoint. Most of its lines were rules only the coordinator needed. Because it sat in the same block as each agent's own task, a one-word difference in the task missed the cache for the whole block: across every agent started in one day, the median first turn read 3.2k tokens from cache and wrote 11k fresh.
 
@@ -281,7 +281,7 @@ Measure tokens per merged PR, enforce a context ceiling, and take the long waits
 
 ## Appendix: a script to sum tokens per session
 
-It reads the ten most recent session transcripts under `~/.claude/projects/` and prints each session's calls and tokens, counting each request once.
+It reads the ten most recent session transcripts under `~/.claude/projects/` and prints each session's calls and tokens, counting each request once. It is also in [agent-fleet-kit](https://github.com/alexander-marquardt/agent-fleet-kit) as `scripts/session_tokens.py`, with a `--last N` option.
 
 ```python
 import json, glob, os

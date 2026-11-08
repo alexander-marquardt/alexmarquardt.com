@@ -1,21 +1,19 @@
 ---
 showtoc: true
-title: "I Do the Work of Hundreds of Engineers. Here Are the Numbers, and the System That Makes It Possible"
+title: "How a Single Developer Can Do the Work of 200 Engineers"
 date: 2026-11-08
 draft: true
-slug: one-engineer-hundreds-of-engineers
+slug: single-developer-work-of-200-engineers
 tags: ["ai", "agents", "developer-tooling", "claude", "engineering-productivity"]
 categories: ["AI-Assisted Development"]
-description: "One person, a fleet of Claude Code agents, three million lines of code and about 690 merged pull requests a week. How that compares with a normal engineering team, measured against public benchmarks, and the rules, tests, CI and agent control that keep it from falling apart."
+description: "The methodology behind one developer running a fleet of Claude Code agents: written rules, deterministic tests, CI gates, independent review and an agent control plane. With the measurements: three million lines of code, and as many merged pull requests a month as a 200-person open-source project."
 ---
 
-## The claim
+## In short
 
-I am one engineer. In October, the main repository of my project merged 1,695 pull requests. Across the four repositories the project spans, the agents I run merge about 690 pull requests a week.
+I work alone on a project, with a fleet of AI coding agents doing the implementation. In October, its main repository merged 1,695 pull requests, about as many as Grafana, whose pull requests that month came from 198 people. Across the project's four repositories, the agents merge about 690 pull requests a week, where a typical engineer merges about two.
 
-A typical engineer merges about two pull requests a week. Even the top tier of published benchmarks is just over two. By that measure, my output is that of somewhere between 170 and 340 engineers. That is not a team; it is a department.
-
-I know how that sounds. This article gives the numbers, says exactly how each one was measured and compared, answers the obvious objections, and then describes the system that makes it possible. The system is the interesting part: it is what stops a fleet of AI agents from turning a codebase into a pile of plausible-looking mush.
+That is a large number, and it is not because I am unusually fast. It comes from a method: a set of rules, tests, gates and controls that let agents do the work of a large team without the codebase falling apart. This article shares that method, with the measurements behind it, how each was taken, and the objections they invite.
 
 ## What the code is
 
@@ -93,7 +91,7 @@ And that comparison flatters the benchmark, not me. [Graphite's median pull requ
 
 Lines of code give a more extreme answer, which I do not lean on. The classic estimates for delivered code run from about 10 lines a day ([Brooks](https://blog.ndepend.com/mythical-man-month-10-lines-per-developer-day)) to 325–750 lines a month ([Capers Jones, as cited here](https://dzone.com/articles/programmer-productivity)). The main repository grew by 841,000 net lines of non-data code in October alone. Against Capers Jones, that is the monthly output of 1,100 to 2,600 programmers. Lines are a poor measure, and much of that is tests, so treat this as an upper bound that nobody should quote. The pull-request figures are the ones I stand behind.
 
-## The objections
+## Fair objections
 
 **"Pull requests are a vanity metric. Split the work finer and the count goes up."** True in general, which is why the PR size matters. These PRs are nine times the industry median, not smaller. The companion article on token use makes the same point from the other side: tokens per changed line, not per PR, is the honest efficiency figure.
 
@@ -184,4 +182,4 @@ What still breaks: rework. About one fix round per merged PR is too many, and it
 
 The bottleneck is no longer typing code. It is specifying what should be built, checking that it was built correctly, and keeping a codebase coherent while it changes at hundreds of pull requests a week. Teams that treat AI as autocomplete for individual engineers will get a modest speed-up. The step change comes from building the system around the agents: written rules with their reasons, deterministic tests, CI that enforces what reviewers used to remember, independent review, and a control plane that runs the fleet.
 
-One person with that system produces what used to take a department. That is not a forecast. It is what happened on this project, and the numbers above are how I know.
+None of the pieces is exotic. Each one is something a good engineering team already knows it should do, applied without exception because agents, unlike people, will not fill the gaps with judgement. With them in place, one developer did on this project what used to take a large team, and the numbers above show how that was measured.

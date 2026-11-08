@@ -64,7 +64,7 @@ The 620,000 lines are not one parser. They hold the query engine, a merchandiser
 | Measure | Value |
 |---|---|
 | Merged pull requests, main repository, October 2026 | 1,652 (about 373 a week) |
-| Merged pull requests, all four repositories, weeks 41–44 | about 690 a week |
+| Merged pull requests, all four repositories, weeks 41–44 | 2,760 (about 690 a week) |
 | Merged pull requests, main repository, April to 8 November 2026 | about 6,200 |
 | Lines added / deleted, main repository, October (excluding recorded data) | 1,189,000 / 348,000 |
 | Median pull request size, main repository, October | 492 changed lines (the companion article's 420 is all four repositories, W41–W45) |

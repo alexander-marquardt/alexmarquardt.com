@@ -69,7 +69,7 @@ Of the main repository's code, 70% is tests: 3.4 lines of test for every line of
 | Repository | Merged PRs, October | People authoring them | Median PR size (changed lines) |
 |---|---|---|---|
 | grafana/grafana | 1,706 | 198 | 122 |
-| My main repository | 1,652 | 1 | 492 |
+| My main repository | 1,695 | 1 | 492 |
 
 The same number of merged pull requests as Grafana's 198 contributors, each four times larger, from one person. And that is one of my four repositories.
 

@@ -11,9 +11,9 @@ description: "Why coding agents use so many tokens, how to measure it from the t
 
 ## Summary
 
-At the start, with four coding agents running on one project, a week's token budget lasted about a day. [The previous article](/ai-tools/one-developer-coding-agent-fleet/) describes the project and how it is kept under control; this one reports where the tokens went, how I measured it from the agents' own transcripts, and what each change bought, including the ones that bought nothing.
+Coding agents use a lot of tokens. When I started running four parallel agents on one project, a week's token budget lasted about a day. Ten weeks and six changes later, tokens per changed line of code are down 3.3x. I spent the saving on doing more, not on making the budget last: the agents now merge 4.4 times as many PRs a week, on 19% fewer tokens.
 
-Six changes later, tokens per changed line of code are down 3.3x. I did not spend the saving on making the budget last longer, but on doing more with it: the agents now merge 4.4 times as many PRs a week, on 19% fewer tokens.
+This article shows where the tokens went, how I measured that from the transcripts Claude Code already keeps on disk, and which changes paid off and which did not. [The previous article](/ai-tools/one-developer-coding-agent-fleet/) describes the project itself and how its code is kept under control.
 
 Measured over ten weeks of transcripts:
 

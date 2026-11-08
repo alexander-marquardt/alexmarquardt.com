@@ -13,12 +13,12 @@ description: "Why coding agents use so many tokens, how to measure it from the t
 
 With four coding agents running on one project, a week's token budget lasted about a day. [The previous article](/ai-tools/one-developer-coding-agent-fleet/) describes the project and how it is kept under control; this one reports where the tokens went, how I measured it from the agents' own transcripts, and what each change bought, including the ones that bought nothing.
 
-Six changes later, the same work takes 3.3 to 5.5 times fewer tokens. I did not spend the saving on making the budget last longer, but on doing more with it: the agents now merge 4.4 times as many PRs a week, on 19% fewer tokens.
+Six changes later, the same amount of code takes 3.3 times fewer tokens. I did not spend the saving on making the budget last longer, but on doing more with it: the agents now merge 4.4 times as many PRs a week, on 19% fewer tokens.
 
 Measured over ten weeks of transcripts:
 
-- **Tokens per changed line fell 3.3x**, or about 2.5x weighted by the price of each kind of token.
-- **Per merged pull request in the main repository, they fell 3.5x**, partly because PRs got smaller.
+- **The same code takes less than a third of the tokens.** Tokens per changed line fell 3.3x, or about 2.5x weighted by the price of each kind of token. This is the headline figure because it does not depend on how the work is split into PRs.
+- **PRs also got smaller, so tokens per PR fell further.** The average PR went from about 1,400 to 850 changed lines (1.65x smaller), because each agent now does one task. With the 3.3x per line, that makes tokens per merged PR about 5.5x lower across the four repositories (3.3 × 1.65).
 - **Merged PRs per week rose 4.4x**, on 19% fewer tokens a week.
 - **Reverts stayed rare** (0.2 to 0.7% of merges), but rework per PR did not fall.
 

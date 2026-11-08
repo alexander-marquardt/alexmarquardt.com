@@ -108,7 +108,7 @@ Against the most widely published productivity benchmark, about 2 merged PRs per
 
 Give a dozen AI agents write access to a repository and the default outcome is chaos: duplicated helpers, tests that test nothing, documentation that describes code that no longer exists, fixes that silence a failure instead of curing it, and agents that wander off and rewrite things nobody asked them to touch. Every one of those happened here. Each one now has a rule, and each rule has a check that enforces it.
 
-### How the rules came about
+### Initial growing pains when using agents to develop code
 
 In the early months there were few written rules and few deterministic tests, and the agents did exactly what one would fear. A few examples:
 
@@ -118,8 +118,11 @@ In the early months there were few written rules and few deterministic tests, an
 - **A formula instead of the merchandiser's numbers.** A merchandiser set four boosts of 100,000, 70,000, 40,000 and 10,000. The engine ignored them and sent 1,000,000, 999,000, 998,000 and 997,000, from a formula left over from an earlier version. Elsewhere, a lookup quietly fell back to a hard-coded field name when a mapping was missing. My ruling, quoted in the issue: "I do not want implicit behavior, or escape hatches that allow lazy or incomplete specifications to pass."
 - **A suppressed warning that hid a bug for weeks.** Two comments that switched off the type checker on single lines silenced the error that would have caught a rename gone too far. The bug hid behind output that looked identical.
 - **Agents tidying up the wrong things.** One agent, cleaning up after an experiment, deleted 110 tracked files. Another ran a rebase before its change of directory took effect and switched my own checkout off `main`.
+- **Guidance that buried itself.** Each lesson went into the contributor guide, and at first every agent read the whole guide before it started. As the guide grew to tens of thousands of lines, an agent spent its context, and its attention, on rules that had nothing to do with its task, and missed the one that did.
 
-That is how the workflow evolved, and it still improves the same way: a failure does not just get a fix, it gets a change to the system, so that the error, and its whole class of errors, cannot happen again. Each one above followed the same path. The agent fixed the instance. The lesson went into the written guidance, with the issue number, so the next agent could read what went wrong. Then the guidance became a test or a CI check, because a written rule is followed most of the time and a check is followed every time. Tests now run on recorded responses instead of hand-written mocks; a bare skip is refused by CI; a missing mapping is an error, not a fallback; a weekly scan looks for suppressions already on `main`; and hooks refuse any write outside an agent's own clone. The sections below are where those checks ended up.
+### How the system went from painful to self-improving
+
+The workflow evolved from those failures, and it still improves the same way: a failure does not just get a fix, it gets a change to the system, so that the error, and its whole class of errors, cannot happen again. Each failure above followed the same path. The agent fixed the instance. The lesson went into the written guidance, with the issue number, so the next agent could read what went wrong. Then the guidance became a test or a CI check, because a written rule is followed most of the time and a check is followed every time. Tests now run on recorded responses instead of hand-written mocks; a bare skip is refused by CI; a missing mapping is an error, not a fallback; a weekly scan looks for suppressions already on `main`; and hooks refuse any write outside an agent's own clone. The guide itself was split into topic files behind a small root guide whose size is capped, so an agent reads only the part its task needs. The sections below are where those checks ended up.
 
 ### 1. The rules are written down, and every rule has its incident
 

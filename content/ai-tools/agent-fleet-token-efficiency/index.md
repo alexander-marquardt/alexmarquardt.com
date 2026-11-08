@@ -82,11 +82,11 @@ It takes three ideas: a call, the conversation sent with each call, and the cach
 
 A *call* is one request to the model: the program sends text, and the model sends back one response. A *token* is a word or a piece of a word.
 
-The model writes its response one token at a time. Each new token is predicted from everything before it: all the text it was sent, plus the tokens it has already written. The new token is then added to the input, and the next one is predicted from that. [The Illustrated GPT-2](https://jalammar.github.io/illustrated-gpt2/) shows this step by step.
+The model writes its response one token at a time. Each new token is predicted from the whole history: all the text it was sent, plus the tokens it has already written. The new token is then added to that history, and the next one is predicted from all of it. In the figure, step 4 predicts "cart.py" from the system prompt, the tool list, your message and "Let me read". [The Illustrated GPT-2](https://jalammar.github.io/illustrated-gpt2/) shows this step by step.
 
-![Inside one call: the model predicts "Let", then "me", then "read", then "cart.py", each new token added to the input for the next one](images/one-call.svg)
+![Inside one call: the model predicts "Let", then "me", then "read", then "cart.py"; each prediction reads the whole history so far, and each new token is added to it for the next one](images/one-call.svg)
 
-The model does not push the whole history through the network again for every token. When the call starts, it processes the input once and keeps the intermediate results for every token (the [KV cache](https://huggingface.co/blog/not-lain/kv-caching)). Each new token then goes through the network on its own and attends to those stored results. The output is the same as recomputing everything, only faster. A call is accordingly billed once for its input, plus once for each token of its response. When the call ends, the stored work is discarded.
+Done literally, that would be slow. A 500-token response to a 100k-token input would push those 100k tokens through the network 500 times. So, for efficiency, the model does not push the whole history through the network again for every token. When the call starts, it processes the input once and keeps the intermediate results for every token (the [KV cache](https://huggingface.co/blog/not-lain/kv-caching)). Each new token then goes through the network on its own and attends to those stored results, so it is still predicted from the whole history. The output is the same as recomputing everything, only faster. A call is accordingly billed once for its input, plus once for each token of its response. When the call ends, the stored work is discarded. Keep that in mind: an agent makes many calls, and each one starts again from nothing unless the provider kept that work (the cache, below).
 
 ### Many calls: the agent sends the whole conversation again, every time
 

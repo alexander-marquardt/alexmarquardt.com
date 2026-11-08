@@ -30,7 +30,7 @@ I have written about its design in [a series of articles on Elastic Search Labs]
 
 ## Who built it, and how
 
-I have worked on this query interpretation layer alone since August, with a fleet of AI coding agents doing the implementation; a colleague contributed in its first months. Across the project's four repositories, the agents merge about 690 pull requests a week, where a typical engineer merges about two.
+The project started as a small piece of code, about 4,000 lines: a percolator-based query rewriter that [Sidecar](https://sidecar.software/) developed for Elastic under a small, short-term contract (described in [this Search Labs article](https://www.elastic.co/search-labs/blog/elasticsearch-percolator-search-governance) and [this video](https://www.youtube.com/watch?v=Ap5K2Y00Xjc)). Since then it has been built into a full e-commerce search solution, and more than 99% of today's code was written by AI coding agents under my direction, using the workflow this article describes. I have worked on it alone since August. Across the project's four repositories, the agents merge about 690 pull requests a week, where a typical engineer merges about two.
 
 The product itself, backend and frontend, is about 620,000 lines of code. The main repository holds about 3 million, and most of the difference is tests: 2.1 million lines of them. That is not an accident. When agents write the code, the tests are what tell me it still works, so a large test suite that gives the same answer every time is the first requirement of working this way.
 
@@ -107,6 +107,19 @@ Against the most widely published productivity benchmark, about 2 merged PRs per
 ## Why it does not fall apart
 
 Give a dozen AI agents write access to a repository and the default outcome is chaos: duplicated helpers, tests that test nothing, documentation that describes code that no longer exists, fixes that silence a failure instead of curing it, and agents that wander off and rewrite things nobody asked them to touch. Every one of those happened here. Each one now has a rule, and each rule has a check that enforces it.
+
+### How the rules came about
+
+In the early months there were few written rules and few deterministic tests, and the agents did exactly what one would fear. A few examples:
+
+- **Tests that tested themselves.** An agent fixed a pagination bug and wrote tests for it. The tests copied the condition being tested into the test body and checked their own copy; one asserted that an empty set equals an empty set. All of them passed, and none of them ran the code they were meant to test.
+- **A skip that hid a missing feature.** A test skipped itself whenever semantic search was unavailable, so a run against a cluster without the model looked green. Looking for it turned up four more tests doing the same.
+- **Mocks that did not look like the real thing.** Frontend tests used a hand-written response in which a price filter was called `price`. The engine actually sends `price__lt`. The tests passed while the live page looped, and the fix took several rounds, because green CI said each round worked.
+- **A formula instead of the merchandiser's numbers.** A merchandiser set four boosts of 100,000, 70,000, 40,000 and 10,000. The engine ignored them and sent 1,000,000, 999,000, 998,000 and 997,000, from a formula left over from an earlier version. Elsewhere, a lookup quietly fell back to a hard-coded field name when a mapping was missing. My ruling, quoted in the issue: "I do not want implicit behavior, or escape hatches that allow lazy or incomplete specifications to pass."
+- **A suppressed warning that hid a bug for weeks.** Two comments that switched off the type checker on single lines silenced the error that would have caught a rename gone too far. The bug hid behind output that looked identical.
+- **Agents tidying up the wrong things.** One agent, cleaning up after an experiment, deleted 110 tracked files. Another ran a rebase before its change of directory took effect and switched my own checkout off `main`.
+
+Each one followed the same path. The agent fixed the instance. The lesson went into the written guidance, with the issue number, so the next agent could read what went wrong. Then the guidance became a test or a CI check, because a written rule is followed most of the time and a check is followed every time. Tests now run on recorded responses instead of hand-written mocks; a bare skip is refused by CI; a missing mapping is an error, not a fallback; a weekly scan looks for suppressions already on `main`; and hooks refuse any write outside an agent's own clone. The sections below are where those checks ended up.
 
 ### 1. The rules are written down, and every rule has its incident
 

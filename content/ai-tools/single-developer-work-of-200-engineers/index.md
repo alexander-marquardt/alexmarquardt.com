@@ -13,17 +13,17 @@ description: "The methodology behind one developer running a fleet of Claude Cod
 
 Try this on a few large e-commerce sites. Search for:
 
-> red size 10 womens dress on sale
+> red size 10 womens dress on sale under $40
 
-You will not find many that get it right. The usual results treat the query as a bag of words: red shoes, size 10 trousers, dresses that are not on sale, or nothing at all. Few work out that "red" is a colour, "size 10" is a size, "womens dress" is a category and "on sale" is a promotion, and then act on each one.
+You will not find many that get it right. The usual results treat the query as a bag of words: red shoes, size 10 trousers, dresses that are not on sale or cost more than $40, or nothing at all. Few work out that "red" is a colour, "size 10" is a size, "womens dress" is a category, "on sale" is a promotion and "under $40" is a price limit, and then act on each one.
 
-This article is about the development of an e-commerce query interpretation layer, built on top of Elasticsearch, that solves this problem. For the above query, the layer recognises the colour Red, size 10 (including size ranges such as 9–10 that contain it), the category Women's › Dresses and the On sale promotion, applies each as a filter or a boost as the merchandiser has configured it, and searches only the words that are left. Results come in tiers, from exact matches to related products, and every decision is explained, so a merchandiser can see why a product is where it is. The layer is demonstrated on a synthetic catalogue of about 380,000 SKUs across retail and industrial departments.
+This article is about the development of an e-commerce query interpretation layer, built on top of Elasticsearch, that solves this problem. For the above query, the layer recognises the colour Red, size 10 (including size ranges such as 9–10 that contain it), the category Women's › Dresses, the On sale promotion and the price limit of $40, applies each as a filter or a boost as the merchandiser has configured it, and searches only the words that are left. Results come in tiers, from exact matches to related products, and every decision is explained, so a merchandiser can see why a product is where it is. The layer is demonstrated on a synthetic catalogue of about 380,000 SKUs across retail and industrial departments.
 
 I have written about its design in [a series of articles on Elastic Search Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-control-plane-architecture). Those articles cover what it does. This one covers how it was built: the workflow behind it.
 
-![Search results for "red size 10 womens dress on sale": size 10, Womens › Dresses and Red applied as filters to the Best matches, 10 Best and 1,118 Relevant products, with category counts in the sidebar](images/red-size-10-womens-dress-on-sale.png)
+![Search results for "red size 10 womens dress on sale under $40": the price limit applied to all results; size 10, Womens › Dresses and Red applied to the Best matches; 4 Best and 738 Relevant products](images/filtered-results.jpg)
 
-*The query above on the demo catalogue. Size 10 (plus the related value 9–10), Women's › Dresses and Red become filters on the ten Best matches; "on sale" is a boost, as configured; the words left, "red womens dress", are searched. The 1,118 Relevant products below the Best tier are the looser matches.*
+*The query above on the demo catalogue, with the filters it applied circled. "Up to $40" applies to all results. Size 10 (plus the related value 9–10), Women's › Dresses and Red apply to the four Best matches, and the words left, "red womens dress", are searched. The 738 Relevant products below the Best tier are the looser matches.*
 
 ## Who built it, and how
 

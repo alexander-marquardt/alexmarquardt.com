@@ -175,6 +175,24 @@ Since late October, the agents themselves are run by code, not by me typing prom
 
 - **An allocator** keeps a fixed number of agents running at once (the slots) on a cloud VM, drawing work from a single queue. Work is drawn by priority and by weighted lanes (areas of the solution, CI throughput, reviews of old PRs). Urgent work goes to the front of the queue, never around it.
 - **Lanes, so features do not crowd out everything else.** Left alone, a fleet works on whatever was asked for last, and that is almost always a feature. So every issue belongs to a lane: the core solution, the demo, developer efficiency, CI throughput, runtime performance, data generation, the companion repositories, process automation. Each lane has a weight, and the allocator draws new work from the lanes in proportion, so performance, CI and tooling work keeps getting agents in a week full of feature requests. Open PRs get a fixed share of their own (two thirds of the slots), so new work never starves work already in flight. A lane with nothing ready lends its slots to the others, and each lane's actual share is reported against its target, so a starved lane shows up instead of quietly falling behind.
+
+  As an example, these are the weights today. Each is a share of the new issues the allocator picks; urgent work and the open-PR share come before them, and two rows are classes that cut across lanes (bugs, and issues that have stalled). For the week before a presentation the demo weight went up to 150, then back to 60: a temporary priority is a different table, not a different mechanism.
+
+  | Lane | Weight | Share of new picks |
+  |---|---:|---:|
+  | Demo | 60 | 25% |
+  | The control plane itself | 50 | 21% |
+  | Developer efficiency | 20 | 8% |
+  | Data generation | 20 | 8% |
+  | Bugs, in any lane | 20 | 8% |
+  | CI throughput | 15 | 6% |
+  | Runtime performance | 15 | 6% |
+  | Companion repositories | 15 | 6% |
+  | Core solution | 10 | 4% |
+  | Process automation | 6 | 3% |
+  | Integration | 6 | 3% |
+  | Stalled issues | 3 | 1% |
+
 - **A watchdog** runs every 15 minutes with no AI involved. It checks for stalls, failing (red) CI on `main`, PRs that have stopped moving, and jobs that failed.
 - **An oversight loop** checks the watchdog: each run records whether something was caught by a trigger, found clean, or missed. A miss files its own fix.
 - **Stop the line.** A red `main` or a stuck PR is fixed before new work starts, with a deadline after which it escalates. It is *jidoka* from the [Toyota Production System](https://global.toyota/en/company/vision-and-philosophy/production-system/): stop the line at the defect, because every agent after it will build on the broken base.

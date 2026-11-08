@@ -1,8 +1,8 @@
 ---
 showtoc: true
 title: "How I cut Claude Code's tokens per line of code to under a third"
-date: 2026-11-07
-draft: true
+date: 2026-11-08
+draft: false
 slug: agent-fleet-token-efficiency
 tags: ["ai", "agents", "developer-tooling", "claude", "token-efficiency"]
 categories: ["AI-Assisted Development"]

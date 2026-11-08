@@ -17,7 +17,7 @@ For two other kinds of catalog I could not find an equivalent. The first is indu
 
 The generator builds one combined catalog of two domains, retail and industrial. The demo built on it serves **383,284 SKUs: 251,288 retail and 131,996 industrial**, each with a drawing of its own. Unless a figure says otherwise, the industrial figures below are from the default industrial build committed to the repository on 8 November 2026.
 
-**Every product it produces is synthetic.** No record describes a real product offered by any retailer, every brand is invented, and no retailer's catalog content is redistributed. What *is* taken from the real world is the shape of the domain: which attribute names the industry uses, which dimension combinations are physically real, how titles are constructed, and how often real records are inconsistent.
+**Every product it produces is synthetic.** No record describes a real product offered by any retailer, every brand is invented, and no retailer's catalog content is redistributed. What *is* taken from the real world is the shape of the domain: which attribute names the industry uses, which dimension combinations are physically real, how clothing is sized, how titles are constructed, and how often real records are inconsistent.
 
 ## Why generate a catalog at all?
 
@@ -27,7 +27,7 @@ Industrial supply has one property in particular that is hard to fake convincing
 
 On the generated catalog, that is measurable. Of the 371 end mills that carry a `3/8"` value anywhere, 171 have a 3/8" cutting diameter, while 77 carry it as their shank diameter and have a different cutting diameter. A full-text match on the token returns all of them, and only a structured filter on the right attribute separates the two. Demonstrating that a search engine handles this correctly requires a catalog whose dimensions are internally coherent and whose collisions happen at a realistic rate, which is exactly what a naive generator does not give you.
 
-Retail has its own version of the problem: **ordinary products that win a query on text alone**. A search for `belt` should not open with a belt sander, and a search for `cap` should not open with a pen cap, although on text alone both can. The retail side of the generator plants such products on purpose, so that a demo can show what a ranking or filtering policy fixes (see [Planted products](#planted-products-that-win-on-text-alone)).
+Retail has its own version of the problem: **ordinary products that win a query on text alone**. A search for `belt` should not open with a belt sander, and a search for `cap` should not open with a pen cap, although on text alone both can. The retail side of the generator plants such products on purpose, so that a demo can show what a ranking or filtering policy fixes (see [Planted products](#planted-products-that-win-on-text-alone)). It also carries names that are not product words at all. A search for `the toy movie` is about a film, and its mugs, pyjamas and cakes sit nowhere near the Toys department; a search that reads `toy` as a category loses all of them (see [Invented films, characters and seasonal collections](#invented-films-characters-and-seasonal-collections)).
 
 ## One catalog, two domains
 
@@ -142,24 +142,113 @@ That is why the flat shape also carries the per-attribute `facets.*` keys, where
 
 ## The retail catalog
 
-The retail domain follows the same rules as the industrial one: no real retailer's content, deterministic output, one output standard, and a generated drawing for every SKU. A retail record is one product per style, with its colours and sizes as nested SKUs. The demo currently serves **251,288 retail SKUs** across the twelve departments above, from womenswear and babywear to grocery, lawn mowers, large appliances and phones.
+The retail domain follows the same rules as the industrial one: no real retailer's content, deterministic output, one output standard, and a generated drawing for every SKU. The full retail build, which is what the demo serves, holds **251,288 SKUs in 16,248 products**: 505 product types under 679 category leaves, from 163 invented brands. A retail record is one product per style, with its colours and sizes as nested SKUs, so the departments differ as much in SKUs per product as in size:
 
-What makes it useful for search, rather than merely large:
+| department | products | SKUs |
+| :--- | ---: | ---: |
+| Womens | 4,031 | 158,749 |
+| Mens | 1,700 | 44,782 |
+| Home | 2,424 | 13,892 |
+| Kids | 719 | 12,795 |
+| Food & drink | 4,535 | 12,244 |
+| Beauty | 692 | 2,587 |
+| Toys | 438 | 1,359 |
+| Electronics | 221 | 1,166 |
+| Sports & outdoors | 120 | 1,093 |
+| Gifts | 387 | 958 |
+| Cleaning | 543 | 835 |
+| Garden | 438 | 828 |
+
+*A product filed in two departments, such as a mug that is also a gift, is counted under the first.*
+
+Clothing is where the SKUs are. A lingerie or nightwear style averages 91 SKUs (a bra's colours across its band and cup sizes), a shoe 31 and a garment 23, while a grocery product averages under 3, one per pack size. That spread matters for search: a results page of bras that does not group by style shows the same bra again and again, and a grocery page has almost nothing to group.
+
+### Colours, sizes, shades and packs
+
+Each product declares the axes its SKUs differ on (`variant_axes`): colour and size for most clothing, configuration for a sofa, shade for a foundation. The values are stored the way a filter needs them:
+
+- **Clothing sizes in three systems.** A garment sized by number stores `size_uk`, `size_eu` and `size_us` from one chart (a women's UK 20 is EU 48 and US 16), so `size 20 dress` is a filter, not a text match. Jeans add their inside leg, in inches as sold and in millimetres as a canonical number for range filters.
+- **Complexion products sold by shade, not colour.** A foundation, concealer or tinted moisturiser carries `shade` (`6N`, `Porcelain`), `shade_depth` (fair, light, medium, tan, deep) and `undertone` (cool, neutral, warm), and no `color` at all. A shopper asks for "foundation for medium skin, warm undertone", never for "red foundation", and a shade code in the colour facet would sit beside Navy and Black on every clothing query.
+- **Volumes a facet can use.** Every product type that carries a net volume offers at least three, so a Net volume facet never shows a single option, and a title that states a volume ("Glass Cleaner 500ml") carries it as a value.
+- **Packs.** A pack SKU knows its count (`units_per_pack`, `pack_size`), and its drawing shows that many items, so a six-pack does not look like one can.
+- **Stable SKU ids.** A SKU id is its product id plus a hash of the values that tell it from its siblings, so adding a style to one range does not renumber another, and a repricing keeps the SKU. A partial reload can then write a SKU as its document id without overwriting a different product.
+
+Here is one retail record in the flat shape, trimmed to its main fields. It is a mug from one of the invented films described below, filed in two places:
+
+```json
+{
+  "sku": "BRD-KFPSMG-AD722269",
+  "product_id": "BRD-KFPSMG",
+  "title": "Plaything Story Stoneware Mug",
+  "brand": "Brackenmere Home",
+  "description": "A 350 ml stoneware mug printed with the toy box gang from the Plaything Story movie. Dishwasher safe.",
+  "product_type": "Mug",
+  "category_path": ["Home", "Kitchen & dining", "Drinkware", "Mugs"],
+  "category_paths": [
+    ["Home", "Kitchen & dining", "Drinkware", "Mugs"],
+    ["Gifts", "Mugs & drinkware"]
+  ],
+  "price": 9.0,
+  "currency": "GBP",
+  "in_stock": true,
+  "facets": {
+    "color": ["White"],
+    "brand_owner": ["own"],
+    "rating": ["4.8"],
+    "review_count": ["137"],
+    "sold_last_5_days": ["22"]
+  },
+  "variant_axes": ["color"],
+  "image_url": "/images/retail/mug/BRD-KFPSMG/BRD-KFPSMG-AD722269.svg"
+}
+```
+
+### What makes it useful for search
 
 - **An audience on every worn product.** Every SKU of clothing, footwear and lingerie, or under the Womens, Mens or Kids roots, carries exactly one `audience` (`Womens`, `Mens`, `Girls`, `Boys`, `Baby` or `Unisex`), so a search layer can turn "for men" into a filter instead of a text match. The roots are spelled as shoppers say them; the generator derives no spelling variants (mens, men's, men), which are the search layer's vocabulary to own.
 - **Facets that mean one thing.** One concept has one attribute key across every product type: a measured height is `item_height` on a sofa, a lamp, a doll and an olive tree alike, and a check refuses a second key for the same concept. A fit or a bra style is a filter, not a category leaf, and a fabric is a fibre or weave from one closed list ("98% Cotton, 2% Elastane" leaves `Cotton` as the fabric and moves the blend to a detail field).
-- **A product in more than one place.** A mug is kitchen drinkware and a gift, so it is filed at both `Home > Kitchen & dining > Drinkware > Mugs` and `Gifts > Mugs & drinkware`, as one product with one listing. A category facet counts it once and a filter on either path finds it.
-- **Grocery with consistent claims.** Food products carry an invented ingredient list, and allergen and dietary claims that agree with it.
+- **Text that agrees with its facets.** A description that says "magnetic fastening" over a style whose closure is a zip, or a polka-dot umbrella sold in gingham, is refused by a check that runs on the whole build, and a title that names a value its category does not hold is refused too. A "Small Check Bomber Jacket" stores its check as `pattern`, and its drawing has a check swatch.
+- **A product in more than one place.** A mug is kitchen drinkware and a gift, so it is filed at both paths, as one product with one listing (1,301 SKUs are filed this way). A category facet counts it once and a filter on either path finds it.
+- **Grocery with structured claims.** A food product carries an invented ingredient list (`ingredients`), the allergens it contains (`contains`) and its dietary claims (`dietary`: Vegetarian, Nut Free, Gluten Free, Dairy Free, Vegan, Organic), each per SKU, so a chocolate bar's milk flavour and its peanut caramel flavour make different claims.
+- **Sales and business signals.** 20,346 SKUs, about 8%, carry a was-price and the promotion value "On sale", from 9% of womenswear to 25% of babywear, and 6,695 of those also belong to a seeded campaign, "Christmas promotion". About half the SKUs carry a rating, a review count, units sold in the last five days, and whether the product is the retailer's own brand or a third party's: the signals a ranking policy boosts on.
+
+### Invented films, characters and seasonal collections
+
+Retail search is full of names that are not product words: a film on a lunch box, a cartoon range on a pair of pyjamas, a season on a candle. The catalog carries three kinds, and each is a different problem for a search layer.
+
+**Merchandise of twelve invented kids' films**, 350 SKUs in all: Plaything Story, Lovely and the Beast, Duck Run, Really Cold, Little Tiny Queen, Home Without Anybody, The Blue Balloon, The Toy Movie, Frozen Story, The Home Run, The Lady in High Heels and The Haunted Dollhouse. Each sells in seven or more categories, from mugs, tees and pyjamas to duvet sets, party bags, birthday cakes and sweets. No structured field holds the film: the products keep the brand of the house that makes them and sit in the categories of their type, and the film is named only in their text ("a mug from the Plaything Story movie"). The names are built to collide with the rest of the catalog:
+
+- `duck`, `cold`, `home` and `blue` are ordinary catalog words, and `story` is in no product at all, so a spelling corrector will try to rewrite it. The phrase has to be kept together.
+- Five names hold a category word, and none of those films sells in that category: The Toy Movie sells nothing under Toys, Frozen Story nothing frozen, The Home Run nothing in the Home department or among running shoes, The Lady in High Heels no shoes, and The Haunted Dollhouse no dolls. A search that turns the name into a category filter loses every one of the film's products.
+- The Blue Balloon comes in many colours: a red mug, a yellow tee, a green sweatshirt, red party bags. One of its twelve coloured SKUs is blue, so `the blue balloon` has to stay a name and not become the colour Blue.
+- One product of each of seven films names the film in its description only, so a search has to rank a description match against title matches of the same film.
+
+Each film has one emblem, an original drawing printed on every product it sells, with a "Licensed from … Studios" line beside it, so the results of a film search can be seen to belong together.
+
+**Four invented character ranges**, Moonmoth Rangers, Rumblesaur Ridge, Hazelwren Owls and Driftwhistle Bay, work the other way: the range is a structured value (`line`, shown as Range) on building sets, jigsaws, board games, pyjamas, soft toys, cakes and sweets. A search for `moonmoth rangers` can become one filter that finds a space base building set, a pair of pyjamas printed with the range's stars, and a birthday cake, across three departments.
+
+**Seasonal collections** are a `collection` facet (Christmas, Halloween, Advent, Summer, Autumn, Wedding, Going Out) on the products that belong to one: a festive jumper, a cranberry and clove candle, Christmas wrapping paper, chocolate and beauty advent calendars, Halloween cupcakes, a trick-or-treat bucket bag, a satin slip dress for weddings and going out. Beside them, colour values that are also a food, a stone or a fabric (champagne, duck egg, rust, caramel, oatmeal, aubergine, raspberry, mint, olive, rose quartz) are put on the products a shopper types them before, so `olive dress` and `olive oil` both have to work.
+
+| | | |
+| :---: | :---: | :---: |
+| ![A white stoneware mug printed with the Plaything Story emblem, a toy cowboy in a hat and red neckerchief](images/retail-film-mug.svg) | ![Red party bags printed with The Blue Balloon's emblem](images/retail-film-party-bags.svg) | ![Navy Moonmoth Rangers kids' pyjamas printed with yellow stars](images/retail-character-pyjamas.svg) |
+| Plaything Story mug | The Blue Balloon party bags, in red | Moonmoth Rangers pyjamas |
 
 ### Planted products that win on text alone
 
 Real catalogs are full of products that match a query's words and are not what the shopper meant: a "Leather-Look" garment for `leather`, a belt sander for `belt`, a pen cap for `cap`, a brand whose name holds a colour word for a search on that colour. The retail generator plants such products deliberately, from a table of decoy classes, and a check refuses a planted product that cannot actually outrank the best intended product on plain BM25 text scoring. With no ranking or filtering policy, the decoys sit near the top; with the right policies, they move out of the best results. That gap is the demo, and the catalog guarantees it exists.
 
+One class puts the shopper's product noun on a different product: "Dress for Success" shoes for `dress`, a sofa cover for `sofa`, red jumper cables for `jumper`, black bow tie pasta for `tie`. The structured fields tell the truth (category, product type, colour, drawing), and the title names at most a misleading colour ("Dress for Success, Red Laces" are black shoes with red laces, and the drawing has the red laces). A policy that reads the structured fields, such as a category filter on Dresses, drops the decoy; text scoring alone does not.
+
+![Black Oxford shoes with red laces, the "Dress for Success, Red Laces" decoy for a search on dress](images/retail-decoy-dress-shoes.svg)
+
 ### Every brand is invented
 
-All retail brands are invented, including the ones that stand in for famous names a shopper would type. The sportswear brand is **Knacks**, with a running-shoe line called **Breeze Max**; the computer maker is **Grape Computer**, whose phone is the **GrapePhone**; the large-appliance makers (Frostholm, Brimwell, Tavorne and others) are invented too. Each new name was searched for on the web before it was used, and a guard in the test suite refuses a list of real brand and model names in any brand, title or description. A search layer that wants a shopper's `iphone` to find the GrapePhone does it with a vocabulary entry, which is exactly the kind of mapping a real deployment has to make for its own brands.
+All retail brands are invented, including the ones that stand in for famous names a shopper would type. The sportswear brand is **Knacks**, with a running-shoe line called **Breeze Max**; the computer maker is **Grape Computer**, whose phone is the **GrapePhone**; the large-appliance makers (Frostholm, Brimwell, Tavorne and others) are invented too. A guard in the test suite refuses a list of real brand and model names in any brand, title or description. A search layer that wants a shopper's `iphone` to find the GrapePhone does it with a vocabulary entry, which is exactly the kind of mapping a real deployment has to make for its own brands.
 
-Like the industrial brands, some retail brand and line names hold an ordinary word on purpose, including colour words that do not describe the product (its colour attribute stays true): a brand filter has to tell a brand from a word, and a catalog without such names never makes it.
+A few brands sell across departments, so a shopper can follow one brand from a laptop to a fridge: Grape Computer sells laptops, desktops, phones and their cases and keyboards; SingingSam sells TVs, washing machines, fridges, phones and a laptop; PackingHarder sells monitors, computers and volt meters. A brand filter on them has to work across category trees that share nothing else.
+
+Like the industrial brands, some retail brand and line names hold an ordinary word on purpose, including colour words that do not describe the product (its colour attribute stays true): a brand filter has to tell a brand from a word, and a catalog without such names never makes it. Model names follow how public listings name a model, a plain lead word before the kind ("Bramblewood Anytime Underwired Balcony Bra", "Knacks Breeze Max 90 Trainers"), and a lead word belongs to one product family only, so a model name does not read as a second brand.
 
 ### Building retail at a size
 
@@ -170,7 +259,7 @@ uv run python -m synthetic_ecommerce_data.domains.retail.scale --skus 20000 \
     --out out/retail/nested.jsonl --flat out/retail/flat.jsonl
 ```
 
-`--skus ceiling` builds everything the retail tables can make, which is what a release ships.
+`--skus ceiling` builds everything the retail tables can make, which is what a release ships. On a laptop the full build of 251,288 SKUs takes about a minute.
 
 ## Where the realism comes from
 
@@ -179,6 +268,18 @@ uv run python -m synthetic_ecommerce_data.domains.retail.scale --skus 20000 \
 For industrial supply, the **schema** and the **statistical distributions** are derived from observing publicly archived catalog pages of a real industrial distributor: attribute names, which dimension combinations occur together, how often roles collide, how titles are built, and how often records contradict themselves. Those are facts about the domain. The **products** are generated; they are not real records with the names changed.
 
 That distinction is enforced rather than asserted. The repository ships *hashes* of the reference records' full attribute tuples (never the records themselves), and the test suite checks that no generated product matches any of them. The comparison is over the whole tuple rather than field by field, because agreeing with a published standard on one dimension is not copying (every real `#10` flat head cap screw has the same head diameter), whereas reproducing a complete record would be.
+
+For retail, the starting point is the queries rather than a census of one catalog. Thirteen kinds of query that go wrong were observed by hand on a live retail site, and the catalog is built so that each one can be reproduced on Elasticsearch, then fixed by a policy. Among them:
+
+| what goes wrong | query | on text alone, the top results include | after the policy |
+| :--- | :--- | :--- | :--- |
+| a fruit plural read as a flavour and a colour | `oranges` | Cranberry & Orange Panettone, Chocolate & Orange Cookies, Orange Rose Bouquet | Blood Oranges, Navel Oranges, Seedless Easy Peelers |
+| a neckline word matched as a keyword | `womens boat neck top` | High Neck Ribbed Top, Crew Neck Cotton Top, Tie Neck Top and Trousers Set | Striped Boat Neck Top, Boat Neck Jersey Top, Slash Neck Long Sleeve Top |
+| a pack count spelled only in titles | `5 pack socks` | Cotton Rich Socks 7 Pack, Striped Cotton Socks 3 Pack | Bamboo Socks, Pack of 5; Sports Trainer Socks 5 Pack; Cotton Rich Ankle Socks 5pk |
+| a two-word colour split into words | `rose gold` | Blush Rose & Gold Eucalyptus Bouquet, White Rose Bouquet with Gold Foliage | rose gold earrings, a watch, a charging pad, a table lamp |
+| one word with a sense in two departments | `cups` | Moulded Cup T-Shirt Bra, Lace Demi Cup Bra, Car Cup Holder Organiser | a travel cup, an espresso cup set, a tea cup and saucer, mugs |
+
+Titles follow how public retail listings name a product, with every brand and model name invented.
 
 ### Dimensions: standards for fasteners, conventional series for cutting tools
 
@@ -323,6 +424,8 @@ All 60 depth types have a figure of their own. The 103 breadth categories are dr
 ### Retail drawings
 
 Retail products are drawn the same way, by code and from the record, but from a much wider vocabulary of shapes: every product is drawn as its own kind (a bouquet as roses in a paper cone, socks as socks, a bed as a bed), and a garment as the garment its category names (a bomber, a puffer, a shirt dress). A generic shape, such as a box, is allowed only where it is honest (packaged food in a box, loose produce as round produce), and a test names any product that uses one elsewhere. A "Checked" or "Striped" title gets a gingham or stripe swatch, and each colourway is drawn in its colour.
+
+![A three-pack of striped cotton socks, drawn as three socks fanned out](images/retail-socks-3-pack.svg)
 
 What a retail drawing shows is keyed by the style and colourway, the size (a smaller size of a product draws smaller), and the pack count (a pack of four draws four items). Every SKU still gets **its own file**, even where two SKUs draw the same picture, so one SKU's colour or size can change later without moving another SKU's image. The release refuses a broken set: a file that two SKUs name, a SKU with no file, or a file that no SKU names.
 

@@ -10,7 +10,7 @@ categories: ["AI-Assisted Development"]
 description: "How one developer directs a fleet of Claude Code agents that merged 1,652 pull requests in a month, and the method that keeps it under control: written rules, tests that outnumber product code three to one, CI gates, independent review and an agent control plane."
 ---
 
-In October, the main repository of the project I work on merged 1,652 pull requests. That is in the range of the busiest open-source repositories on GitHub: that month Microsoft's VS Code merged 2,549 from 97 people, and CPython, the main implementation of Python, 1,607 from 184. Here one person directs the work, and a fleet of coding agents writes the code. This article is about the rules, tests, gates and control plane that keep that rate from turning into chaos, with the measurements behind them and the objections they invite.
+In October, as the sole developer on my project, I merged 1,652 pull requests into its main repository, all of them written by a fleet of coding agents that I direct. That is in the range of the busiest open-source repositories on GitHub: that month Microsoft's VS Code merged 2,549 from 97 people, and CPython, the main implementation of Python, 1,607 from 184. This article is about the rules, tests, gates and control plane that keep that rate from turning into chaos, with the measurements behind them and the objections they invite.
 
 ## The problem it solves
 

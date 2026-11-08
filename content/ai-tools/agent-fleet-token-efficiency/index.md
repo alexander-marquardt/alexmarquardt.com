@@ -11,7 +11,9 @@ description: "Why coding agents use so many tokens, how to measure it from the t
 
 ## Summary
 
-I have a project with a significant amount of code written by AI agents. With four agents running, a full weekly token allowance lasted about a day. This article reports where the tokens went, how I measured it from the agents' own transcripts, and what each change bought, including the changes that bought nothing.
+I have a project with a significant amount of code written by AI agents. With four agents running, a full weekly token allowance lasted about a day.
+
+Six changes later, the same work takes 3.3 to 5.5 times fewer tokens, so at the old pace that allowance would last three to five and a half days instead of one. Output did not fall to get there: each week the agents now merge more PRs and change more lines than before. This article explains where the tokens went, how I fixed it, and what each change brought, including the changes that brought nothing.
 
 Measured over ten weeks and about 1.36 million model requests:
 
@@ -22,14 +24,14 @@ Measured over ten weeks and about 1.36 million model requests:
 
 Across all four repositories the agents work in, the drop is 5.5x per merged PR. The headline uses the smaller number; [the results](#the-results) say why.
 
-The cost comes from one fact: the model has no memory, so every call re-sends the whole conversation, and the tokens used are roughly the number of calls times the context carried. Everything that helped reduced one of those two factors:
+The cost comes from one fact: the model has no memory, so every call re-sends the whole conversation, and the tokens used are roughly the number of calls times the context carried. Everything that helped reduced one of those two factors. What I changed, and what each change brought:
 
-1. **Measure from the transcripts**, per merged PR, not per hour.
-2. **End each agent after one task**, with a short written handoff and a context ceiling enforced by a hook.
-3. **Keep the prompt cache warm**, and load less into every agent.
-4. **Turn rules into code**, so the model does not have to remember them.
-5. **Let a program take load off the AI** for the routine work of running the fleet.
-6. **Make the codebase easy for a new developer**, because every agent is one.
+1. **Measure from the transcripts**, per merged PR, not per hour. This saved nothing by itself, but it found the levers. One of them, cache expiry while agents waited, was 31% of all agent usage, and my first guesses had missed it.
+2. **End each agent after one task**, with a short written handoff and a context ceiling enforced by a hook. This was the big step. On the first day, the median context per agent request fell from 218k to 101k tokens, and tokens per merged PR fell from 106M in W40 to 19M in W41, together with the first cache fix in 3.
+3. **Keep the prompt cache warm**, and load less into every agent. Cache expiry fell from 31% of agent usage to 0.7%, and the fresh tokens an agent writes on its first turn fell from about 11k to 4.5k.
+4. **Turn rules into code**, so the model does not have to remember them. Fewer rules in every prompt, and fewer failures; I have no separate number for it.
+5. **Let a program take load off the AI** for the routine work of running the fleet. The coordinator's tokens per merged PR fell from 14–22M to 1.2M, and its checks now run while my session sleeps.
+6. **Make the codebase easy for a new developer**, because every agent is one. No separate number either; it is what makes a fresh agent's start cheap enough for one task per agent.
 
 The principle behind all six: don't make the model remember; make the system remember.
 
@@ -70,7 +72,7 @@ My coordinating session, a few days old, shows about 3,600 calls, 534 million ca
 
 ## The setup
 
-One coordinating session watches the work. Up to a dozen background agents on a single cloud VM each take one issue, write the change and its tests in their own clone, and open a pull request. A separate review agent, told to look for reasons *not* to merge, must approve every PR at its current head commit, and the PR then lands through a merge queue with green CI.
+One coordinating session watches the work. Up to a dozen background agents on a single cloud VM each take one GitHub issue, write the change and its tests in their own clone, and open a pull request. A separate review agent, told to look for reasons *not* to merge, must approve every PR at its current head commit, and the PR then lands through a merge queue with green CI.
 
 The main repository is a multi-service search product, mostly Python and TypeScript, with about 1,800 source files (excluding tests) and about 135 CI jobs. The agents also work in three smaller repositories: a data generator and two demo configurations. The fleet now merges 590 to 870 PRs a week across the four.
 

@@ -10,7 +10,7 @@ categories: ["AI-Assisted Development"]
 description: "How one developer directs a fleet of Claude Code agents that merged 1,652 pull requests in a month, and the method that keeps it under control: written rules, tests that outnumber the solution's own code three to one, CI gates, independent review and an agent control plane."
 ---
 
-In October, the main repository of an e-commerce search solution that I work on as its sole developer merged 1,652 pull requests (median size 492 changed lines), all of them written by a fleet of coding agents that I direct. That is in the range of the busiest open-source repositories on GitHub: that month Microsoft's VS Code merged 2,549 from 97 people (median 168 lines), and CPython, the main implementation of Python, 1,607 from 184 (median 31 lines). This article is about the rules, tests, gates and control plane that keep that rate from turning into chaos, with the measurements behind them and the objections they invite.
+In October, the main repository of an e-commerce search solution that I work on as its sole developer merged 1,652 pull requests (median size 492 changed lines), all of them written by a fleet of coding agents that I direct. That is in the range of the busiest open-source repositories on GitHub: that month Microsoft's VS Code merged 2,549 from 97 people (median 168 lines), and CPython, the main implementation of Python, 1,607 from 184 (median 31 lines). This article is about the rules, tests, CI gates and the control plane (the code that schedules and watches the agents) that keep that rate from turning into chaos, with the measurements behind them and the objections they invite.
 
 ## What the agents are building
 
@@ -30,7 +30,7 @@ I have written about its design in [a series of articles on Elastic Search Labs]
 
 ## Who built it, and how
 
-The project started as a small piece of code, about 4,000 lines: a percolator-based query rewriter that [Sidecar](https://sidecar.software/) developed for Elastic under a small, short-term contract (described in [this Search Labs article](https://www.elastic.co/search-labs/blog/elasticsearch-percolator-search-governance)). Since then it has been built into a full e-commerce search solution, and a large percentage of today's code was written by AI coding agents under my direction, using the workflow this article describes. I have worked on it essentially alone since February 2026. Across the project's four repositories, the agents merge about 690 pull requests a week, where a typical engineer merges about two.
+The project started as a small piece of code, about 4,000 lines: a query rewriter built on Elasticsearch's percolator (which matches a document against stored queries) that [Sidecar](https://sidecar.software/) developed for Elastic under a small, short-term contract (described in [this Search Labs article](https://www.elastic.co/search-labs/blog/elasticsearch-percolator-search-governance)). Since then it has been built into a full e-commerce search solution, and a large percentage of today's code was written by AI coding agents under my direction, using the workflow this article describes. I have worked on it essentially alone since February 2026. Across the project's four repositories (the main one and three smaller ones, described below), the agents merge about 690 pull requests a week, 373 of them in the main repository that the title counts; a typical engineer merges about two.
 
 The solution itself, backend and frontend, is about 620,000 lines of code. The main repository holds about 3 million, and most of the difference is tests: 2.1 million lines of them. That is not an accident. When agents write the code, the tests are what tell me it still works, so a large test suite that gives the same answer every time is the first requirement of working this way.
 
@@ -55,24 +55,24 @@ The main repository, measured at its current `main` (8 November 2026), in physic
 
 Three repositories sit beside it: a synthetic data generator (209,000 lines of code, 72,000 of them tests), a configuration and data repository (about a million lines, mostly data) and the agent-control repository described below (77,000 lines of code and tests).
 
-Of the main repository's code, 70% is tests: 3.4 lines of test for every line of solution code. With AI agents writing the code, that is not overhead. An agent will confidently change code it does not fully understand, and the tests catch it on every pull request, before I look at it. Part 2 below covers how the tests are kept trustworthy.
+Of the main repository's code, 70% is tests: 3.4 lines of test for every line of solution code. With AI agents writing the code, that is not overhead. An agent will confidently change code it does not fully understand, and the tests catch it on every pull request, before I look at it. Section 2 below covers how the tests are kept trustworthy.
 
-That is far more than the 4,000-line query rewriter the project started from. It holds the query engine, a merchandiser's interface (the screenshot above) with editors for its rules, vocabularies and data, the indexing and data-management services, an API for integrating it into an application server, and the demo storefront. Agent-written code is also more verbose than a senior engineer's, and this codebase could be smaller. I measure it differently: can an agent that starts with no memory of earlier work find the code for a feature and change it correctly, while reading as little as possible? Clean, well-organised and documented code is essential for that. An agent can find its way through well-structured code, so it brings less of it into its context; less context means fewer tokens burned on every call and more efficient work. The file-size caps, the duplicate-passage check and the code maps described below exist for that.
+That is far more than the 4,000-line query rewriter the project started from. It holds the query engine, an interface for merchandisers (the retailer's staff who decide how search ranks and filters products) with editors for its rules, vocabularies and data, the indexing and data-management services, an API for integrating it into an application server, and the demo storefront (the screenshot above). Agent-written code is also more verbose than a senior engineer's, and this codebase could be smaller. I measure it differently: can an agent that starts with no memory of earlier work find the code for a feature and change it correctly, while reading as little as possible? Clean, well-organised and documented code is essential for that. An agent can find its way through well-structured code, so it brings less of it into its context; less context means fewer tokens burned on every call and more efficient work. The file-size caps, the copy-paste check and the code maps described below exist for that.
 
 ### The rate of work
 
 | Measure | Value |
 |---|---|
 | Merged pull requests, main repository, October 2026 | 1,652 (about 373 a week) |
-| Merged pull requests, all four repositories, weeks 41–44 | 2,760 (about 690 a week) |
+| Merged pull requests, all four repositories, ISO weeks 41–44 (5 October to 1 November) | 2,760 (about 690 a week) |
 | Merged pull requests, main repository, April to 8 November 2026 | about 6,200 |
 | Lines added / deleted, main repository, October (excluding recorded data) | 1,189,000 / 348,000 |
-| Median pull request size, main repository, October | 492 changed lines (the companion article's 420 is all four repositories, W41–W45) |
+| Median pull request size, main repository, October | 492 changed lines (the 420 in [the companion article](/ai-tools/agent-fleet-token-efficiency/) is the median over all four repositories, weeks 41–45) |
 | Test functions, backend | 27,635 |
 | Test cases, frontend | 12,467, plus 144 end-to-end spec files |
 | CI | 58 workflows, 136 jobs |
 | Merges later reverted | 0.2 to 0.7% |
-| Commit authors | 1 person (3,032 of the 3,048 commits in `main`'s history, which starts in August; the other 16 are Dependabot) |
+| Commit authors | 1 person (3,032 of the 3,048 commits in `main`'s current history, which starts on 7 August; the other 16 are Dependabot. The pull requests merged before August are counted from GitHub's PR records.) |
 
 ### Scale, compared
 
@@ -86,7 +86,7 @@ Here is October 2026 for my main repository and for some of the best-known open-
 | kubernetes/kubernetes | 570 | 169 | 132 |
 | My main repository | 1,652 | 1 | 492 |
 
-About 700 of CPython's merged PRs are automated backports; the 900 written by people came from 183 of them.
+About 700 of CPython's merged PRs are automated backports; the 900 written by people came from 183 of its 184 authors; the other is the backport bot.
 
 The comparison is of merged-PR throughput only, the one number all of these repositories expose. Their pull requests carry products with millions of users and a release process; mine carry a solution in its first year. My pull requests are opened by agents under my GitHub account, so my author count is the number of people directing the work. Their author counts include occasional outside contributors, so their core teams are smaller.
 
@@ -100,9 +100,9 @@ Against the most widely published productivity benchmark, about 2 merged PRs per
 
 **"70% of it is tests. That's padding."** It is the opposite. Tests are what let one person trust code they did not type. Every test runs on recorded data in the repository, so it gives the same answer every time. Without that, the rate above would be a rate of producing bugs.
 
-**"Then the quality must be bad."** The solution has no production users yet; it is demonstrated live on the synthetic catalogue. So the quality evidence is what I can measure: 0.2 to 0.7% of merges are later reverted, every PR is reviewed by a separate agent whose job is to find what is wrong with it, and every PR must pass 136 CI jobs before it merges. A measure of how many real shopper queries the layer interprets correctly, tracked over time, is the one I do not have yet, and the next thing to build. The weak spot is rework, not breakage: about one fix round per merged PR, which I measure and am working to reduce.
+**"Then the quality must be bad."** The solution has no production users yet; it is demonstrated live on the synthetic catalogue. So the quality evidence is what I can measure: 0.2 to 0.7% of merges are later reverted, every PR is reviewed by a separate agent whose job is to find what is wrong with it, and every PR must pass 136 CI jobs before it merges. A measure of how many real shopper queries the layer interprets correctly, tracked over time, is the one I do not have yet, and the next thing to build. The weak spot is rework, not breakage: about one fix round per merged PR (the reviewer blocks the PR, an agent fixes what it found, and the PR is reviewed again), which I measure and am working to reduce.
 
-**"An engineer does more than merge PRs: design, review, triage, operations."** So does this system. Review is done by agents. Triage is done by agents: each new issue is labelled with a severity, a lane (the area of the work) and an audience. Operations are done by agents: a watchdog checks the fleet every 15 minutes. What remains for me is the part that cannot be delegated: what the solution should do, and judging whether it does it.
+**"An engineer does more than merge PRs: design, review, triage, operations."** So does this system. Review is done by agents. Triage is done by agents: each new issue is labelled with a severity, a lane (the area of the work) and an audience (who the change is for: shoppers, merchandisers, integrators or developers). Operations are done by agents: a watchdog checks the fleet every 15 minutes. What remains for me is the part that cannot be delegated: what the solution should do, and judging whether it does it.
 
 ## Why it does not fall apart
 
@@ -122,11 +122,11 @@ In the early months there were few written rules and few deterministic tests, an
 
 ### How the system went from painful to self-improving
 
-The workflow evolved from those failures, and it still improves the same way: a failure does not just get a fix, it gets a change to the system, so that the error, and its whole class of errors, cannot happen again. Each failure above followed the same path. The agent fixed the instance. The lesson went into the written guidance, with the issue number, so the next agent could read what went wrong. Then the guidance became a test or a CI check, because a written rule is followed most of the time and a check is followed every time. Tests now run on recorded responses from the real system instead of hand-written stand-ins; CI refuses a test that skips itself silently; a missing setting is an error, not a guess; a weekly scan looks for silenced warnings already in the code; and hooks refuse any write outside an agent's own copy of the repository. The guide itself was split into topic files behind a small root guide whose size is capped, so an agent reads only the part its task needs. The sections below are where those checks ended up.
+The workflow evolved from those failures, and it still improves the same way: a failure does not just get a fix, it gets a change to the system, so that the error, and its whole class of errors, cannot happen again. Each failure above followed the same path. The agent fixed the instance. The lesson went into the written guidance, with the issue number, so the next agent could read what went wrong. Then the guidance became a test or a CI check, because a written rule is followed most of the time and a check is followed every time. Tests now run on recorded responses from the real system instead of hand-written stand-ins; CI refuses a test that skips itself silently; a missing setting is an error, not a guess; a weekly scan looks for silenced warnings already in the code; and hooks (scripts Claude Code runs before each tool call, which can refuse it) refuse any write outside an agent's own copy of the repository. The guide itself was split into topic files behind a small root guide whose size is capped, so an agent reads only the part its task needs. The sections below are where those checks ended up.
 
 #### 1. The rules are written down, and every rule has its incident
 
-`CONTRIBUTING.md` is the contract every agent works under: 350 lines, pointing into 66 topic files (about 36,000 lines). It covers architecture boundaries, naming, error handling, testing, documentation and review.
+The rules come in three layers: a root guide of about 2 KB that is loaded into every model call; `CONTRIBUTING.md`, the contract every agent works under, 350 lines; and 66 topic files (about 36,000 lines) that `CONTRIBUTING.md` points into. It covers architecture boundaries, naming, error handling, testing, documentation and review.
 
 Three things make it work rather than become a wall of text nobody reads:
 
@@ -157,7 +157,8 @@ Tests are also held to account:
 - **File-size caps.** No source file may grow past 1,750 lines without a stated exception. Agents love to keep appending to one file.
 - **Audit greps.** About two dozen patterns, each tied to a failure class that slipped past review more than once, run on every diff.
 - **Change obligations.** "If you touch X you also owe Y" is enforced by a script, not remembered.
-- **An efficiency ratchet.** Efficiency readings may only improve. A daily run fails when one regresses past its baseline.
+- **A copy-paste check.** A block of code copied verbatim from elsewhere in the repository blocks the merge. Agents copy where they should reuse.
+- **An efficiency ratchet.** A daily run reads efficiency figures (merge-queue evictions and time, review rounds, the slowest CI job, the size of the guidance agents read) and fails when one gets worse than its recorded baseline. The baselines may only improve.
 - **Process guards.** A process improvement ships with a deterministic check that fails when the improvement regresses.
 
 The gates themselves get attacked. On one day, four separate reviews each found a new gate blind to a different spelling of the thing it was meant to catch (`./tests/` instead of `tests/`, a folded YAML value, a shell array). In one case 10 of 12 deliberately planted evasions got through. Since then, every new gate is run against a standard kit of evasions before review. An agent will find the gap in your gate. It is not malicious; it is optimising. The gate has to be built for that.
@@ -170,15 +171,15 @@ Review agents are separate from implementing agents, with their own instructions
 
 #### 5. A control plane for the agents, under version control
 
-The agents themselves are run by code, not by me typing prompts. That code lives in its own repository, separate from the solution, so process changes never tangle with changes to the solution:
+Since late October, the agents themselves are run by code, not by me typing prompts. That code lives in its own repository, separate from the solution, so process changes never tangle with changes to the solution:
 
-- **An allocator** runs the agent slots on a cloud VM from a single queue. Work is drawn by priority and by weighted lanes (areas of the solution, CI throughput, reviews of old PRs). Urgent work goes to the front of the queue, never around it.
-- **A watchdog** runs every 15 minutes with no AI involved. It checks for stalls, red CI on `main`, PRs that have stopped moving, and jobs that failed.
+- **An allocator** keeps a fixed number of agents running at once (the slots) on a cloud VM, drawing work from a single queue. Work is drawn by priority and by weighted lanes (areas of the solution, CI throughput, reviews of old PRs). Urgent work goes to the front of the queue, never around it.
+- **A watchdog** runs every 15 minutes with no AI involved. It checks for stalls, failing (red) CI on `main`, PRs that have stopped moving, and jobs that failed.
 - **An oversight loop** checks the watchdog: each run records whether something was caught by a trigger, found clean, or missed. A miss files its own fix.
-- **Stop the line.** A red `main` or a stuck PR is fixed before new work starts, on a clock. It is *jidoka* from the [Toyota Production System](https://global.toyota/en/company/vision-and-philosophy/production-system/): stop the line at the defect, because every agent after it will build on the broken base.
+- **Stop the line.** A red `main` or a stuck PR is fixed before new work starts, with a deadline after which it escalates. It is *jidoka* from the [Toyota Production System](https://global.toyota/en/company/vision-and-philosophy/production-system/): stop the line at the defect, because every agent after it will build on the broken base.
 - **One folder per agent.** Every agent develops in its own clone of the repository, on its own branch, so a dozen agents work at once without touching each other's files. The checkout I demo from is never written to by an agent: hooks refuse any write outside the agent's own clone.
 
-The control plane has been redesigned twice, the second time from scratch. The first two versions grew by patching: a watcher here, a re-send there. When it became clear that patches were adding failure modes faster than they removed them, I stopped patching and had it redesigned as a minimal allocator over one table. That is the rule now: a stall gets fixed today and gets a deterministic rule with a test, so it cannot recur.
+The control plane has been redesigned twice, the second time from scratch. The first two versions grew by patching: a watcher here, a re-send there. When it became clear that patches were adding failure modes faster than they removed them, I stopped patching and had it rewritten from scratch as a minimal allocator. That is the rule now: a stall gets fixed today and gets a deterministic rule with a test, so it cannot recur.
 
 #### 6. Issues are written so an agent can finish them
 
@@ -192,7 +193,7 @@ I also design the system described above, and every time it fails, I change it s
 
 ## What it costs, and what still breaks
 
-None of this is free. A fleet of agents uses a lot of tokens, and at the start a week's token budget lasted about a day. Six changes later, each changed line of code takes 3.3 times fewer tokens (about 2.5 times fewer, weighted by the price of each kind of token), and the agents merge 4.4 times as many pull requests a week on 19% fewer tokens. Rework is about a fifth of agent tokens, and those figures include it. The [next article](/ai-tools/agent-fleet-token-efficiency/) shows how: where the tokens went, how I measured it from the transcripts already on disk, and what each change brought. A small starting point extracted from the private setup, the two hooks that did the most and the measuring script, is public in [agent-fleet-kit](https://github.com/alexander-marquardt/agent-fleet-kit).
+None of this is free. A fleet of agents uses a lot of tokens, and at the start a week's token budget lasted about a day. Six changes later, each changed line of code takes less than a third of the tokens it did (a 3.3x drop; about 2.5x when each kind of token is weighted by its price, because the cheap cached reads fell most), and the agents merge 4.4 times as many pull requests a week on 19% fewer tokens. Rework is about a fifth of agent tokens, and those figures include it. The [next article](/ai-tools/agent-fleet-token-efficiency/) shows how: where the tokens went, how I measured it from the transcripts already on disk, and what each change brought. A small starting point extracted from the private setup, the two hooks that did the most and the measuring script, is public in [agent-fleet-kit](https://github.com/alexander-marquardt/agent-fleet-kit).
 
 What still breaks: rework. About one fix round per merged PR is too many, and it is where the next round of improvements goes. Agents still occasionally solve the wrong problem confidently, which is why each issue quotes my ruling word for word, and the agent reviews are adversarial.
 

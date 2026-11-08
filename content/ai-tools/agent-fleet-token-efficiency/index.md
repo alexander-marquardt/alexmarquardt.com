@@ -11,9 +11,9 @@ description: "Why coding agents use so many tokens, how to measure it from the t
 
 ## Summary
 
-With four coding agents running on one project, a week's token budget lasted about a day. [The previous article](/ai-tools/one-developer-coding-agent-fleet/) describes the project and how it is kept under control; this one reports where the tokens went, how I measured it from the agents' own transcripts, and what each change bought, including the ones that bought nothing.
+At the start, with four coding agents running on one project, a week's token budget lasted about a day. [The previous article](/ai-tools/one-developer-coding-agent-fleet/) describes the project and how it is kept under control; this one reports where the tokens went, how I measured it from the agents' own transcripts, and what each change bought, including the ones that bought nothing.
 
-Six changes later, the same amount of code takes 3.3 times fewer tokens. I did not spend the saving on making the budget last longer, but on doing more with it: the agents now merge 4.4 times as many PRs a week, on 19% fewer tokens.
+Six changes later, tokens per changed line of code are down 3.3x. I did not spend the saving on making the budget last longer, but on doing more with it: the agents now merge 4.4 times as many PRs a week, on 19% fewer tokens.
 
 Measured over ten weeks of transcripts:
 
@@ -22,10 +22,10 @@ Measured over ten weeks of transcripts:
 - **Merged PRs per week rose 4.4x**, on 19% fewer tokens a week.
 - **Reverts stayed rare** (0.2 to 0.7% of merges), but rework per PR did not fall.
 
-Most of the tokens are not the code the agents write but the context they send. The model keeps nothing between calls, so each call sends the whole conversation again, and an agent makes many calls per task. The total is proportional to the number of calls times the average context per call. Every change that helped made one of those two smaller. What I changed, and what each change brought:
+Most of the tokens are not the code the agents write but the context they send. The model keeps nothing between calls, so each call sends the whole conversation again, and an agent makes many calls per task. The total is proportional to the number of calls times the average context per call. Every change that helped made one of those two smaller. What I changed, and what each change brought (the terms are explained in the sections below):
 
 1. **Measure from the transcripts**, per merged PR, not per hour. It found the levers, including the largest, which my own tuning had missed for weeks: cache expiry while agents waited, 31% of agent usage.
-2. **End each agent after one task**, with a written handoff and a hook-enforced context ceiling. The big step: median context per agent request fell from 218k to 101k tokens on the first day.
+2. **End each agent after one task**, with a written handoff and a hook-enforced context ceiling. The big step, together with change 3: median context per request, across all kinds of agent, fell from 218k to 101k tokens on the first day.
 3. **Keep the prompt cache warm**, and load less into every agent. Cache expiry fell from 31% of agent usage to 0.7%.
 4. **Turn rules into code**, so the model does not have to remember them. No separate number.
 5. **Let a program take load off the AI** for the routine work of running the fleet. The coordinator's tokens per merged PR fell to 7% of their baseline.
@@ -41,7 +41,7 @@ The arithmetic is the same for one session as for a dozen agents. Without a flee
 
 - **Measure.** [The script in the appendix](#appendix-a-script-to-sum-tokens-per-session) sums each session's tokens from the transcripts Claude Code keeps under `~/.claude/projects/`, counting each request once.
 - **One task per session.** Start fresh for the next task, with a short note of where you are; a long conversation re-reads everything on every call.
-- **Don't leave a session idle past its cache lifetime** (five minutes for sub-agents, up to an hour for the main session), and run anything slow in the background.
+- **Don't leave a session idle past its cache lifetime** (five minutes for sub-agents, the background agents a session launches; up to an hour for the main session), and run anything slow in the background.
 - **Keep what loads into every session small**: only the rules that apply everywhere, with pointers to the rest.
 - **Make the codebase easy to navigate**: short module summaries, small files, comments that point to the details.
 
@@ -49,13 +49,13 @@ On my coordinating session, a few days old, that script shows about 3,600 calls 
 
 ## The setup
 
-One coordinating session watches the work. Up to a dozen background agents on a single cloud VM each take one GitHub issue, write the change and its tests in their own clone, and open a pull request. A separate review agent, told to look for reasons *not* to merge, must approve every PR at its current head commit, and the PR then lands through a merge queue with green CI.
+One coordinating session, the coordinator, watches the work. Up to a dozen background agents on a single cloud VM each take one GitHub issue, write the change and its tests in their own clone, and open a pull request. A separate review agent, told to look for reasons *not* to merge, must approve every PR at its current head commit, and the PR then lands through a merge queue with green CI.
 
 The main repository is a multi-service search solution, mostly Python and TypeScript, with about 1,400 files of solution code, about 600 of scripts and tooling, and 136 CI jobs. The agents also work in three smaller repositories: a data generator, a configuration-and-data repository and the agent-control repository. The fleet now merges 590 to 870 PRs a week across the four.
 
 ## The results
 
-The figures come from one script over every transcript since September. Every token counts once: fresh input, cache writes, cache reads and output. The script was checked against a baseline recorded at the start, for 15 September to 3 October, and agreed within 2.3%. Weeks are ISO weeks; W45 is partial, to 7 November.
+The figures come from one script over every transcript since September. Every token counts once: fresh input, cache writes, cache reads and output. The script was checked against an independent count I made at the start, for 15 September to 3 October, and agreed within 2.3%. Weeks are ISO weeks, Monday to Sunday: W36 starts on 31 August, W41 on 5 October, and W45 is partial, to 7 November.
 
 Changed lines are additions plus deletions, from all four repositories. A few PRs a week regenerate data files and change tens of thousands of lines, so for tokens per line, a PR counts at most 5,000 lines.
 
@@ -85,15 +85,15 @@ Smaller PRs alone would lower tokens per PR without any real gain. Tokens per ch
 
 Raw tokens count a cache read the same as an output token, although a cache read costs a tenth as much or less. Weighted by the relative price of each kind of token (cache read 0.1, fresh input 1, cache write 1.25 to 2, output 5), the per-line drop is about 2.5x rather than 3.3x, because what fell is mostly the cheap kind. Output's share of the weighted total rose from 2–6% before to about 19% after.
 
-PRs did get smaller. The median fell from about 1,010 changed lines to about 420, and the average, with each PR capped at 5,000 lines, from about 1,400 to about 850. One task per agent produces smaller PRs, which are easier to review. That is why the per-PR figures fell further than the per-line one.
+PRs did get smaller. The median, across all four repositories, fell from about 1,010 changed lines to about 420 (the main repository alone was 492 in October), and the average, with each PR capped at 5,000 lines, from about 1,400 to about 850. One task per agent produces smaller PRs, which are easier to review. That is why the per-PR figures fell further than the per-line one.
 
-The 5.5x across all four repositories also includes a shift in the mix: the main repository was 89% of merged PRs before and 56% after, and PRs in the smaller repositories are smaller (configuration and data changes). The 3.5x avoids that by charging every token, including those spent in the other three repositories, to main-repository PRs alone, which overstates the cost per PR after the change. W45 is partial: the complete weeks W41–W44 alone give 3.4x.
+The 5.5x across all four repositories also includes a shift in the mix: the main repository was 89% of merged PRs before and 56% after, and PRs in the smaller repositories are smaller (configuration and data changes). The 3.5x avoids that by charging every token, including those spent in the other three repositories, to main-repository PRs alone, which overstates the cost per PR after the change. W45 is partial: the complete weeks W41–W44 alone give 3.4x for tokens per main-repository PR.
 
 ### What changed, and what I cannot separate
 
 Almost all of the drop happened between W40 and W41. Two changes landed together: short-lived agents with a hook-enforced context ceiling, and a cap on waits that stopped cache expiry. I did not run them separately, so I cannot divide the step between them. The direct evidence is the context distribution: on the first day of the ceiling, the median context per agent request fell from 218k to 101k tokens.
 
-The model mix changed too, but earlier. By W40, 92% of tokens were already on the newer Opus generation, and tokens per main-repo PR were still near the old level, so the generation change alone did not produce the step. In W41 a smaller model also took 27% of tokens, and 69% in W42.
+The model mix changed too, but earlier. By W40, 92% of tokens were already on the newer generation of Claude Opus, the largest model, and tokens per main-repo PR were still near the old level, so the generation change alone did not produce the step. In W41 a smaller model also took 27% of tokens, and 69% in W42.
 
 Per changed line, W40 was already at 68, so part of the per-line drop belongs to that week, when the newer model generation arrived and PRs were larger. The step from 68 to 25 is the one I attribute to the ceiling and the wait cap.
 
@@ -103,9 +103,9 @@ The later weeks moved for reasons I also did not isolate. W42 and W43, the highe
 
 - **What the agents write did not fall.** Output tokens are everything the model writes, and code is only a small part of it. Measured from the transcripts, about half of the output is the model reasoning before it acts, about a third is the commands it runs (tests, git, searches), and about a tenth is the file edits themselves; replies, PR comments and handoff notes are under a tenth together. Much of that is a fixed cost per task: understanding the issue, running the tests, opening the PR. Smaller PRs pay it more often. So output per PR stayed about the same (up 9%) while each PR carried about 40% fewer changed lines (about 1,400 down to 850), which means the agents now write about 1.8 times as many output tokens per changed line. The saving came from the context the agents re-read, not from what they write.
 - **Reverts** rose from 0–1 a week to 2–4 a week in W42–W44, 0.2 to 0.7% of merges at four times the volume.
-- **Fix rounds per merged PR rose**, from 0.80 to 0.9–1.0, and the weekly reports put rework at about 20% of agent tokens.
-- **"CI is red" review findings** rose from 15% to 26% of blocking findings after the cache fix.
-- **The fixed context of an agent's first turn grew** from 9.9k to 14k tokens over the same period.
+- **Fix rounds per merged PR rose**, from 0.80 to 0.9–1.0. A fix round is one pass of: a reviewer blocks the PR, an agent fixes what it found, and the PR is reviewed again. My weekly token reports put this rework at about 20% of agent tokens.
+- **Reviews started on PRs whose CI had already failed.** A reviewer that finds CI red can only block the PR and say so, which CI had already said, so the round is wasted. By mid-October this was 26% of the findings that blocked a PR, up from 15%. The program that now runs the fleet (change 5) checks CI before it starts a review and sends a red PR straight to a fix round.
+- **The fixed context of an agent's first turn grew** from 9.9k to 14k tokens over the same period: the system prompt, tool definitions and rules every agent starts with. Most of it is now read from the cache, so the part written fresh each time fell (change 3).
 
 Tokens per PR fell; rework per PR did not. That is where the next round of work is.
 
@@ -133,7 +133,7 @@ In a chat, that happens once per message you type. An agent supplies its own nex
 
 So one message from you ("fix this test") can become 50 or 200 calls, each re-sending everything so far. An agent that starts at 20k tokens and grows to 150k carries about 85k on an average call. Over 200 calls, that is about 17 million input tokens, against perhaps 0.1 million tokens of responses, although the final conversation is only 150k long.
 
-**Tokens used are roughly the number of calls times the context carried.** Double either and you double the total; the brief an agent starts from is small by comparison.
+**Tokens used are proportional to the number of calls times the average context per call.** Double either and you double the total; the brief (the task description an agent starts from) is small by comparison.
 
 ### The cache: keeping the work between calls
 
@@ -174,7 +174,7 @@ Two details of the method matter more than they look:
 1. **Count each request once.** One request appears as several records, one per content block, each with a copy of the usage. My first daily script counted every record, and its figure was about a third too high.
 2. **Divide by work done, not by time.** Tokens per hour is a budget signal; tokens per merged PR is the efficiency signal. On the first day of the context ceiling, hourly token use did not move, but merged PRs per hour went from 0.57 to 2.06. The saving went into throughput.
 
-The first breakdown, weighted by price, from one day's transcripts: the brief was 0.6% of use, file reads about 27%, the agents' own output about 26%, and the system prompt and tool definitions about 15%. The rest was other tool results, such as command output, and the conversation's own messages.
+The first breakdown, weighted by price, from one day's transcripts: the brief was 0.6% of use, file reads about 27%, the agents' own messages, written once and then re-sent with every later call, about 26%, and the system prompt and tool definitions about 15%. The rest was other tool results, such as command output, and the conversation's own messages.
 
 A second measurement, from one day's transcripts, showed where the waste was. Of the context an agent carried, only 1.5 to 3% was never referenced again. The waste was not irrelevant content; it was relevant content carried across hundreds of calls. Reading a file again when it is needed costs one cache write. Carrying it costs a cache read on every call, cheaper each time but repeated. If the content is needed again only once, carrying it costs more than reading it again after about a dozen calls.
 
@@ -182,11 +182,11 @@ A second measurement, from one day's transcripts, showed where the waste was. Of
 
 When an agent's work is not finished, it does not continue in an ever-growing conversation. The code goes to a pushed branch, and the plan goes to a status comment on the PR with the next steps, links and the head commit. A fresh agent starts from that handoff, which is under 30 lines.
 
-A `PreToolUse` hook enforces it for every sub-agent. Before each tool call it reads the agent's current context size from its transcript. At 150k tokens it adds a note: at the next commit, push, post the status comment and end. At 200k it refuses every tool call except the `git` and `gh` commands a handoff needs, and the refusal text carries the handoff steps. A minimal version of the hook, rewritten from the private setup with tests, is in [agent-fleet-kit](https://github.com/alexander-marquardt/agent-fleet-kit).
+A `PreToolUse` hook (a script Claude Code runs before every tool call, which can refuse the call) enforces it for every sub-agent. Before each tool call it reads the agent's current context size from its transcript. At 150k tokens it adds a note: at the next commit, push, post the status comment and end. At 200k it refuses every tool call except the `git` and `gh` commands a handoff needs, and the refusal text carries the handoff steps. A minimal version of the hook, rewritten from the private setup with tests, is in [agent-fleet-kit](https://github.com/alexander-marquardt/agent-fleet-kit).
 
 On the first day, median context per request fell for every kind of agent: implementation from 331k to 143k tokens, review from 149k to 90k. The share of agents that ever passed 150k fell from 73% to 25%.
 
-A written handoff beats in-context compaction for three reasons I can check: it is short, a human or another agent can read it, and it survives a crash or a restart. A fresh agent pays for its orientation once, typically tens of thousands of tokens.
+A written handoff beats compaction (Claude Code summarising a long conversation in place) for three reasons I can check: it is short, a human or another agent can read it, and it survives a crash or a restart. A fresh agent pays for its orientation once, typically tens of thousands of tokens.
 
 ## 3. Keep the prompt cache warm, and load less into every agent
 
@@ -194,13 +194,13 @@ When an agent waited more than five minutes, for CI, a long test or a polling lo
 
 Wait helpers now return before 270 seconds, and a guard refuses longer foreground waits (a minimal version is in [agent-fleet-kit](https://github.com/alexander-marquardt/agent-fleet-kit) too). Cache expiry fell to 0.7% of agent usage. Polling turned out not to be the waste it looks like: a poll inside the cache lifetime keeps the cache warm, and a cold restart costs about ten times as much as a poll.
 
-The second fix was in what every agent loads. Each agent's first message carried an always-loaded memory index of about 90 lines, appended to the first user message, after the last cache breakpoint. Most of its lines were rules only the coordinator needed. Because it sat in the same block as each agent's own task, a one-word difference in the task missed the cache for the whole block: across every agent started in one day, the median first turn read 3.2k tokens from cache and wrote 11k fresh.
+The second fix was in what every agent loads. Each agent's first message carried a 90-line index of my notes and rulings, appended to the first user message, after the last cache breakpoint (the point up to which a prompt can be served from the cache). Most of its lines were rules only the coordinator needed. Because it sat in the same block as each agent's own task, a one-word difference in the task missed the cache for the whole block: across every agent started in one day, the median first turn read 3.2k tokens from cache and wrote 11k fresh.
 
 The index now holds 8 universal lines, and the rest moved to secondary indexes an agent opens only when its task needs them. The first-turn cache write fell from about 11.2k to about 4.5k tokens. Anything injected into every agent belongs before the cache breakpoint, or nowhere.
 
 ## 4. Turn rules into code
 
-[The previous article](/ai-tools/one-developer-coding-agent-fleet/) describes these gates as a way to keep the codebase sound. Here is their effect on tokens.
+[The previous article](/ai-tools/one-developer-coding-agent-fleet/) describes the CI gates as a way to keep the codebase sound. Here is their effect on tokens.
 
 In the first weeks, every incident produced a new rule in a prompt. The rules were followed most of the time, but across hundreds of agents a day, most of the time means several failures a day, and every agent pays to read every rule on every call.
 
@@ -208,7 +208,7 @@ So anything that can be checked deterministically moved into code, as a gate, a 
 
 - **"Don't merge without an approving review" and "never write into the main checkout"** were sentences. The merge tooling now checks for an approving verdict at the PR's current head commit, and a write into the main checkout is refused.
 - **"Keep the brief short"** was advice. The script that renders a brief from an issue now refuses one that cites more source than an agent can read in one go, and says what to cut.
-- **Every rule in the contributor guide has a delivery class**: enforced by a gate whose failure message names the rule, triggered (an agent touching the matching files gets a pointer to it), core, or review-only. A check refuses a rule with no class.
+- **Every rule in the contributor guide has a delivery class**: enforced by a gate whose failure message names the rule, triggered (an agent touching the matching files gets a pointer to it), core (in the small guide every agent loads), or review-only. A check refuses a rule with no class.
 
 I described the same idea for query execution in an [earlier article](https://www.elastic.co/search-labs/blog/agentic-ai-search-deterministic-guardrail-query-execution): the model proposes, deterministic code decides what runs. Here it applies to how the software is built. A smaller context saves tokens only if nothing important lived in it. Once state lives in files and on GitHub, and rules live in code, the model can forget almost everything between agents, and the work does not notice.
 
@@ -218,7 +218,7 @@ Turning rules into code took care of how the software is built. Running the flee
 
 Most of that work moved into a small program:
 
-- **A queue decides what runs next**, weighted by area, with a fixed number of slots per kind of work. Choosing and launching costs no coordinator tokens.
+- **A queue decides what runs next**, weighted by area, with a fixed number of agents that may run at once (slots) for each kind of work. Choosing and launching costs no coordinator tokens.
 - **Briefs are rendered from the issue by a script.**
 - **Routine checks run on a timer every 15 minutes, with no model.** They print one line per finding, and the AI is woken only for a line that needs judgment.
 - **A stall is fixed by a rule in the program, with a test**, not a note for the model.
@@ -259,7 +259,7 @@ I cannot give a separate number for these; their effect is spread across every r
 | Blind head-and-tail cap on tool output | Did not work: cut text the agent needed about half the time | Estimated |
 | Per-command output digests, refusing whole-file reads of big files | 5–10%; shipped, not measured separately | Estimated |
 | A lower handoff ceiling (90–110k) | 3–12%; below 50k a handoff costs more than it saves | Estimated |
-| A mechanical gate before review | 71% of blocking findings were mechanical, yet only about 3% saved | Estimated |
+| A mechanical gate before review | 71% of the review findings that blocked a PR were mechanical, yet only about 3% of tokens would be saved | Estimated |
 | No re-review after a pure merge of main | Under 1.5%: most re-reviews follow a real fix | Estimated |
 | A helper that reads several file ranges in one call | Built, but in one sample of long runs two thirds of read turns still followed another read | One sample: low adoption |
 | A per-job read budget with a pointer to a symbol read | Too new to measure | Not yet measured |
@@ -273,7 +273,7 @@ Most of the mechanics are documented. Claude Code's [cost](https://code.claude.c
 
 ## What's next
 
-The implementation job is now most of agent token use, and in one 24-hour sample, its runs of more than 150 turns took about a third of implementation tokens. Getting those runs to read in larger, better-aimed pieces, and to get the change right the first time, is the next round.
+The implementation job is now most of agent token use, and in one 24-hour sample, its runs of more than 150 calls took about a third of implementation tokens. Getting those runs to read in larger, better-aimed pieces, and to get the change right the first time, is the next round.
 
 Volume brings its own problem. At this PR volume, the bottleneck moves from writing code to landing it: a merge queue tests PRs in groups against the latest main, and one failing PR drops its whole group. That deserves its own article.
 

@@ -13,7 +13,7 @@ description: "Why coding agents use so many tokens, how to measure it from the t
 
 I have a project with a significant amount of code written by AI agents. [The previous article](/ai-tools/single-developer-work-of-200-engineers/) describes how it is built and kept under control. With four agents running, a week's token budget lasted about a day.
 
-Six changes later, the same work takes 3.3 to 5.5 times fewer tokens, so at the old pace that budget would last three to five and a half days instead of one. Output did not fall to get there: each week the agents now merge more PRs and change more lines than before. This article explains where the tokens went, how I fixed it, and what each change brought, including the changes that brought nothing.
+Six changes later, the same work takes 3.3 to 5.5 times fewer tokens. I did not spend the saving on making the budget last longer, but on doing more with it: the agents now merge 4.4 times as many PRs a week, on 19% fewer tokens. This article explains where the tokens went, how I fixed it, and what each change brought, including the changes that brought nothing.
 
 Measured over ten weeks of transcripts:
 
@@ -61,9 +61,9 @@ The figures come from one script over every transcript since September. Every to
 
 Changed lines are additions plus deletions, from all four repositories. A few PRs a week regenerate data files and change tens of thousands of lines, so for tokens per line, a PR counts at most 5,000 lines.
 
-The token columns are an index: 100 is the four weeks before the changes, W36–W39, taken together. I report ratios rather than absolute token counts; the [script in the appendix](#appendix-a-script-to-sum-tokens-per-session) measures your own.
+I report token use relative to a baseline rather than as absolute counts. In the table, each token column is an index: 100 is its value over the four weeks before the changes, W36–W39, taken together. A value of 25 means a quarter of the baseline's tokens for the same unit of work; 135 means 35% more. "All tokens in the week" is every token used by the coordinator and every agent that week, across all four repositories; the other token columns divide it by merged PRs or changed lines. The [script in the appendix](#appendix-a-script-to-sum-tokens-per-session) measures your own absolute figures.
 
-| Week | Merged PRs (all / main repo) | Tokens per week | Tokens per main-repo PR | Tokens per merged PR (all) | Median PR size (lines) | Tokens per changed line |
+| Week | Merged PRs (all / main repo) | All tokens in the week (index) | Tokens per main-repo PR (index) | Tokens per merged PR, all repos (index) | Median PR size (lines) | Tokens per changed line (index) |
 |---|---|---|---|---|---|---|
 | W36 | 195 / 195 | 109 | 76 | 86 | 915 | 99 |
 | W37 | 153 / 153 | 90 | 80 | 90 | 998 | 96 |
@@ -76,9 +76,9 @@ The token columns are an index: 100 is the four weeks before the changes, W36–
 | W44 | 670 / 281 | 66 | 32 | 15 | 394 | 25 |
 | W45 (partial) | 641 / 330 | 66 | 27 | 16 | 411 | 27 |
 
-**Before** (W36–W39): 100 in every token column, for about 150 merged PRs a week.
+**Before** (W36–W39): the baseline, 100 in every token column, at about 150 merged PRs a week.
 
-**After** (W41–W45): 29 per main-repo PR (3.5x fewer), 18 per merged PR across all repositories (5.5x fewer), 31 per changed line (3.3x fewer) and 81 per week (19% fewer), for about 680 merged PRs a week.
+**After** (W41–W45), against that baseline: tokens per main-repo PR at 29 (3.5x fewer), per merged PR across all repositories at 18 (5.5x fewer), per changed line at 31 (3.3x fewer), and all tokens in the week at 81 (19% fewer), at about 680 merged PRs a week.
 
 ### Why the headline is per line, not per PR
 
@@ -223,7 +223,7 @@ Most of that work moved into a small program:
 
 The coordinator's own numbers fell in two steps, coinciding with the short-lived agents in W41 and with the program taking over the work in W44 and W45:
 
-| Week | Coordinator calls per merged PR | Coordinator tokens per merged PR (index, W36–W40 = 100) | Coordinator share of all tokens |
+| Week | Coordinator calls per merged PR | Coordinator tokens per merged PR (index, baseline W36–W40 = 100) | Coordinator share of all tokens |
 |---|---|---|---|
 | W36–W40 | 26–41 | 100 (78–122 by week) | 11–21% |
 | W41 | 23.5 | 19 | 18% |

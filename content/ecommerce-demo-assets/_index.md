@@ -50,7 +50,7 @@ The current generator draws **one drawing per SKU**, from that SKU's own
 dimensions, at one true scale per product type, and with no text in it. Those
 drawings are not hosted here: the generator builds them as a bundle that a
 demo serves itself. See
-[Generating a synthetic industrial product catalog](/data-generation/synthetic-industrial-product-catalog/#generated-technical-drawings)
+[Generating a synthetic retail and industrial product catalog](/data-generation/synthetic-retail-and-industrial-catalog/#generated-drawings)
 for how they are made and how to build them.
 
 ```

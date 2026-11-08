@@ -152,7 +152,7 @@ More details: [About the Author](/about/) · [Professional Record](/professional
 
 # Data Generation
 
-- [Generating a synthetic industrial product catalog for search demos](/data-generation/synthetic-industrial-product-catalog/) (Sep 28, 2026)
+- [Generating a synthetic retail and industrial product catalog for search demos](/data-generation/synthetic-retail-and-industrial-catalog/) (Sep 28, 2026; updated Nov 8, 2026)
 
 - [Building a grocery demo dataset from Open Food Facts](/data-generation/open-food-facts-grocery-demo-data/) (Jan 14, 2026)
 

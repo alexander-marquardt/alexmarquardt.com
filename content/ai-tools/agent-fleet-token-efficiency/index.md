@@ -22,7 +22,7 @@ Measured over ten weeks of transcripts:
 - **Merged PRs per week rose 4.4x**, on 19% fewer tokens a week.
 - **Reverts stayed rare** (0.2 to 0.7% of merges), but rework per PR rose slightly, from 0.8 to about 1 fix round per merged PR.
 
-Most of the tokens are not the code the agents write but the context they send. The model keeps nothing between calls, so each call sends the whole conversation again, and an agent makes many calls per task. The total is proportional to the number of calls times the average context per call. Every improvement came from making fewer calls or sending less context with each one. The six changes, and what each one brought (the terms are explained in the sections below):
+Most of the tokens are not the code the agents write but the context they send. The model keeps nothing between calls, so each call sends the whole conversation again, and an agent makes many calls per task. The total is proportional to the number of calls times the average context per call. Every improvement came from making fewer calls or sending less context with each one. The list below shows what I changed and the impact of each change (the terms are explained in the sections that follow):
 
 1. **Measure from the transcripts**, per merged PR, not per hour. It found the levers, including the largest, which my own tuning had missed for weeks: cache expiry while agents waited, 31% of agent usage.
 2. **End each agent after one task**, with a written handoff and a hook-enforced context ceiling. Together with change 3, this was the big step. On the ceiling's first day, median context per request, across all kinds of agent, fell from 218k to 101k tokens.

@@ -6,7 +6,7 @@ draft: true
 slug: single-developer-work-of-200-engineers
 tags: ["ai", "agents", "developer-tooling", "claude", "engineering-productivity"]
 categories: ["AI-Assisted Development"]
-description: "The methodology behind one developer running a fleet of Claude Code agents: written rules, deterministic tests, CI gates, independent review and an agent control plane. With the measurements: three million lines of code, and as many merged pull requests a month as a 200-person open-source project."
+description: "The methodology behind one developer running a fleet of Claude Code agents: written rules, deterministic tests, CI gates, independent review and an agent control plane. With the measurements: as many merged pull requests a month as a 200-person open-source project, on a codebase where tests outnumber product code more than three to one."
 ---
 
 ## The problem it solves

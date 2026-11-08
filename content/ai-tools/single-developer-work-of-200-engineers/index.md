@@ -2,7 +2,7 @@
 showtoc: true
 title: "How a Single Developer Can Do the Work of 200 Engineers"
 date: 2026-11-08
-draft: true
+draft: false
 slug: single-developer-work-of-200-engineers
 tags: ["ai", "agents", "developer-tooling", "claude", "engineering-productivity"]
 categories: ["AI-Assisted Development"]

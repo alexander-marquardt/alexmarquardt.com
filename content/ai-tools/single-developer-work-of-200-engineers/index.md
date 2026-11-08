@@ -15,13 +15,19 @@ I work alone on a project, with a fleet of AI coding agents doing the implementa
 
 That is a large number, and it is not because I am unusually fast. It comes from a method: a set of rules, tests, gates and controls that let agents do the work of a large team without the codebase falling apart. This article shares that method, with the measurements behind it, how each was taken, and the objections they invite.
 
-## What the code is
+## The problem it solves
 
-The project is a search interpretation layer for e-commerce, built on Elasticsearch. It reads what a shopper types, such as "blue trainers size 9 under $50", works out which words are a colour, a size, a price limit, a brand or a category, and turns them into a structured query: filters, category routing, boosts and synonyms, served in tiers from best match to related. Every decision it makes is explained in a debug payload, so a merchandiser can see why a product is where it is.
+Try this on a few large e-commerce sites. Search for:
 
-A second application, Studio, is where merchandisers edit the vocabularies and rules that drive it and inspect any search. It is demonstrated on a synthetic catalogue of about 380,000 SKUs across retail and industrial departments, produced by the data generator in one of the other repositories.
+> red size 10 womens dress on sale
 
-<!-- SCREENSHOT: a search with its tiers, applied filters and the debug panel open -->
+You will not find many that get it right. The usual results treat the query as a bag of words: red shoes, size 10 trousers, dresses that are not on sale, or nothing at all. Few work out that "red" is a colour, "size 10" is a size, "womens dress" is a category and "on sale" is a promotion, and then act on each one.
+
+The project solves that. It is an e-commerce query interpreter built on Elasticsearch. For that query it recognises the colour Red, size 10 (including size ranges such as 9–10 that contain it), the category Women's › Dresses and the On sale promotion, applies each as a filter or a boost as the merchandiser has configured it, and searches only the words that are left. Results come in tiers, from exact matches to related products, and every decision is explained, so a merchandiser can see why a product is where it is. A second application, Studio, is where merchandisers edit the vocabularies and rules behind it. It is demonstrated on a synthetic catalogue of about 380,000 SKUs across retail and industrial departments.
+
+I have written about its design in [a series of articles on Elastic Search Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-control-plane-architecture). This article is about something else: the workflow that built it.
+
+<!-- SCREENSHOT: "red size 10 womens dress on sale" with its tiers, applied filters and the debug panel open -->
 
 ## The numbers
 

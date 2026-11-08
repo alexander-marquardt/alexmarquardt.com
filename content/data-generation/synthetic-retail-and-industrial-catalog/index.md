@@ -15,7 +15,7 @@ In two earlier articles I described how I turn open data into demo-ready e-comme
 
 For two other kinds of catalog I could not find an equivalent. The first is industrial supply: end mills, drills, taps, socket cap screws, hex bolts, washers. The real catalogs in this vertical are the distributors' own product data, and none of it can be redistributed as a demo asset. The second is a general retailer: hundreds of thousands of SKUs, with clothing, home, beauty, toys, garden and electronics side by side. The open sources I use each cover one department, and I found no redistributable source that covers them all together at that scale. So instead of harvesting a catalog, I wrote a generator for one: [**synthetic-ecommerce-data**](https://github.com/alexander-marquardt/synthetic-ecommerce-data).
 
-*Updated 2026-11-08. This article first described an industrial-only generator, under the title "Generating a synthetic industrial product catalog for search demos". The generator now builds one combined catalog of two domains, retail and industrial, and this version is rewritten around that. The demo built on it currently serves **383,284 SKUs: 251,288 retail and 131,996 industrial**, each with a drawing of its own. Unless a figure says otherwise, the industrial figures below are from the default industrial build committed to the repository on 8 November 2026.*
+The generator builds one combined catalog of two domains, retail and industrial. The demo built on it serves **383,284 SKUs: 251,288 retail and 131,996 industrial**, each with a drawing of its own. Unless a figure says otherwise, the industrial figures below are from the default industrial build committed to the repository on 8 November 2026.
 
 **Every product it produces is synthetic.** No record describes a real product offered by any retailer, every brand is invented, and no retailer's catalog content is redistributed. What *is* taken from the real world is the shape of the domain: which attribute names the industry uses, which dimension combinations are physically real, how titles are constructed, and how often real records are inconsistent.
 
@@ -142,7 +142,7 @@ That is why the flat shape also carries the per-attribute `facets.*` keys, where
 
 ## The retail catalog
 
-The retail domain started as a prototype beside the industrial generator and is now a domain of its own, with the same rules: no real retailer's content, deterministic output, one output standard, and a generated drawing for every SKU. A retail record is one product per style, with its colours and sizes as nested SKUs. The demo currently serves **251,288 retail SKUs** across the twelve departments above, from womenswear and babywear to grocery, lawn mowers, large appliances and phones.
+The retail domain follows the same rules as the industrial one: no real retailer's content, deterministic output, one output standard, and a generated drawing for every SKU. A retail record is one product per style, with its colours and sizes as nested SKUs. The demo currently serves **251,288 retail SKUs** across the twelve departments above, from womenswear and babywear to grocery, lawn mowers, large appliances and phones.
 
 What makes it useful for search, rather than merely large:
 
@@ -206,7 +206,7 @@ Real catalogs are messy, and a search demo on a perfectly clean catalog proves v
 | image reference missing | 0.1089 | 0 | 0 |
 | attributes per record (mean) | 13.12 | 13.12 | 10.47 |
 
-The rows with a target of 0 are deliberate. Earlier versions of the generator reproduced the first three, but each of these is an error a real retailer would fix once it was noticed: an end mill whose length of cut is longer than the tool, or a facet that offers `2"` beside `118` degrees, is a bug in the data, not realism worth demonstrating. The same goes for the measurement-system attribute, which the reference data spells three different ways: the generator now publishes it under one name. The report also checks prices against a measured price census, per product type: the median price, the spread, how often a larger size costs more, how much brands differ for the same specification, and even the mix of price endings.
+The rows with a target of 0 are deliberate. Each of these is an error a real retailer would fix once it was noticed: an end mill whose length of cut is longer than the tool, or a facet that offers `2"` beside `118` degrees, is a bug in the data, not realism worth demonstrating. The same goes for the measurement-system attribute, which the reference data spells three different ways: the generator publishes it under one name. The report also checks prices against a measured price census, per product type: the median price, the spread, how often a larger size costs more, how much brands differ for the same specification, and even the mix of price endings.
 
 Titles vary the way real ones do. These are nine square end mills, one SKU from each of nine different product lines:
 
@@ -250,7 +250,7 @@ Each drawing is a pure function of three things: the product type, the brand, an
 
 1. **Attributes to geometry.** Every drawn product type has a figure function that reads the record's published values (thread size and length for a screw; diameter, length of cut and flute count for an end mill; bore, outside diameter and closure type for a bearing) and builds the part as shapes measured in inches. It reads those values through the same parsing code as the rest of the generator, so the drawing and the data cannot disagree about what a record says.
 2. **Geometry to sheet.** The part is placed on a 200 × 300 sheet at its product type's scale, above the brand's plate (the strip at the foot of the sheet).
-3. **Sheet to SVG.** A small SVG writer in the generator itself, plain Python, writes out the paths, circles and fills. No drawing or plotting library is involved. An earlier version of the generator drew with matplotlib, but its SVG carries metadata and glyph definitions that these drawings do not need. The hand-written output averages about 2.6 KB per drawing: the default build's 14,556 drawings come to 38 MB, and the largest is under 8 KB.
+3. **Sheet to SVG.** A small SVG writer in the generator itself, plain Python, writes out the paths, circles and fills. No drawing or plotting library is involved. A plotting library's SVG carries metadata and glyph definitions that these drawings do not need. The hand-written output averages about 2.6 KB per drawing: the default build's 14,556 drawings come to 38 MB, and the largest is under 8 KB.
 
 The specifications show up visually rather than as text. A longer length of cut is drawn longer and a finer thread with more crests. A flat head is drawn as a cone and a button head as a dome. A sealed bearing is drawn closed, while an open one shows its balls. The other visual channels map to the record in the same way:
 
@@ -266,7 +266,7 @@ The specifications show up visually rather than as text. A longer length of cut 
 
 Each of the 45 industrial brands owns one house style (an ink and a frame, with no two brands sharing both) and one mark, a machine-shop motif in one of three enclosures, which sits with the brand's name in the plate under the figure. A brand's drawings look like a set and two brands' drawings look different, which is the role a manufacturer's photography style plays in a real catalog. Every drawing, industrial and retail, sits on the same plain white paper: an earlier version gave each brand a tinted paper, and in a demo a green sheet read as a different kind of product from a blue one, which is a signal no shopper should get from a background.
 
-The angle needs a word, because random rotation would be decoration. Two products of one type from two brands used to draw the same figure at the same angle and looked like one product that should have been grouped. Now each product's figure is turned to an angle derived from its product id, over the angles its type allows: any clock position for a part with no natural up (a screw, a washer), a small tilt for something that looks wrong upside down (a vise, a sofa) or for clothing, and level for a set of several items. Every SKU of one product shares the angle, so a product's variants still look like one product, and two different products look like two.
+The angle needs a word, because random rotation would be decoration. Two products of one type from two brands drawn at the same angle look like one product that should have been grouped, so each product's figure is turned to an angle derived from its product id, over the angles its type allows: any clock position for a part with no natural up (a screw, a washer), a small tilt for something that looks wrong upside down (a vise, a sofa) or for clothing, and level for a set of several items. Every SKU of one product shares the angle, so a product's variants still look like one product, and two different products look like two.
 
 ### One drawing, in code
 

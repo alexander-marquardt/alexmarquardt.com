@@ -13,15 +13,15 @@ description: "The methodology behind one developer running a fleet of Claude Cod
 
 Try this on a few large e-commerce sites. Search for:
 
-> red size 10 womens dress on sale under $40
+> size 10 womens dress on sale under $40
 
-You will not find many that get it right. The usual results treat the query as a bag of words: red shoes, size 10 trousers, dresses that are not on sale or cost more than $40, or nothing at all. Few work out that "red" is a colour, "size 10" is a size, "womens dress" is a category, "on sale" is a promotion and "under $40" is a price limit, and then act on each one.
+You will not find many that get it right. The usual results treat the query as a bag of words: size 10 shoes, women's trousers, dresses that are not on sale or cost more than $40, or nothing at all. Few work out that "size 10" is a size, "womens dress" is a category, "on sale" is a promotion and "under $40" is a price limit, and then act on each one.
 
-This article is about the development of an e-commerce query interpretation layer, built on top of Elasticsearch, that solves this problem. It reads what the shopper typed and turns it into filters: for the above query, the colour Red, size 10, the category Women's › Dresses and a price of up to $40. The shopper does not have to find and click a single filter. The layer is demonstrated on a synthetic catalogue of about 380,000 SKUs across retail and industrial departments.
+This article is about the development of an e-commerce query interpretation layer, built on top of Elasticsearch, that solves this problem. It reads what the shopper typed and turns it into filters: for the above query, size 10, the category Women's › Dresses and a price of up to $40. The shopper does not have to find and click a single filter. The layer is demonstrated on a synthetic catalogue of about 380,000 SKUs across retail and industrial departments.
 
 I have written about its design in [a series of articles on Elastic Search Labs](https://www.elastic.co/search-labs/blog/ecommerce-search-governance-control-plane-architecture). Those articles cover what it does. This one covers how it was built: the workflow behind it.
 
-![Search results for "red size 10 womens dress on sale under $40", with size 10, Womens › Dresses, Red and up to $40 applied as filters](images/filtered-results.jpg)
+![Search results for "size 10 womens dress on sale under $40", with size 10, Womens › Dresses and up to $40 applied as filters](images/filtered-results.jpg)
 
 *The query above on the demo catalogue. The circled filters were applied automatically, from the text the shopper typed.*
 

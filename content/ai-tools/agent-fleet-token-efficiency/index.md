@@ -198,7 +198,7 @@ Wait helpers now return before 270 seconds, and a guard refuses longer foregroun
 
 The second fix was in what every agent loads. Each agent's first message carried a 90-line index of my notes and rulings, appended to the first user message, after the last cache breakpoint (the point up to which a prompt can be served from the cache). Most of its lines were rules only the coordinator needed. Because it sat in the same block as each agent's own task, a one-word difference in the task missed the cache for the whole block: across every agent started in one day, the median first turn read 3.2k tokens from cache and wrote 11k fresh.
 
-The index now holds 8 universal lines, and the rest moved to secondary indexes an agent opens only when its task needs them. The first-turn cache write fell from about 11.2k to about 4.5k tokens. Anything injected into every agent belongs before the cache breakpoint, or nowhere.
+The index now holds 8 universal lines, and the rest moved to secondary indexes an agent opens only when its task needs them. The first-turn cache write fell from about 11.2k to about 4.5k tokens. An index like this grows back one line at a time, as each new rule is added, so the cut is not a one-off: it needs continuous pruning. Anything injected into every agent belongs before the cache breakpoint, or nowhere.
 
 ## 4. Turn rules into code
 

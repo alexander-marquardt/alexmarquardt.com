@@ -10,7 +10,7 @@ categories: ["AI-Assisted Development"]
 description: "How an e-commerce search project that makes extensive use of coding agents merged 1,652 pull requests in a month without losing control of its code: written rules, tests that outnumber the solution's own code three to one, CI gates, independent review and an agent control plane."
 ---
 
-In October, the main repository of an e-commerce search solution that I work on merged 1,652 pull requests (median size 492 changed lines). That is in the range of the busiest open-source repositories on GitHub: that month Microsoft's VS Code merged 2,549 from 97 people (median 168 lines), and CPython, the main implementation of Python, 1,607 from 184 (median 31 lines). We make extensive use of coding agents, and this article is about the rules, tests, CI gates and the control plane (the code that schedules and watches the agents) that keep that rate of change from turning into chaos, with the measurements behind them and the objections they invite.
+In October, the main repository of an e-commerce search solution that I work on merged 1,652 pull requests (median size 492 changed lines). That is in the range of the busiest open-source repositories on GitHub: that month Microsoft's VS Code merged 2,549 (median 168 lines), and CPython, the main implementation of Python, 1,607 (median 31 lines). We make extensive use of coding agents, and this article is about the rules, tests, CI gates and the control plane (the code that schedules and watches the agents) that keep that rate of change from turning into chaos, with the measurements behind them and the objections they invite.
 
 ## The e-commerce search layer the agents help build
 
@@ -76,23 +76,22 @@ That is far more than the 4,000-line query rewriter the project started from. It
 | Test cases, frontend | 12,467, plus 144 end-to-end spec files |
 | CI | 58 workflows, 136 jobs |
 | Merges later reverted | 0.2 to 0.7% |
-| Authors, main repository, all time | Pull requests: 6,225 of the 6,295 merged are mine, 36 are from other developers (May to July 2026) and 34 from Dependabot. Commits in `main`: 7,229 of 7,537 are mine, 274 are from other developers (September 2025 to July 2026) and 34 from Dependabot. |
 
 ### Scale, compared
 
-Here is October 2026 for the main repository and for some of the best-known open-source repositories on GitHub, measured the same way from the GitHub API on 8 November (merged pull requests; bots excluded from the author count):
+Here is October 2026 for the main repository and for some of the best-known open-source repositories on GitHub, measured the same way from the GitHub API on 8 November:
 
-| Repository | Merged PRs, October | People authoring them | Median PR size (changed lines) |
-|---|---|---|---|
-| microsoft/vscode | 2,549 | 97 | 168 |
-| python/cpython | 1,607 | 184 | 31 |
-| rust-lang/rust | 845 | 234 | 78 |
-| kubernetes/kubernetes | 570 | 169 | 132 |
-| The main repository | 1,652 | a small handful | 492 |
+| Repository | Merged PRs, October | Median PR size (changed lines) |
+|---|---|---|
+| microsoft/vscode | 2,549 | 168 |
+| python/cpython | 1,607 | 31 |
+| rust-lang/rust | 845 | 78 |
+| kubernetes/kubernetes | 570 | 132 |
+| The main repository | 1,652 | 492 |
 
-About 700 of CPython's merged PRs are automated backports; the 900 written by people came from 183 of its 184 authors; the other is the backport bot.
+About 700 of CPython's merged PRs are automated backports.
 
-The comparison is of merged-PR throughput only, the one number all of these repositories expose. Their pull requests carry products with millions of users and a release process. Their author counts include occasional outside contributors, so their core teams are smaller.
+The comparison is of merged-PR throughput only, the one number all of these repositories expose. Their pull requests carry products with millions of users and a release process.
 
 Against the most widely published productivity benchmark, about 2 merged PRs per engineer per week ([Graphite](https://graphite.dev/research) puts the median active developer there, and [LinearB's benchmarks](https://linearb.io/engineering-benchmarks/) start the elite tier at above 2.0), the main repository's 373 a week matches the output of about 186 engineers. The benchmark's [median PR is 47 changed lines](https://graphite.dev/research/median-pr_size); the main repository's in October is 492. As a thought exercise, normalising by size would raise the ratio further: by changed lines, 373 PRs of 492 lines a week matches about 1,950 engineers merging two 47-line PRs each (not a realistic figure, since it multiplies medians, and changed lines are a poor measure of work, as the objections below concede).
 

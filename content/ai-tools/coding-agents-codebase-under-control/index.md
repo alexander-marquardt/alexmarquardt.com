@@ -80,7 +80,7 @@ That is far more than the 4,000-line query rewriter the project started from. It
 
 ### Scale, compared
 
-Here is October 2026 for our main repository and for some of the best-known open-source repositories on GitHub, measured the same way from the GitHub API on 8 November (merged pull requests; bots excluded from the author count):
+Here is October 2026 for the main repository and for some of the best-known open-source repositories on GitHub, measured the same way from the GitHub API on 8 November (merged pull requests; bots excluded from the author count):
 
 | Repository | Merged PRs, October | People authoring them | Median PR size (changed lines) |
 |---|---|---|---|
@@ -88,11 +88,11 @@ Here is October 2026 for our main repository and for some of the best-known open
 | python/cpython | 1,607 | 184 | 31 |
 | rust-lang/rust | 845 | 234 | 78 |
 | kubernetes/kubernetes | 570 | 169 | 132 |
-| Our main repository | 1,652 | 1 | 492 |
+| The main repository | 1,652 | a handful | 492 |
 
 About 700 of CPython's merged PRs are automated backports; the 900 written by people came from 183 of its 184 authors; the other is the backport bot.
 
-The comparison is of merged-PR throughput only, the one number all of these repositories expose. Their pull requests carry products with millions of users and a release process. My pull requests are opened under my GitHub account, so my author count is 1. Their author counts include occasional outside contributors, so their core teams are smaller.
+The comparison is of merged-PR throughput only, the one number all of these repositories expose. Their pull requests carry products with millions of users and a release process. Their author counts include occasional outside contributors, so their core teams are smaller.
 
 On size, the industry [median PR is 47 changed lines](https://graphite.dev/research/median-pr_size); the main repository's in October is 492.
 

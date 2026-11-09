@@ -28,13 +28,13 @@ I have written about its design in [a series of articles on Elastic Search Labs]
 
 *The query above on the demo catalogue. The circled filters were applied automatically, from the text the shopper typed.*
 
-## How the project evolved
+## How the search layer is built
 
-The project started as a small piece of code, about 4,000 lines: a query rewriter built on Elasticsearch's percolator (which matches a document against stored queries) that [Sidecar](https://sidecar.software/) developed for Elastic under a small, short-term contract (described in [this Search Labs article](https://www.elastic.co/search-labs/blog/elasticsearch-percolator-search-governance)). Since then it has been built into a full e-commerce search solution, and a large percentage of today's code was written by AI coding agents under my direction, using the workflow this article describes. I have worked on it essentially alone since February 2026. Across the project's four repositories (the main one and three smaller ones, described below), the agents merge about 690 pull requests a week, 373 of them in the main repository that the title counts; a typical engineer merges about two.
+The project started as a prototype: about 4,000 lines of tight, extremely well-written code, a query rewriter built on Elasticsearch's percolator (which matches a document against stored queries) that [Sidecar](https://sidecar.software/) developed for Elastic under a small, short-term contract (described in [this Search Labs article](https://www.elastic.co/search-labs/blog/elasticsearch-percolator-search-governance)). That code set the pattern for everything built since. It has grown into a full e-commerce search solution, and a large percentage of today's code was written by AI coding agents under my direction. I have worked on it essentially alone since February 2026. Across the project's four repositories (the main one and three smaller ones, described below), the agents merge about 690 pull requests a week, 373 of them in the main repository that the title counts; a typical engineer merges about two.
 
 The solution itself, backend and frontend, is about 620,000 lines of code. The main repository holds about 3 million, and most of the difference is tests: 2.1 million lines of them. That is not an accident. When agents write the code, the tests are what tell me it still works, so a large test suite that gives the same answer every time is the first requirement of working this way.
 
-The rate comes from a method: a set of rules, tests, gates and controls that let agents do the work of a large team without the codebase falling apart. The rest of this article describes it, with the measurements behind it and how each was taken.
+This article is about how the project evolved into a system that withstands AI development. Most codebases would collapse under that rate of change without guardrails. What holds this one together is a method: a set of rules, tests, gates and controls that let agents do the work of a large team without the codebase falling apart. The rest of this article describes it, with the measurements behind it and how each was taken.
 
 ## The numbers
 

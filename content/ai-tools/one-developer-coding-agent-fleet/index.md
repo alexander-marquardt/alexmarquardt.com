@@ -28,7 +28,7 @@ I have written about its design in [a series of articles on Elastic Search Labs]
 
 *The query above on the demo catalogue. The circled filters were applied automatically, from the text the shopper typed.*
 
-## Who built it, and how
+## How the project evolved
 
 The project started as a small piece of code, about 4,000 lines: a query rewriter built on Elasticsearch's percolator (which matches a document against stored queries) that [Sidecar](https://sidecar.software/) developed for Elastic under a small, short-term contract (described in [this Search Labs article](https://www.elastic.co/search-labs/blog/elasticsearch-percolator-search-governance)). Since then it has been built into a full e-commerce search solution, and a large percentage of today's code was written by AI coding agents under my direction, using the workflow this article describes. I have worked on it essentially alone since February 2026. Across the project's four repositories (the main one and three smaller ones, described below), the agents merge about 690 pull requests a week, 373 of them in the main repository that the title counts; a typical engineer merges about two.
 

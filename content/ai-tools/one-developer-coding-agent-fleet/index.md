@@ -12,7 +12,7 @@ description: "How one developer directs a fleet of Claude Code agents that merge
 
 In October, the main repository of an e-commerce search solution that I work on merged 1,652 pull requests (median size 492 changed lines), all of them written by a fleet of coding agents that I direct. That is in the range of the busiest open-source repositories on GitHub: that month Microsoft's VS Code merged 2,549 from 97 people (median 168 lines), and CPython, the main implementation of Python, 1,607 from 184 (median 31 lines). This article is about the rules, tests, CI gates and the control plane (the code that schedules and watches the agents) that keep that rate from turning into chaos, with the measurements behind them and the objections they invite.
 
-## What the agents are building
+## The e-commerce search layer the agents help build
 
 Try this search on a few large e-commerce sites:
 

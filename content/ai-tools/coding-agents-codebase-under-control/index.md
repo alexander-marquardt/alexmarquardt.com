@@ -32,7 +32,7 @@ I have written about its design in [a series of articles on Elastic Search Labs]
 
 ## How the search layer is built
 
-The project started as a small, focused piece of code that did one thing well: about 4,000 lines of extremely well-written code, a query rewriter built on Elasticsearch's percolator (which matches a document against stored queries), described in [this Search Labs article](https://www.elastic.co/search-labs/blog/elasticsearch-percolator-search-governance). It has since grown into a full e-commerce search solution, built with extensive use of coding agents. Across the project's four repositories (the main one and three smaller ones, described below), the project merges about 690 pull requests a week, 373 of them in the main repository, the only one the October figure above counts.
+The project started as a small, focused piece of code that did one thing well: about 4,000 lines of extremely well-written code, a query rewriter built on Elasticsearch's percolator (which matches a document against stored queries), described in [this Search Labs article](https://www.elastic.co/search-labs/blog/elasticsearch-percolator-search-governance). It has since grown into a full e-commerce search solution, built with extensive use of coding agents. Across the project's four repositories (the main one and three smaller ones, described below), the project merges about 690 pull requests a week, 373 of them in the main repository, the only one the October figure above counts. For comparison, the industry benchmark is about two merged pull requests per engineer per week (see [Scale, compared](#scale-compared)).
 
 The solution itself, backend and frontend, is about 620,000 lines of code. The main repository holds about 3 million, and most of the difference is tests: 2.1 million lines of them. That is not an accident. When coding agents do much of the implementation, the tests are how the system knows it still works: after every change, they check the results against known good results, and CI refuses any change that breaks a test. That is why a large, deterministic test suite is the first requirement of working this way.
 
@@ -94,7 +94,7 @@ About 700 of CPython's merged PRs are automated backports; the 900 written by pe
 
 The comparison is of merged-PR throughput only, the one number all of these repositories expose. Their pull requests carry products with millions of users and a release process. Their author counts include occasional outside contributors, so their core teams are smaller.
 
-On size, the industry [median PR is 47 changed lines](https://graphite.dev/research/median-pr_size); the main repository's in October is 492.
+Against the most widely published productivity benchmark, about 2 merged PRs per engineer per week ([Graphite](https://graphite.dev/research) puts the median active developer there, and [LinearB's benchmarks](https://linearb.io/engineering-benchmarks/) start the elite tier at above 2.0), the main repository's 373 a week matches the output of about 186 engineers. The benchmark's [median PR is 47 changed lines](https://graphite.dev/research/median-pr_size); the main repository's in October is 492. As a thought exercise, normalising by size would raise the ratio further: by changed lines, 373 PRs of 492 lines a week matches about 1,950 engineers merging two 47-line PRs each (not a realistic figure, since it multiplies medians, and changed lines are a poor measure of work, as the objections below concede).
 
 ## Fair objections
 

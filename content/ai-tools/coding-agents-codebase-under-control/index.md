@@ -88,7 +88,7 @@ Here is October 2026 for the main repository and for some of the best-known open
 | python/cpython | 1,607 | 184 | 31 |
 | rust-lang/rust | 845 | 234 | 78 |
 | kubernetes/kubernetes | 570 | 169 | 132 |
-| The main repository | 1,652 | a very tight team | 492 |
+| The main repository | 1,652 | a small handful | 492 |
 
 About 700 of CPython's merged PRs are automated backports; the 900 written by people came from 183 of its 184 authors; the other is the backport bot.
 

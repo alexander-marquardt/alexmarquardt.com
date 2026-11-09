@@ -327,6 +327,36 @@ The diameter is labelled `Milling Dia.`, `D`, or not at all; the length of cut i
 
 The messiness is bounded by a few rules that keep the catalog usable. Every title names a value that is unique to that SKU within its line, so no two SKUs in a line share a title or a description. The description opens with the title verbatim and then continues with the remaining distinguishing attributes, which is the convention real listings follow: the title tells SKUs apart at a glance, the description while scanning, and the attribute block precisely. And a title or description that names a value its own attributes contradict is refused, except for the decoys planted on purpose.
 
+### How far each product type can grow
+
+In the large build the two end mill types hold 51,409 of the 176,345 SKUs, and the club hammer holds 163. Nothing weights the end mills up: a type's SKU count is bounded by how many different products its makers could really sell.
+
+| product type | default build | large build |
+| :--- | ---: | ---: |
+| `end_mill_square` | 1,414 | 32,350 |
+| `end_mill_ball` | 910 | 19,059 |
+| `nut_hex` | 1,329 | 12,602 |
+| `bearing_radial_ball` | 1,182 | 11,340 |
+| `washer_flat` | 225 | 978 |
+| `hammer_ball_pein` | 162 | 867 |
+| `nail_finishing` | 55 | 170 |
+| `hammer_club` | 38 | 163 |
+| all 163 types | 14,556 | 176,345 |
+
+An end mill is a diameter, a length of cut, a shank, a flute count, a material and a coating, from any of 15 cutting-tool brands, sold in a large build in [run lines](#product-lines-and-skus) of up to 15 diameters. A club hammer is one of four head weights, two handle materials and three grips, and only the 12 hand-tool brands make hammers. Because [every SKU is different](#product-lines-and-skus), the hammer makers run out first: a brand that drafts 20 lines of a type in a row without a new SKU gets no more of that type. The catalog grows 12 times between the two builds, the end mills over 20 times, the washers and club hammers about 4.
+
+Two groups are small by design. The five everyday screws (wood, machine, drywall, sheet metal, deck) are capped at 1% of the catalog's SKUs and hold 96 to 103 SKUs each in the large build, and the 103 breadth categories hold 196 SKUs in both builds.
+
+**Levers that keep it honest.** The best is to deepen a category from its standard. Carriage bolts were a breadth row of two SKUs until their sizes were read from the DIN 603 and ASME B18.5 tables; they now have 63 SKUs in the default build and 894 in the large one. The other is more brands, since one standard part from two makers is two products. Each industrial brand name was checked by hand, with a web search for the name in quotes and a second with words such as "tools" or "company", and a name that turned up a real company or trademark in any industry was replaced; 24 were. No script does this, so each new brand costs a manual check.
+
+**Levers that would fake it.** A size its standard does not list (the fasteners take [only the sizes their sources carry](#dimensions-standards-for-fasteners-conventional-series-for-cutting-tools)). A SKU that differs only in metadata, such as the measurement-system attribute, the standards claimed or an attribute sparsity dropped, which the uniqueness rule already refuses. Random values, which put a part on the page that no maker sells.
+
+**Brands also run out of looks.** Twelve inks and four frames give 48 pairs, and 45 are taken. Each brand's mark is one of 15 motifs in one of three enclosures, and any two marks must differ in at least 24 pixels at the 19-pixel size a results grid shows: 45 marks, one per brand. Three weaker levers (outline weight, dashed interior lines, frame inset) and a fifth frame are declared but unused; with them, at least 110 house styles are visibly different. The marks are the tighter limit: a 46th brand needs a new motif that passes the pixel test, and each new motif makes room for three.
+
+**Prices follow the brand.** Six brands are economy, six premium and 33 standard. A tier multiplies the price of the same specification by a figure measured on the price census: 0.52 for economy (a distributor's own value labels against other brands, over 83 shared jobber-drill specs) and 1.79 for premium (the 90th percentile of the brand price index); six types use figures of their own. No record carries a tier; it shows only through price. The default build's prices run from $4.37 at the 10th percentile through a median of $19.61 to $104.88 at the 90th, and 0.5% end in .99, against the census's 0.6%. The range word in a line's name ("Pro", "Value", "Select") does not follow the tier yet: it is drawn per brand, so one premium brand calls 106 of its lines "Value".
+
+**What scale costs.** The default build's `flat.jsonl` is 45 MB and its `nested.jsonl` 27 MB. The repository's dated ingest record (4 November, when `--lines 39000` gave 140,603 SKUs) measured 93 seconds to generate and 87 to load both shapes into a local Elasticsearch on a busy 32-CPU machine. The flat index merged to 169 MB, the nested one to 110 MB, and the heap peaked at 449 MB of its 512 MiB; at 419,039 SKUs it peaked at 468 MB.
+
 ## Generated drawings
 
 A demo catalog without images is not a demo catalog, and product photography is exactly the content that cannot be borrowed. Photographs of a generated product cannot exist, since the product does not, and a picture taken from somewhere else would show a real product the record does not describe. So the generator also draws the pictures, and it draws them from the records.

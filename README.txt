@@ -51,53 +51,13 @@
 # content file. data/asset_sections.yaml optionally adds a sentence of
 # provenance to a section; it never lists a file.
 #
-# To publish more drawings from the synthetic industrial catalog:
-#
-#   python3 scripts/import_industrial_images.py \
-#       --manifest ../synthetic-industrial-products/out/catalog/images.jsonl \
-#       --images   ../synthetic-industrial-products/out/images --prune
-#   python3 scripts/verify_industrial_urls.py \
-#       --catalog  ../synthetic-industrial-products/out/catalog/flat.jsonl
-#
-# The first compresses and files each drawing at the path the manifest
-# declares; the second checks, both directions, that every URL the catalog
-# emits has a file here and that every file here is pointed at. --prune
-# removes files the manifest no longer lists, which is what a re-import after
-# a change to the naming scheme needs. Both are re-runnable.
-# They need pngquant and oxipng: brew install pngquant oxipng
-#
-# WHEN YOU REPUBLISH, THE URLS THAT DID NOT CHANGE ARE THE CONTROL -- AND ON
-# THIS TREE THAT CONTROL IS ONE PRODUCT TYPE. The generator draws every builder
-# from one RNG and one global index, so adding a product type re-cuts the
-# shares and shifts every record after the point it was inserted. At the
-# 2026-09-17 republish that moved 405 of 500 product lines; the 95 that held
-# still were end_mill_square, and ALL 190 of its published paths were among
-# them, while the other eleven types were 100% new files.
-#
-# So "the unchanged URLs still resolve" was, that time, a statement about
-# end_mill_square and nothing else. Two things follow for the next republish:
-#
-#   * Check the unchanged set IN FULL rather than sampling it. It is small --
-#     190 URLs -- and it is the half where a republish that quietly drops a
-#     file does its damage, since a dropped file that nothing re-rendered
-#     leaves no other trace.
-#   * Work out which type the unchanged set belongs to BEFORE concluding
-#     anything from it. A republish that shifts end_mill_square would leave no
-#     unchanged control at all, and a run reporting "all unchanged URLs
-#     resolve" over an EMPTY unchanged set is a vacuous pass that reads
-#     exactly like a real one.
-#
-# Compare the old and new published sets straight from git rather than
-# trusting the counts, which is what produced the figures above:
-#
-#   git ls-tree -r --name-only <old> -- static/ecommerce-demo-assets/images/industrial
-#   git ls-tree -r --name-only <new> -- static/ecommerce-demo-assets/images/industrial
-#
-# and take comm -12 for the unchanged set and comm -13 for the new one. A file
-# being present is not the check: fetch it and compare the response body's
-# sha256 against the file in this repository. A 200 with the wrong bytes is
-# exactly what a republish against a moved generator produces, and a
-# status-code check cannot see it.
+# The industrial drawings are a FROZEN SAMPLE: 181 product lines (about 15
+# per product type), from an earlier version of the generator that drew one PNG
+# per product line. They are not republished. The current generator draws one
+# SVG per SKU and ships them as a release bundle that a demo serves itself, so
+# no demo should point at this site's drawings. The importer that copied them
+# here, its URL check and its tests were removed with the trim (issues #14 and
+# #15).
 #
 # A BUILD THAT SUCCEEDS IS NOT EVIDENCE THE PAGES LIST ANYTHING. Build on the
 # version .hugo-version pins -- not on whatever brew installed; both workflows

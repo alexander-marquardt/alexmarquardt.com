@@ -100,7 +100,7 @@ Against the most widely published productivity benchmark, about 2 merged PRs per
 
 **"Pull requests are a vanity metric. Split the work finer and the count goes up."** True in general, which is why the PR size matters. These PRs are ten times the industry median, not smaller. The companion article on token use makes the same point from the other side: tokens per changed line, not per PR, is the honest efficiency figure.
 
-**"Lines of code are meaningless."** Agreed. That is why the headline uses merged PRs, each of which passed review and CI, and the line counts are only there to show scale and how much of it is tests.
+**"Lines of code are meaningless."** Agreed. That is why the headline figure is merged PRs, each of which passed review and CI, and the line counts are only there to show scale and how much of it is tests.
 
 **"70% of it is tests. That's padding."** It is the opposite. Tests are what make code trustworthy when much of it is written with coding agents. Every test runs on recorded data in the repository, so it gives the same answer every time. Without that, the rate above would be a rate of producing bugs.
 

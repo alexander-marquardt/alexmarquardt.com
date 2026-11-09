@@ -33,7 +33,7 @@ Most of the tokens are not the code the agents write but the context they send. 
 
 The principle behind all six: don't make the model remember; make the system remember.
 
-This is one project, run by one person, with several changes landing at once. Where I cannot separate their effects, I say so.
+This is one project, with several changes landing at once. Where I cannot separate their effects, I say so.
 
 ## What to do first
 

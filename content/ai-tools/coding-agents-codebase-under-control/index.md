@@ -80,7 +80,7 @@ That is far more than the 4,000-line query rewriter the project started from. It
 
 ### Scale, compared
 
-Here is October 2026 for my main repository and for some of the best-known open-source repositories on GitHub, measured the same way from the GitHub API on 8 November (merged pull requests; bots excluded from the author count):
+Here is October 2026 for our main repository and for some of the best-known open-source repositories on GitHub, measured the same way from the GitHub API on 8 November (merged pull requests; bots excluded from the author count):
 
 | Repository | Merged PRs, October | People authoring them | Median PR size (changed lines) |
 |---|---|---|---|
@@ -88,7 +88,7 @@ Here is October 2026 for my main repository and for some of the best-known open-
 | python/cpython | 1,607 | 184 | 31 |
 | rust-lang/rust | 845 | 234 | 78 |
 | kubernetes/kubernetes | 570 | 169 | 132 |
-| My main repository | 1,652 | 1 | 492 |
+| Our main repository | 1,652 | 1 | 492 |
 
 About 700 of CPython's merged PRs are automated backports; the 900 written by people came from 183 of its 184 authors; the other is the backport bot.
 

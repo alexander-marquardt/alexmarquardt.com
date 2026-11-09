@@ -11,7 +11,7 @@ description: "Why coding agents use so many tokens, how to measure it from the t
 
 ## Summary
 
-Coding agents use a lot of tokens. When I started running four parallel agents on one project, a week's token budget lasted about a day. Ten weeks and six changes later, tokens per changed line of code are down 3.3x. I spent the saving on doing more, not on making the budget last: the agents now merge 4.4 times as many PRs a week, on 19% fewer tokens.
+Coding agents use a lot of tokens. When I started running four parallel agents on one project, a week's token budget did not last the week. Ten weeks and six changes later, a changed line of code takes less than a third of the tokens it did (3.3x fewer), and a merged PR less than a fifth (5.5x fewer).
 
 This article shows where the tokens went, how I measured that from the transcripts Claude Code already keeps on disk, and which changes paid off and which did not. [A companion article](/ai-tools/one-developer-coding-agent-fleet/) describes the project itself and how its code is kept under control.
 
@@ -19,7 +19,7 @@ Measured over ten weeks of transcripts:
 
 - **The same code takes less than a third of the tokens.** Tokens per changed line fell 3.3x, or about 2.5x weighted by the price of each kind of token. This is the headline figure because it does not depend on how the work is split into PRs.
 - **PRs also got smaller, so tokens per PR fell further.** The average PR went from about 1,400 to 850 changed lines (1.65x smaller), because each agent now does one task. With the 3.3x per line, that makes tokens per merged PR about 5.5x lower (3.3 × 1.65).
-- **Merged PRs per week rose 4.4x**, on 19% fewer tokens a week.
+- **Merged PRs per week rose 4.4x**, on about the same weekly spend weighted by the price of each kind of token. The saving went into more work, not a smaller bill.
 - **Reverts stayed rare** (0.2 to 0.7% of merges), but rework per PR rose slightly, from 0.8 to about 1 fix round per merged PR.
 
 Most of the tokens are not the code the agents write but the context they send. The model keeps nothing between calls, so each call sends the whole conversation again, and an agent makes many calls per task. The total is proportional to the number of calls times the average context per call. Every improvement came from making fewer calls or sending less context with each one. The list below shows what I changed and the impact of each change (the terms are explained in the sections that follow):

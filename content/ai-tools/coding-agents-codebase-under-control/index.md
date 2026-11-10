@@ -1,6 +1,6 @@
 ---
 showtoc: true
-title: "Keeping a fast-moving codebase under control with coding agents"
+title: "Guardrails for coding agents: how a codebase stays sound at 1,600 merged PRs a month"
 date: 2026-11-08
 draft: false
 slug: coding-agents-codebase-under-control

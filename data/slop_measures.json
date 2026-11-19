@@ -1,0 +1,372 @@
+{
+ "command": "python3 scripts/slop_measures.py --repo-dir <clone of the main repository> --repo <its owner/name> --work-db <the fleet's work.db> --since 2026-04-01",
+ "definitions": "the docstring of scripts/slop_measures.py",
+ "floors": [
+  {
+   "check": "mypy",
+   "evidence": "pyproject.toml",
+   "evidence_line": "disallow_untyped_defs = true",
+   "fails_the_pr": true,
+   "floor": "type check, untyped definitions disallowed",
+   "required": true
+  },
+  {
+   "check": "pre-commit",
+   "evidence": ".pre-commit-config.yaml",
+   "evidence_line": "- id: ruff-check",
+   "fails_the_pr": true,
+   "floor": "linter",
+   "required": true
+  },
+  {
+   "check": "test",
+   "evidence": "pyproject.toml",
+   "evidence_line": "fail_under = 60",
+   "fails_the_pr": true,
+   "floor": "coverage floor on changed lines",
+   "required": true
+  },
+  {
+   "check": "jscpd",
+   "evidence": ".jscpd.json",
+   "evidence_line": "\"threshold\": 0,",
+   "fails_the_pr": true,
+   "floor": "copy-paste detector",
+   "required": true
+  },
+  {
+   "check": "audit-grep",
+   "evidence": ".github/workflows/audit-grep.yaml",
+   "evidence_line": "Check no code or docs file grows past the line cap",
+   "fails_the_pr": true,
+   "floor": "file-size cap",
+   "required": true
+  },
+  {
+   "check": "changed-line-mutants",
+   "evidence": ".github/workflows/changed-line-mutants.yaml",
+   "evidence_line": "never fails on one",
+   "fails_the_pr": false,
+   "floor": "mutation score on changed lines",
+   "required": false
+  }
+ ],
+ "main_head": "e5c94dc59ec1193f9770ff959c0b1f0e91094b99",
+ "measured_at": "2026-11-19T21:40:17Z",
+ "red": [
+  {
+   "hours_red": 1.0,
+   "median_red_to_green_minutes": 62,
+   "spells": 1,
+   "week": "2026-W44"
+  },
+  {
+   "hours_red": 58.0,
+   "median_red_to_green_minutes": 139,
+   "spells": 17,
+   "week": "2026-W45"
+  },
+  {
+   "hours_red": 67.9,
+   "median_red_to_green_minutes": 133,
+   "spells": 21,
+   "week": "2026-W46"
+  },
+  {
+   "hours_red": 14.8,
+   "median_red_to_green_minutes": 111,
+   "spells": 7,
+   "week": "2026-W47"
+  }
+ ],
+ "rounds": [
+  {
+   "fix_rounds": 404,
+   "fix_rounds_per_pr": 0.87,
+   "merged_prs": 466,
+   "week": "2026-W45"
+  },
+  {
+   "fix_rounds": 368,
+   "fix_rounds_per_pr": 0.89,
+   "merged_prs": 414,
+   "week": "2026-W46"
+  },
+  {
+   "fix_rounds": 153,
+   "fix_rounds_per_pr": 0.86,
+   "merged_prs": 178,
+   "week": "2026-W47"
+  }
+ ],
+ "unmeasured": {
+  "real_share_of_review_findings": "the job log records that a fix was pushed, not whether each finding was real",
+  "whole_suite_coverage": "the PR-side test job applies the floor to changed lines only and says the whole-suite floor runs post-merge; its total is not read here yet"
+ },
+ "weeks": [
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 12,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W15"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 27,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W16"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 65,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W17"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 57,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W18"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 3,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W19"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 37,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W20"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 67,
+   "reverts": 1,
+   "reverts_per_100": 1.49,
+   "week": "2026-W21"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 206,
+   "reverts": 1,
+   "reverts_per_100": 0.49,
+   "week": "2026-W22"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 223,
+   "reverts": 1,
+   "reverts_per_100": 0.45,
+   "week": "2026-W23"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 210,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W24"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 245,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W25"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 252,
+   "reverts": 1,
+   "reverts_per_100": 0.4,
+   "week": "2026-W26"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 241,
+   "reverts": 2,
+   "reverts_per_100": 0.83,
+   "week": "2026-W27"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 326,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W28"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 305,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W29"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 446,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W30"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 186,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W31"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 203,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W32"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 107,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W33"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 102,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W34"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 74,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W35"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 196,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W36"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 149,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W37"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 96,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W38"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 100,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W39"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 172,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W40"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 507,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W41"
+  },
+  {
+   "main_repairs": null,
+   "main_repairs_per_100": null,
+   "merged_prs": 522,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W42"
+  },
+  {
+   "main_repairs": 5,
+   "main_repairs_per_100": 1.98,
+   "merged_prs": 253,
+   "reverts": 1,
+   "reverts_per_100": 0.4,
+   "week": "2026-W43"
+  },
+  {
+   "main_repairs": 19,
+   "main_repairs_per_100": 6.71,
+   "merged_prs": 283,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W44"
+  },
+  {
+   "main_repairs": 3,
+   "main_repairs_per_100": 0.64,
+   "merged_prs": 466,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W45"
+  },
+  {
+   "main_repairs": 3,
+   "main_repairs_per_100": 0.72,
+   "merged_prs": 414,
+   "reverts": 1,
+   "reverts_per_100": 0.24,
+   "week": "2026-W46"
+  },
+  {
+   "main_repairs": 0,
+   "main_repairs_per_100": 0.0,
+   "merged_prs": 178,
+   "reverts": 0,
+   "reverts_per_100": 0.0,
+   "week": "2026-W47"
+  }
+ ]
+}

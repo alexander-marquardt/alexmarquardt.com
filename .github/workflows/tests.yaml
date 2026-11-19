@@ -21,6 +21,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Unit tests of the measurement scripts
+        run: python3 -m unittest discover -s tests
+
       - name: Read the pinned Hugo version
         id: hugo
         run: echo "version=$(cat .hugo-version)" >> "$GITHUB_OUTPUT"

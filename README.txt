@@ -72,3 +72,17 @@
 # resolves; and the published image files are exactly the ones on disk, so a
 # page change cannot move an image. Both workflows run it -- the tests one on
 # every pull request, the deploy one before the artifact is uploaded.
+
+# Measured figures in the articles (data/slop_measures.json)
+#
+# The "AI slop" article (issue #32) is written from data/slop_measures.json,
+# not the other way round: every figure it quotes is a field of that file.
+# scripts/slop_measures.py writes it from the main repository's first-parent
+# history, the agent fleet's recorded red spells and job log, and the list of
+# checks required on main; its docstring defines each field. The file holds
+# aggregate counts only: no commit subject, issue title or repository name.
+# Re-record it with the command in its "command" field; the file also keeps the
+# main commit and the time it was measured at. Its counting is pinned on fixed
+# data by tests/test_slop_measures.py:
+#
+#   python3 -m unittest discover -s tests
